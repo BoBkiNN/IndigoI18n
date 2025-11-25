@@ -30,6 +30,11 @@ public class FormatSpec {
         return readFormatSpec(new TemplateReader(text), doRepr);
     }
 
+    public static FormatSpec newDefault() {
+        return new FormatSpec("", false, null,
+                Sign.NEGATIVE, false, null, null, null, 's');
+    }
+
     public static FormatSpec readFormatSpec(TemplateReader reader, boolean doRepr) {
         reader.mark();
         var alignment = Alignment.read(reader);
