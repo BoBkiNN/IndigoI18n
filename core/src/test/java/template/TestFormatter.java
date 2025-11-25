@@ -38,5 +38,10 @@ public class TestFormatter {
         Assertions.assertEquals("1000001", formatInt("b", 65));
         Assertions.assertEquals("0b1000001", formatInt("#b", 65));
         Assertions.assertEquals("+0o______________101", formatInt("_=+#20o", 65));
+        Assertions.assertEquals("@+16_384@@", formatInt("@^+10_", 16384));
+        Assertions.assertEquals("@@@@@@+4_0000@@@@@@@", formatInt("@^+20_o", 16384));
+        Assertions.assertEquals("zzzzzzzzzzzzz+4_0000", formatInt("z>+20_o", 16384));
+        Assertions.assertEquals("+4_0000zzzzzzzzzzzzz", formatInt("z<+20_o", 16384));
+        Assertions.assertEquals("+zzzzzzzzzzzzz4_0000", formatInt("z=+20_o", 16384));
     }
 }

@@ -23,15 +23,15 @@ public class TemplateFormatter {
                 sb.append(number);
                 return sb.toString();
             }
-            case LEFT -> {
+            case RIGHT -> {
                 return alignment.repeatFill(fillCount) + signedNumber;
             }
-            case RIGHT -> {
+            case LEFT -> {
                 return signedNumber + alignment.repeatFill(fillCount);
             }
             case CENTER -> {
-                int rp = (width + 1) / 2;
-                int lp = width / 2;
+                int rp = (fillCount + 1) / 2;
+                int lp = fillCount / 2;
                 return alignment.repeatFill(lp) + signedNumber + alignment.repeatFill(rp);
             }
             default -> throw new IllegalArgumentException("Unknown alignment type");
@@ -89,7 +89,11 @@ public class TemplateFormatter {
         var groupChar = Optional.ofNullable(format.getIntPartGrouping())
                 .map(String::valueOf).orElse(null);
         var pmSign = format.getSign().charFor(sign);
-        var uf = formatIntGrouped(abs, radix, 3, groupChar);
+        int groupSize = switch (radix) {
+            case 2, 8, 16 -> 4;
+            default -> 3;
+        };
+        var uf = formatIntGrouped(abs, radix, groupSize, groupChar);
         if (type == 'X') {
             uf = uf.toUpperCase();
         }
