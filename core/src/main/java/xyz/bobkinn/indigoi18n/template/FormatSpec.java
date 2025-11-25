@@ -8,6 +8,7 @@ import lombok.ToString;
 @Getter
 @ToString
 public class FormatSpec {
+    private final String source;
     private final boolean doRepr;
     private final Alignment alignment;
     private final Sign sign;
@@ -30,6 +31,7 @@ public class FormatSpec {
     }
 
     public static FormatSpec readFormatSpec(TemplateReader reader, boolean doRepr) {
+        reader.mark();
         var alignment = Alignment.read(reader);
         var sign = Sign.read(reader);
         boolean special = reader.tryConsume('#');
@@ -58,7 +60,8 @@ public class FormatSpec {
         if (reader.hasNext() && reader.peek() != '}') {
             type = reader.next();
         } else type = 's';
-        return new FormatSpec(doRepr, alignment, sign, special, width, precision, intPartGrouping, type);
+        var source = reader.markedPart();
+        return new FormatSpec(source, doRepr, alignment, sign, special, width, precision, intPartGrouping, type);
     }
 
     public enum AlignType {

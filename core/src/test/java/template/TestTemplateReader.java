@@ -22,4 +22,16 @@ public class TestTemplateReader {
         assertEquals(123, tr.readUnsignedNumber());
     }
 
+    @Test
+    public void testMark() {
+        var tr = new TemplateReader("abcdef");
+        tr.skip();
+        tr.mark();
+        tr.skip();
+        tr.skip();
+        assertEquals("bc", tr.markedPart());
+        tr.reset();
+        assertEquals('b', tr.next());
+    }
+
 }

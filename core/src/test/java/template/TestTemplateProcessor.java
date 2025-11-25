@@ -75,4 +75,13 @@ public class TestTemplateProcessor {
         assertEquals('E', fs.getType());
         assertEquals('_', fs.getIntPartGrouping());
     }
+
+    @Test
+    public void testFormatSource() {
+        var tp = new TemplateProcessor();
+        var tr = new TemplateReader("{:_^10}");
+        var arg = tp.readArg(tr, 0);
+        assertNotNull(arg.getFormatSpec());
+        assertEquals("_^10", arg.getFormatSpec().getSource());
+    }
 }

@@ -1,26 +1,43 @@
 package xyz.bobkinn.indigoi18n.template;
 
+import lombok.Getter;
+
 public class TemplateReader {
     private final String text;
-    private int index = 0;
+    private int next = 0;
+    @Getter
+    private int mark = 0;
 
     public TemplateReader(String text) {
         this.text = text;
     }
 
+    public void mark() {
+        mark = next;
+    }
+
+    public void reset() {
+        next = mark;
+    }
+
+    public String markedPart() {
+        if (mark > next) throw new IllegalStateException("Mark is bigger than next");
+        return text.substring(mark, next);
+    }
+
     public boolean hasNext() {
-        return index < text.length();
+        return next < text.length();
     }
 
     public boolean hasNext(int offset) {
-        return index+offset < text.length() && index + offset >= 0;
+        return next +offset < text.length() && next + offset >= 0;
     }
 
     public char next() {
         if (!hasNext()) {
             throw new IllegalStateException("No more characters");
         }
-        return text.charAt(index++);
+        return text.charAt(next++);
     }
 
     public boolean hasUnsignedNumber() {
@@ -68,7 +85,7 @@ public class TemplateReader {
         if (!hasNext()) {
             throw new IllegalStateException("No more characters");
         }
-        index++;
+        next++;
     }
 
     public char peek() {
@@ -76,7 +93,7 @@ public class TemplateReader {
     }
 
     public char peek(int offset) {
-        int idx = index + offset;
+        int idx = next + offset;
         if (idx < 0 || idx >= text.length()) {
             throw new IllegalArgumentException(
                     "Cannot peek character offset by " + offset + " symbols"

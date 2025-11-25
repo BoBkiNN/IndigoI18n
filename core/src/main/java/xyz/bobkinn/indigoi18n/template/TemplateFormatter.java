@@ -10,7 +10,10 @@ public class TemplateFormatter {
     /**
      * @param number number without sign
      */
-    public static String alignNumber(FormatSpec.Alignment alignment, int width, String sign, String number) {
+    public static String alignNumber(FormatSpec.Alignment alignment, Integer width, String sign, String number) {
+        if (alignment == null || width == null) {
+            return sign+number;
+        }
         final String signedNumber = sign != null ? sign + number : number;
         final int fillCount = Math.max(0, width - signedNumber.length());
         switch (alignment.type()) {
@@ -33,6 +36,25 @@ public class TemplateFormatter {
                 int rp = (fillCount + 1) / 2;
                 int lp = fillCount / 2;
                 return alignment.repeatFill(lp) + signedNumber + alignment.repeatFill(rp);
+            }
+            default -> throw new IllegalArgumentException("Unknown alignment type");
+        }
+    }
+
+    public static String align(FormatSpec.Alignment alignment, Integer width, String text) {
+        if (alignment == null || width == null) return text;
+        final int fillCount = Math.max(0, width - text.length());
+        switch (alignment.type()) {
+            case RIGHT, SIGN -> {
+                return alignment.repeatFill(fillCount) + text;
+            }
+            case LEFT -> {
+                return text + alignment.repeatFill(fillCount);
+            }
+            case CENTER -> {
+                int rp = (fillCount + 1) / 2;
+                int lp = fillCount / 2;
+                return alignment.repeatFill(lp) + text + alignment.repeatFill(rp);
             }
             default -> throw new IllegalArgumentException("Unknown alignment type");
         }
@@ -71,10 +93,10 @@ public class TemplateFormatter {
     public static final ArgumentConverter<Integer, String> INT_CONVERTER =  (arg, format) -> {
         if (format.getType() == 'c') {
             try {
-                return Character.toString(arg);
+                var s = Character.toString(arg);
+                return align(format.getAlignment(), format.getWidth(), s);
             } catch (Exception e) {
-                // TODO return fallback debug string containing format and raw arg
-                throw new RuntimeException(e);
+                return TemplateArgument.asString(arg, format);
             }
         }
         var sign = arg > 0 ? 1 : (arg < 0 ? -1 : 0);
@@ -109,11 +131,7 @@ public class TemplateFormatter {
         if (pmSign != null) {
             outSign = pmSign + outSign;
         }
-        var align = format.getAlignment();
-        if (align == null) {
-            return outSign+uf;
-        }
-        return alignNumber(align, format.getWidth(), outSign, uf);
+        return alignNumber(format.getAlignment(), format.getWidth(), outSign, uf);
     };
 //
 //    public Object formatArgument(Object argument, FormatSpec format) {
