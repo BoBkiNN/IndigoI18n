@@ -2,6 +2,7 @@ package xyz.bobkinn.indigoi18n.template;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class TemplateFormatter {
     private final Map<Class<?>, ArgumentConverter<?, ?>> formatters = new HashMap<>();
@@ -9,7 +10,7 @@ public class TemplateFormatter {
     /**
      * @param number number without sign
      */
-    public static String alignNumber(FormatSpec.Alignment alignment, int width, Character sign, String number) {
+    public static String alignNumber(FormatSpec.Alignment alignment, int width, String sign, String number) {
         final String signedNumber = sign != null ? sign + number : number;
         final int fillCount = Math.max(0, width - signedNumber.length());
         switch (alignment.type()) {
@@ -37,9 +38,79 @@ public class TemplateFormatter {
         }
     }
 
-//    public static final ArgumentConverter<Integer, String> INT_CONVERTER =  (arg, format) -> {
-//
-//    };
+    public static String formatIntGrouped(
+            int value,
+            int radix,
+            int groupSize,
+            String separator
+    ) {
+        // Convert number to requested radix
+        String s = Integer.toString(value, radix);
+
+        // No grouping requested
+        if (separator == null || groupSize <= 0) {
+            return s;
+        }
+
+        // Reverse for easier chunking from the end
+        StringBuilder sb = new StringBuilder(s).reverse();
+        StringBuilder out = new StringBuilder();
+
+        for (int i = 0; i < sb.length(); i++) {
+            if (i > 0 && i % groupSize == 0) {
+                out.append(separator);
+            }
+            out.append(sb.charAt(i));
+        }
+
+        // Reverse back
+        return out.reverse().toString();
+    }
+
+
+    public static final ArgumentConverter<Integer, String> INT_CONVERTER =  (arg, format) -> {
+        if (format.getType() == 'c') {
+            try {
+                return Character.toString(arg);
+            } catch (Exception e) {
+                // TODO return fallback debug string containing format and raw arg
+                throw new RuntimeException(e);
+            }
+        }
+        var sign = arg > 0 ? 1 : (arg < 0 ? -1 : 0);
+        var abs = Math.abs(arg);
+        var type = format.getType();
+        var radix = switch (type) {
+            case 'b' -> 2;
+            case 'o' -> 8;
+            case 'x', 'X' -> 16;
+            default -> 10;
+        };
+        var groupChar = Optional.ofNullable(format.getIntPartGrouping())
+                .map(String::valueOf).orElse(null);
+        var pmSign = format.getSign().charFor(sign);
+        var uf = formatIntGrouped(abs, radix, 3, groupChar);
+        if (type == 'X') {
+            uf = uf.toUpperCase();
+        }
+        String outSign = "";
+        if (format.isSpecial() && radix == 16) {
+            if (type == 'X') outSign = "0X";
+            else outSign = "0x";
+        } else if (format.isSpecial() && radix == 2) {
+            outSign = "0b";
+        } else if (format.isSpecial() && radix == 8) {
+            outSign = "0o";
+        }
+        if (pmSign != null) {
+            outSign = pmSign + outSign;
+        }
+        var align = format.getAlignment();
+        if (align == null) {
+            return outSign+uf;
+        }
+        return alignNumber(align, format.getWidth(), outSign, uf);
+    };
 //
 //    public Object formatArgument(Object argument, FormatSpec format) {
 //

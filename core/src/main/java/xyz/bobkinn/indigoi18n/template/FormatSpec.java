@@ -25,6 +25,10 @@ public class FormatSpec {
         } else return null;
     }
 
+    public static FormatSpec parse(String text, boolean doRepr) {
+        return readFormatSpec(new TemplateReader(text), doRepr);
+    }
+
     public static FormatSpec readFormatSpec(TemplateReader reader, boolean doRepr) {
         var alignment = Alignment.read(reader);
         var sign = Sign.read(reader);
