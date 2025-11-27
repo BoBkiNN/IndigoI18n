@@ -30,7 +30,7 @@ public class TestTemplateProcessor {
         var al = FormatSpec.Alignment.read(tr);
         assertNotNull(al);
         assertEquals('<', al.fill());
-        assertEquals(FormatSpec.AlignType.LEFT, al.type());
+        assertEquals(FormatSpec.AlignType.TO_LEFT, al.type());
     }
 
     @Test
@@ -39,7 +39,7 @@ public class TestTemplateProcessor {
         var al = FormatSpec.Alignment.read(tr);
         assertNotNull(al);
         assertEquals(' ', al.fill());
-        assertEquals(FormatSpec.AlignType.LEFT, al.type());
+        assertEquals(FormatSpec.AlignType.TO_LEFT, al.type());
     }
 
     @Test
@@ -48,7 +48,7 @@ public class TestTemplateProcessor {
         var al = FormatSpec.Alignment.read(tr);
         assertNotNull(al);
         assertEquals('0', al.fill());
-        assertEquals(FormatSpec.AlignType.LEFT, al.type());
+        assertEquals(FormatSpec.AlignType.TO_LEFT, al.type());
     }
 
     @Test

@@ -26,10 +26,10 @@ public class TemplateFormatter {
                 sb.append(number);
                 return sb.toString();
             }
-            case RIGHT -> {
+            case TO_RIGHT -> {
                 return alignment.repeatFill(fillCount) + signedNumber;
             }
-            case LEFT -> {
+            case TO_LEFT -> {
                 return signedNumber + alignment.repeatFill(fillCount);
             }
             case CENTER -> {
@@ -45,10 +45,10 @@ public class TemplateFormatter {
         if (alignment == null || width == null) return text;
         final int fillCount = Math.max(0, width - text.length());
         switch (alignment.type()) {
-            case RIGHT, SIGN -> {
+            case TO_RIGHT, SIGN -> {
                 return alignment.repeatFill(fillCount) + text;
             }
-            case LEFT -> {
+            case TO_LEFT -> {
                 return text + alignment.repeatFill(fillCount);
             }
             case CENTER -> {
@@ -89,12 +89,78 @@ public class TemplateFormatter {
         return out.reverse().toString();
     }
 
+    public static String pyQuote(String s) {
+        boolean hasSingle = s.indexOf('\'') >= 0;
+        boolean hasDouble = s.indexOf('"') >= 0;
+
+        char quote;
+
+        if (!hasSingle) {
+            // Python prefers single quotes if possible
+            quote = '\'';
+        } else if (!hasDouble) {
+            quote = '"';
+        } else {
+            // Both exist → choose the less frequent
+            long singleCount = s.chars().filter(ch -> ch == '\'').count();
+            long doubleCount = s.chars().filter(ch -> ch == '"').count();
+            quote = (singleCount <= doubleCount) ? '\'' : '"';
+        }
+
+        StringBuilder out = new StringBuilder();
+        out.append(quote);
+
+        for (int i = 0; i < s.length(); i++) {
+            char ch = s.charAt(i);
+
+            // Escape backslashes and the chosen quote
+            if (ch == quote || ch == '\\') {
+                out.append('\\');
+            }
+            out.append(ch);
+        }
+
+        out.append(quote);
+        return out.toString();
+    }
+
+
+    public static final ArgumentConverter<String, String> STRING_CONVERTER =  (arg, format) -> {
+        var s = arg;
+        if (format.isDoRepr()) {
+            s = pyQuote(s);
+        }
+        // apply precision (cut)
+        var pr = format.getPrecision();
+        if (pr != null) {
+            s = s.substring(0, pr);
+        }
+        return align(alignmentOrDefault(format, arg), format.getWidth(), s);
+    };
+
+
+    private static FormatSpec.Alignment getDefaultAlignment(Object arg) {
+        if (arg instanceof String) {
+            return new FormatSpec.Alignment(FormatSpec.AlignType.TO_LEFT, ' ');
+        }
+        if (arg instanceof Number) {
+            return new FormatSpec.Alignment(FormatSpec.AlignType.TO_RIGHT, ' ');
+        }
+        return null; // no default
+    }
+
+    private static FormatSpec.Alignment alignmentOrDefault(FormatSpec format, Object arg) {
+        var s = format.getAlignment();
+        if (s != null) return s;
+        return getDefaultAlignment(arg);
+    }
+
 
     public static final ArgumentConverter<Integer, String> INT_CONVERTER =  (arg, format) -> {
         if (format.getType() == 'c') {
             try {
                 var s = Character.toString(arg);
-                return align(format.getAlignment(), format.getWidth(), s);
+                return align(alignmentOrDefault(format, arg), format.getWidth(), s);
             } catch (Exception e) {
                 return TemplateArgument.asString(arg, format);
             }
@@ -131,7 +197,7 @@ public class TemplateFormatter {
         if (pmSign != null) {
             outSign = pmSign + outSign;
         }
-        return alignNumber(format.getAlignment(), format.getWidth(), outSign, uf);
+        return alignNumber(alignmentOrDefault(format, arg), format.getWidth(), outSign, uf);
     };
 //
 //    public Object formatArgument(Object argument, FormatSpec format) {

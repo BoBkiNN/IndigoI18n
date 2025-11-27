@@ -70,8 +70,8 @@ public class FormatSpec {
     }
 
     public enum AlignType {
-        LEFT,
-        RIGHT,
+        TO_LEFT,
+        TO_RIGHT,
         CENTER,
         /**
          * -23 -> -0023 (width 5, fill '0'). {@code :0=5}
@@ -85,9 +85,9 @@ public class FormatSpec {
             var ch = reader.peek(offset);
             final AlignType ret;
             if (ch == '<') {
-                ret = AlignType.LEFT;
+                ret = AlignType.TO_LEFT;
             } else if (ch == '>') {
-                ret = AlignType.RIGHT;
+                ret = AlignType.TO_RIGHT;
             } else if (ch == '^') {
                 ret = AlignType.CENTER;
             } else if (ch == '=') {

@@ -48,5 +48,6 @@ public class TestFormatter {
         Assertions.assertEquals("A_________", formatInt("_<10c", 65));
         Assertions.assertEquals("____A_____", formatInt("_^10c", 65));
         Assertions.assertEquals("%{2356456:c}", formatInt("c", 2356456));
+        Assertions.assertEquals("        12", formatInt("10", 12));
     }
 }
