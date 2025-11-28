@@ -133,7 +133,7 @@ public class TemplateFormatter {
         // apply precision (cut)
         var pr = format.getPrecision();
         if (pr != null) {
-            s = s.substring(0, pr);
+            s = s.substring(0, Math.min(s.length(), pr));
         }
         return align(alignmentOrDefault(format, arg), format.getWidth(), s);
     };

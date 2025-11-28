@@ -133,6 +133,7 @@ public class FormatSpec {
     public record Alignment(AlignType type, Character fill) {
 
         public String repeatFill(int count) {
+            if (fill == null) return  " ".repeat(count);
             return fill.toString().repeat(count);
         }
 

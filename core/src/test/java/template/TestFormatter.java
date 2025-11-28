@@ -50,4 +50,19 @@ public class TestFormatter {
         Assertions.assertEquals("%{2356456:c}", formatInt("c", 2356456));
         Assertions.assertEquals("        12", formatInt("10", 12));
     }
+
+    private String formatStr(String spec, String text) {
+        var format = FormatSpec.parse(spec, false);
+        return TemplateFormatter.STRING_CONVERTER.format(text, format);
+    }
+
+    @Test
+    public void testStrConverter() {
+        Assertions.assertEquals("a         ", formatStr("10", "a"));
+        Assertions.assertEquals("         a", formatStr(">10", "a"));
+        Assertions.assertEquals("    a     ", formatStr("^10", "a"));
+        Assertions.assertEquals("hel", formatStr(".3", "hello"));
+        Assertions.assertEquals("", formatStr(".0", "hello"));
+        Assertions.assertEquals("hello", formatStr(".30", "hello"));
+    }
 }
