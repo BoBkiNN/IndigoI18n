@@ -229,6 +229,7 @@ public class TemplateFormatter {
     /**
      * double and float
      */
+    @SuppressWarnings("MalformedFormatString")
     public static final ArgumentConverter<Number, String> NUMBER_CONVERTER = (arg, format) -> {
         double value = arg.doubleValue();
 
