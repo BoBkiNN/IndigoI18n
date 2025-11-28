@@ -312,6 +312,8 @@ public class TemplateFormatter {
         return alignNumber(alignmentOrDefault(format, arg), format.getWidth(), signStr, formatted);
     };
 
+    // TODO should we move alignment into post-converter step instead of inside for each.
+    // TODO also should reprs always format arg as string (or generic type in future) and then pass it string converter?
 
 //
 //    public Object formatArgument(Object argument, FormatSpec format) {
