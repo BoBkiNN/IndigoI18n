@@ -1,12 +1,9 @@
 package xyz.bobkinn.indigoi18n.template;
 
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Optional;
 
 public class TemplateFormatter {
-    private final Map<Class<?>, ArgumentConverter<?, ?>> formatters = new HashMap<>();
 
     /**
      * @param number number without sign
@@ -316,8 +313,4 @@ public class TemplateFormatter {
     // TODO should we move alignment into post-converter step instead of inside for each.
     // TODO also should reprs always format arg as string (or generic type in future) and then pass it string converter?
 
-//
-//    public Object formatArgument(Object argument, FormatSpec format) {
-//
-//    }
 }
