@@ -58,7 +58,12 @@ public class TemplateProcessor {
                 argConsumer.accept(new TemplateArgument(seqArgIdx, false, null));
                 seqArgIdx++;
             } else if (ch == '%' && reader.hasUnsignedNumber()) {
-                var aIdx = reader.readUnsignedNumber();
+                var aIdx = reader.readUnsignedNumber()-1;
+                if (aIdx == 0) {
+                    throw new IllegalArgumentException("Argument indexes is starting with 1");
+                } else if (aIdx < 0) {
+                    throw new IllegalArgumentException("Negative argument index "+aIdx);
+                }
                 // flush plain
                 plainConsumer.accept(plainBlock.toString());
                 plainBlock.setLength(0);

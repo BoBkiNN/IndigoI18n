@@ -18,6 +18,8 @@ public class FormatSpec {
     private final Character intPartGrouping;
     private final char type;
 
+    // TODO H and h types from java String.format spec
+
     private static Character readOptionalGrouping(TemplateReader reader) {
         if (reader.tryConsume(',')) {
             return ',';
