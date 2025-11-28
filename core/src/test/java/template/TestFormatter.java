@@ -51,9 +51,13 @@ public class TestFormatter {
         Assertions.assertEquals("        12", formatInt("10", 12));
     }
 
-    private String formatStr(String spec, String text) {
-        var format = FormatSpec.parse(spec, false);
+    private String formatStr(String spec, String text, boolean repr) {
+        var format = FormatSpec.parse(spec, repr);
         return TemplateFormatter.STRING_CONVERTER.format(text, format);
+    }
+
+    private String formatStr(String spec, String text) {
+        return formatStr(spec, text, false);
     }
 
     @Test
@@ -64,5 +68,16 @@ public class TestFormatter {
         Assertions.assertEquals("hel", formatStr(".3", "hello"));
         Assertions.assertEquals("", formatStr(".0", "hello"));
         Assertions.assertEquals("hello", formatStr(".30", "hello"));
+        Assertions.assertEquals("hel       ", formatStr("10.3", "hello"));
+        Assertions.assertEquals("       hel", formatStr(">10.3", "hello"));
+        Assertions.assertEquals("   hel    ", formatStr("^10.3", "hello"));
+
+        Assertions.assertEquals("'he       ", formatStr("10.3", "hello", true));
+        Assertions.assertEquals("       'he", formatStr(">10.3", "hello", true));
+        Assertions.assertEquals("   'he    ", formatStr("^10.3", "hello", true));
+
+        Assertions.assertEquals("___'he____", formatStr("_^10.3", "hello", true));
+
+        Assertions.assertEquals("'he", formatStr(".3", "hello", true));
     }
 }
