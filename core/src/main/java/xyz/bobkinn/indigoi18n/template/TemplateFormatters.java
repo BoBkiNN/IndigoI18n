@@ -3,7 +3,7 @@ package xyz.bobkinn.indigoi18n.template;
 import java.util.Locale;
 import java.util.Optional;
 
-public class TemplateFormatter {
+public class TemplateFormatters {
 
     /**
      * @param number number without sign

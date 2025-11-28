@@ -3,13 +3,13 @@ package template;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import xyz.bobkinn.indigoi18n.template.FormatSpec;
-import xyz.bobkinn.indigoi18n.template.TemplateFormatter;
+import xyz.bobkinn.indigoi18n.template.TemplateFormatters;
 
 public class NumberConverterTest {
 
     private String formatNumber(String spec, Number number) {
         var format = FormatSpec.parse(spec, false);
-        return TemplateFormatter.NUMBER_CONVERTER.format(number, format);
+        return TemplateFormatters.NUMBER_CONVERTER.format(number, format);
     }
 
     @Test
