@@ -1,6 +1,7 @@
 package xyz.bobkinn.indigoi18n.template;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
@@ -76,6 +77,31 @@ public class TemplateFormatter {
 
         // Reverse for easier chunking from the end
         StringBuilder sb = new StringBuilder(s).reverse();
+        StringBuilder out = new StringBuilder();
+
+        for (int i = 0; i < sb.length(); i++) {
+            if (i > 0 && i % groupSize == 0) {
+                out.append(separator);
+            }
+            out.append(sb.charAt(i));
+        }
+
+        // Reverse back
+        return out.reverse().toString();
+    }
+
+    public static String formatIntGrouped(
+            String value,
+            int groupSize,
+            String separator
+    ) {
+        // No grouping requested
+        if (separator == null || groupSize <= 0) {
+            return value;
+        }
+
+        // Reverse for easier chunking from the end
+        StringBuilder sb = new StringBuilder(value).reverse();
         StringBuilder out = new StringBuilder();
 
         for (int i = 0; i < sb.length(); i++) {
@@ -199,6 +225,94 @@ public class TemplateFormatter {
         }
         return alignNumber(alignmentOrDefault(format, arg), format.getWidth(), outSign, uf);
     };
+
+    /**
+     * double and float
+     */
+    public static final ArgumentConverter<Number, String> NUMBER_CONVERTER = (arg, format) -> {
+        double value = arg.doubleValue();
+
+        boolean isNaN = Double.isNaN(value);
+        boolean isInf = Double.isInfinite(value);
+
+        char type = format.getType();
+        Integer precision = format.getPrecision();
+        if (precision == null) precision = 6;
+
+        int sigNum = isNaN ? 1 : (value > 0 ? 1 : (value < 0 ? -1 : 0));
+        Character signChar = format.getSign().charFor(sigNum);
+
+        if (isNaN) {
+            String out = "nan";
+            if (Character.isUpperCase(type)) out = out.toUpperCase();
+            return align(alignmentOrDefault(format, arg), format.getWidth(),
+                    signChar == null ? out : signChar + out);
+        }
+
+        if (isInf) {
+            String out = "inf";
+            if (Character.isUpperCase(type)) out = out.toUpperCase();
+            return align(alignmentOrDefault(format, arg), format.getWidth(),
+                    signChar == null ? out : signChar + out);
+        }
+
+        double abs = Math.abs(value);
+        String formatted;
+
+        switch (type) {
+            case 'e', 'E' -> {
+                formatted = String.format(Locale.ROOT, "%." + precision + "e", abs);
+                if (type == 'E') formatted = formatted.toUpperCase();
+            }
+
+            case 'f', 'F' -> {
+                formatted = String.format(Locale.ROOT, "%." + precision + "f", abs);
+                if (type == 'F') formatted = formatted.toUpperCase();
+            }
+            case '%' -> {
+                double pct = abs * 100.0;
+                formatted = String.format(Locale.ROOT, "%." + precision + "f%%", pct);
+            }
+            default -> formatted = Double.toString(abs);
+        }
+
+        // Apply integer-part grouping if requested
+        boolean isE = formatted.indexOf('e') > 0 || formatted.indexOf('E') > 0;
+        if (format.getIntPartGrouping() != null && !isE) {
+            String[] parts = formatted.split("\\."); // split integer and fraction
+            String intPart = parts[0];
+            boolean fracIsZero = abs % 1 == 0;
+            boolean showFracPart = parts.length > 1 && (!fracIsZero || format.isSpecial());
+            String fracPart = showFracPart ? parts[1] : null;
+            int groupSize = 3; // Python default
+            String separator = format.getIntPartGrouping().toString();
+            intPart = formatIntGrouped(intPart, groupSize, separator);
+            formatted = fracPart != null ? intPart + "." + fracPart : intPart;
+        }
+        if (format.isSpecial()) {
+            var dotIdx = formatted.indexOf('.');
+            var dAbs = formatted.contains("%") ? abs * 100 : abs;
+            var fracZero = dAbs % 1 == 0;
+            if (dotIdx > 0 && fracZero) {
+                var esIdx = formatted.indexOf('e');
+                var ebIdx = formatted.indexOf('E');
+                var eIdx = Math.max(esIdx, ebIdx);
+                if (eIdx > 0) {
+                    var ePart = formatted.substring(eIdx);
+                    var wholePart = formatted.substring(0, dotIdx);
+                    formatted = wholePart+ePart;
+                } else formatted = formatted.substring(0, dotIdx);
+
+                if (type == '%') formatted += "%";
+            }
+        }
+
+        String signStr = signChar == null ? "" : String.valueOf(signChar);
+
+        return alignNumber(alignmentOrDefault(format, arg), format.getWidth(), signStr, formatted);
+    };
+
+
 //
 //    public Object formatArgument(Object argument, FormatSpec format) {
 //
