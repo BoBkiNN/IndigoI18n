@@ -220,6 +220,28 @@ public class ArgConverters {
         return alignNumber(alignmentOrDefault(format, arg), format.getWidth(), outSign, uf);
     };
 
+    public static boolean fractionalPartIsZero(String s, int dotIndex) {
+        int i = dotIndex + 1;
+
+        // Skip optional sign or percent at the end
+        while (i < s.length()) {
+            char c = s.charAt(i);
+            if (c >= '0' && c <= '9') {
+                if (c != '0') {
+                    return false; // non-zero digit found
+                }
+            } else if (c == '%') {
+                // ignore % and stop
+                return true;
+            }
+            i++;
+        }
+
+        // No non-zero digits found
+        return true;
+    }
+
+
     /**
      * double and float
      */
@@ -286,8 +308,7 @@ public class ArgConverters {
         }
         if (format.isSpecial()) {
             var dotIdx = formatted.indexOf('.');
-            var dAbs = formatted.contains("%") ? abs * 100 : abs;
-            var fracZero = dAbs % 1 == 0;
+            var fracZero = fractionalPartIsZero(formatted, dotIdx);
             if (dotIdx > 0 && fracZero) {
                 var esIdx = formatted.indexOf('e');
                 var ebIdx = formatted.indexOf('E');

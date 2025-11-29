@@ -29,5 +29,13 @@ public class TestStringTemplateFormatter {
         Assertions.assertEquals("test cat!", formatStr("test %{s}!", "cat"));
 
         Assertions.assertEquals("test 'cat'!", formatStr("test %{s!r}!", "cat"));
+        Assertions.assertEquals("test 'c!", formatStr("test %{s!r:.2}!", "cat"));
+
+        Assertions.assertEquals("float is 23.32", formatStr("float is %{s:.2}", 23.32));
+        Assertions.assertEquals("double is 23.3", formatStr("double is %{s:.1}", 23.3));
+
+        Assertions.assertEquals("chance is 55.000000%", formatStr("chance is %{s:%}", 0.55));
+        Assertions.assertEquals("chance is 55%", formatStr("chance is %{s:#%}", 0.55));
+        Assertions.assertEquals("chance is 55.3%", formatStr("chance is %{s:.1%}", 0.55321));
     }
 }
