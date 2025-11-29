@@ -307,7 +307,7 @@ public class ArgConverters {
         return alignNumber(alignmentOrDefault(format, arg), format.getWidth(), signStr, formatted);
     };
 
-    public <T> String format(ArgumentConverter<T, String> conv, FormatSpec format, T value) {
+    public static  <T> String format(ArgumentConverter<T, String> conv, FormatSpec format, T value) {
         var doRepr = format.isDoRepr();
         if (doRepr) {
             var s = pyQuote(String.valueOf(value));
@@ -316,12 +316,12 @@ public class ArgConverters {
         return conv.format(value, format);
     }
 
-    public <T> String format(ArgumentConverter<T, String> conv, String format, boolean repr, T value) {
+    public static  <T> String format(ArgumentConverter<T, String> conv, String format, boolean repr, T value) {
         var f = FormatSpec.parse(format, repr);
         return format(conv, f, value);
     }
 
-    public <T> String format(ArgumentConverter<T, String> conv, String format, T value) {
+    public static  <T> String format(ArgumentConverter<T, String> conv, String format, T value) {
         return format(conv, format, false, value);
     }
 
