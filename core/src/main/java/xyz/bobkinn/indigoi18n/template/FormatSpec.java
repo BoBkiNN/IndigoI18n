@@ -32,9 +32,13 @@ public class FormatSpec {
         return readFormatSpec(new TemplateReader(text), doRepr);
     }
 
-    public static FormatSpec newDefault() {
-        return new FormatSpec("", false, null,
+    public static FormatSpec newDefault(boolean repr) {
+        return new FormatSpec("", repr, null,
                 Sign.NEGATIVE, false, null, null, null, 's');
+    }
+
+    public static FormatSpec newDefault() {
+        return newDefault(false);
     }
 
     public static FormatSpec readFormatSpec(TemplateReader reader, boolean doRepr) {

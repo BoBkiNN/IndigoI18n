@@ -36,7 +36,7 @@ public class TemplateProcessor {
         if (reader.tryConsume(':')) {
             spec = FormatSpec.readFormatSpec(reader, doRepr);
         } else {
-            spec = FormatSpec.newDefault();
+            spec = FormatSpec.newDefault(doRepr);
         }
         reader.consume('}');
         return new TemplateArgument(argIndex, hasExplicitIndex, spec);

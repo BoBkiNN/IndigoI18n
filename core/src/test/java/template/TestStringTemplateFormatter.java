@@ -27,5 +27,7 @@ public class TestStringTemplateFormatter {
         Assertions.assertEquals("test cat!", formatStr("test %{1}!", "cat"));
         Assertions.assertEquals("test cat!", formatStr("test %s!", "cat"));
         Assertions.assertEquals("test cat!", formatStr("test %{s}!", "cat"));
+
+        Assertions.assertEquals("test 'cat'!", formatStr("test %{s!r}!", "cat"));
     }
 }
