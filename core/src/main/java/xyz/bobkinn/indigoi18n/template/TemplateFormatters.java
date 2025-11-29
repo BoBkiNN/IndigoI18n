@@ -310,6 +310,24 @@ public class TemplateFormatters {
         return alignNumber(alignmentOrDefault(format, arg), format.getWidth(), signStr, formatted);
     };
 
+    public <T> String format(ArgumentConverter<T, String> conv, FormatSpec format, T value) {
+        var doRepr = format.isDoRepr();
+        if (doRepr) {
+            var s = pyQuote(String.valueOf(value));
+            return STRING_CONVERTER.format(s, format);
+        }
+        return conv.format(value, format);
+    }
+
+    public <T> String format(ArgumentConverter<T, String> conv, String format, boolean repr, T value) {
+        var f = FormatSpec.parse(format, repr);
+        return format(conv, f, value);
+    }
+
+    public <T> String format(ArgumentConverter<T, String> conv, String format, T value) {
+        return format(conv, format, false, value);
+    }
+
     // TODO should we move alignment into post-converter step instead of inside for each.
     // TODO also should reprs always format arg as string (or generic type in future) and then pass it string converter?
 
