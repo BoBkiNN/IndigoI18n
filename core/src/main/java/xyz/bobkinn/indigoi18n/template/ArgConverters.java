@@ -58,95 +58,6 @@ public class ArgConverters {
         }
     }
 
-    public static String formatIntGrouped(
-            int value,
-            int radix,
-            int groupSize,
-            String separator
-    ) {
-        // Convert number to requested radix
-        String s = Integer.toString(value, radix);
-
-        // No grouping requested
-        if (separator == null || groupSize <= 0) {
-            return s;
-        }
-
-        // Reverse for easier chunking from the end
-        StringBuilder sb = new StringBuilder(s).reverse();
-        StringBuilder out = new StringBuilder();
-
-        for (int i = 0; i < sb.length(); i++) {
-            if (i > 0 && i % groupSize == 0) {
-                out.append(separator);
-            }
-            out.append(sb.charAt(i));
-        }
-
-        // Reverse back
-        return out.reverse().toString();
-    }
-
-    public static String formatIntGrouped(
-            String value,
-            int groupSize,
-            String separator
-    ) {
-        // No grouping requested
-        if (separator == null || groupSize <= 0) {
-            return value;
-        }
-
-        // Reverse for easier chunking from the end
-        StringBuilder sb = new StringBuilder(value).reverse();
-        StringBuilder out = new StringBuilder();
-
-        for (int i = 0; i < sb.length(); i++) {
-            if (i > 0 && i % groupSize == 0) {
-                out.append(separator);
-            }
-            out.append(sb.charAt(i));
-        }
-
-        // Reverse back
-        return out.reverse().toString();
-    }
-
-    public static String pyQuote(String s) {
-        boolean hasSingle = s.indexOf('\'') >= 0;
-        boolean hasDouble = s.indexOf('"') >= 0;
-
-        char quote;
-
-        if (!hasSingle) {
-            // Python prefers single quotes if possible
-            quote = '\'';
-        } else if (!hasDouble) {
-            quote = '"';
-        } else {
-            // Both exist → choose the less frequent
-            long singleCount = s.chars().filter(ch -> ch == '\'').count();
-            long doubleCount = s.chars().filter(ch -> ch == '"').count();
-            quote = (singleCount <= doubleCount) ? '\'' : '"';
-        }
-
-        StringBuilder out = new StringBuilder();
-        out.append(quote);
-
-        for (int i = 0; i < s.length(); i++) {
-            char ch = s.charAt(i);
-
-            // Escape backslashes and the chosen quote
-            if (ch == quote || ch == '\\') {
-                out.append('\\');
-            }
-            out.append(ch);
-        }
-
-        out.append(quote);
-        return out.toString();
-    }
-
 
     public static final ArgumentConverter<String, String> STRING_CONVERTER =  (arg, format) -> {
         var s = arg;
@@ -201,7 +112,7 @@ public class ArgConverters {
             case 2, 8, 16 -> 4;
             default -> 3;
         };
-        var uf = formatIntGrouped(abs, radix, groupSize, groupChar);
+        var uf = Utils.formatIntGrouped(abs, radix, groupSize, groupChar);
         if (type == 'X') {
             uf = uf.toUpperCase();
         }
@@ -219,27 +130,6 @@ public class ArgConverters {
         }
         return alignNumber(alignmentOrDefault(format, arg), format.getWidth(), outSign, uf);
     };
-
-    public static boolean fractionalPartIsZero(String s, int dotIndex) {
-        int i = dotIndex + 1;
-
-        // Skip optional sign or percent at the end
-        while (i < s.length()) {
-            char c = s.charAt(i);
-            if (c >= '0' && c <= '9') {
-                if (c != '0') {
-                    return false; // non-zero digit found
-                }
-            } else if (c == '%') {
-                // ignore % and stop
-                return true;
-            }
-            i++;
-        }
-
-        // No non-zero digits found
-        return true;
-    }
 
 
     /**
@@ -300,12 +190,12 @@ public class ArgConverters {
             String intPart = parts[0];
             String fracPart = parts.length > 1 ? parts[1] : null;
             String separator = format.getIntPartGrouping().toString();
-            intPart = formatIntGrouped(intPart, 3, separator); // base is 10 so group by 3
+            intPart = Utils.formatIntGrouped(intPart, 3, separator); // base is 10 so group by 3
             formatted = fracPart != null ? intPart + "." + fracPart : intPart;
         }
         if (format.isSpecial()) {
             var dotIdx = formatted.indexOf('.');
-            var fracZero = fractionalPartIsZero(formatted, dotIdx);
+            var fracZero = Utils.fractionalPartIsZero(formatted, dotIdx);
             if (dotIdx > 0 && fracZero) {
                 var esIdx = formatted.indexOf('e');
                 var ebIdx = formatted.indexOf('E');
@@ -328,7 +218,7 @@ public class ArgConverters {
     public static  <T> String format(ArgumentConverter<T, String> conv, FormatSpec format, T value) {
         var doRepr = format.isDoRepr();
         if (doRepr) {
-            var s = pyQuote(String.valueOf(value));
+            var s = Utils.pyQuote(String.valueOf(value));
             return STRING_CONVERTER.format(s, format);
         }
         return conv.format(value, format);

@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import xyz.bobkinn.indigoi18n.template.FormatSpec;
 import xyz.bobkinn.indigoi18n.template.ArgConverters;
+import xyz.bobkinn.indigoi18n.template.Utils;
 
 public class TestArgConverters {
     /**
@@ -18,7 +19,7 @@ public class TestArgConverters {
 
     @Test
     public void testNumberFormat() {
-        var f = ArgConverters.formatIntGrouped(230_000, 10, 3, "_");
+        var f = Utils.formatIntGrouped(230_000, 10, 3, "_");
         Assertions.assertEquals("230_000", f);
     }
 
