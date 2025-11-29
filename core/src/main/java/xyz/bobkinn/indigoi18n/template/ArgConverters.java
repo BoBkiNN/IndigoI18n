@@ -298,9 +298,7 @@ public class ArgConverters {
         if (format.getIntPartGrouping() != null && !isE) {
             String[] parts = formatted.split("\\."); // split integer and fraction
             String intPart = parts[0];
-            boolean fracIsZero = abs % 1 == 0;
-            boolean showFracPart = parts.length > 1 && (!fracIsZero || format.isSpecial());
-            String fracPart = showFracPart ? parts[1] : null;
+            String fracPart = parts.length > 1 ? parts[1] : null;
             int groupSize = 3; // Python default
             String separator = format.getIntPartGrouping().toString();
             intPart = formatIntGrouped(intPart, groupSize, separator);
