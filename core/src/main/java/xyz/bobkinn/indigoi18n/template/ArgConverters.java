@@ -218,7 +218,7 @@ public class ArgConverters {
     public static  <T> String format(ArgumentConverter<T, String> conv, FormatSpec format, T value) {
         var doRepr = format.isDoRepr();
         if (doRepr) {
-            var s = Utils.pyQuote(String.valueOf(value));
+            var s = Utils.quote(String.valueOf(value));
             return STRING_CONVERTER.format(s, format);
         }
         return conv.format(value, format);

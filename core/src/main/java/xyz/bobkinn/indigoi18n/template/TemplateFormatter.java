@@ -48,7 +48,7 @@ public abstract class TemplateFormatter<O> {
     }
 
     public static String stringRepr(String value) {
-        return Utils.pyQuote(value);
+        return Utils.quote(value);
     }
 
     public abstract O createText(String value);

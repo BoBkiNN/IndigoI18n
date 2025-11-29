@@ -55,7 +55,7 @@ public class Utils {
         return out.reverse().toString();
     }
 
-    public static String pyQuote(String s) {
+    public static String quote(String s) {
         boolean hasSingle = s.indexOf('\'') >= 0;
         boolean hasDouble = s.indexOf('"') >= 0;
 
