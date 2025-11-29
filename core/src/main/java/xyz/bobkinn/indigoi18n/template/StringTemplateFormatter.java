@@ -7,7 +7,13 @@ import java.util.Objects;
 
 public class StringTemplateFormatter extends TemplateFormatter<String> {
 
-    // TODO register default converters
+    @Override
+    protected void registerDefaultConverters() {
+        converters.put(String.class, TemplateFormatters.STRING_CONVERTER);
+        converters.put(Integer.class, TemplateFormatters.INT_CONVERTER);
+        converters.put(Double.class, TemplateFormatters.NUMBER_CONVERTER);
+        converters.put(Float.class, TemplateFormatters.NUMBER_CONVERTER);
+    }
 
     @Override
     public String createText(String value) {

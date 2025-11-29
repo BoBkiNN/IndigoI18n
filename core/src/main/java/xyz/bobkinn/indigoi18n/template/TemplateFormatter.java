@@ -11,6 +11,12 @@ public abstract class TemplateFormatter<O> {
     protected final Map<Class<?>, ArgumentConverter<?, O>> converters = new HashMap<>();
     protected final Map<Class<?>, Function<Object, O>> reprCreators = new HashMap<>();
 
+    public TemplateFormatter() {
+        registerDefaultConverters();
+    }
+
+    protected abstract void registerDefaultConverters();
+
     @SuppressWarnings("unchecked")
     public <T> ArgumentConverter<T, O> getConverter(T value) {
         return (ArgumentConverter<T, O>) converters.get(value.getClass());
