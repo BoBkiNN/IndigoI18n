@@ -20,7 +20,7 @@ public class ArgConverters {
                 if (sign != null) {
                     sb.append(sign);
                 }
-                sb.append(String.valueOf(alignment.fill()).repeat(fillCount));
+                sb.append(alignment.repeatFill(fillCount));
                 sb.append(number);
                 return sb.toString();
             }

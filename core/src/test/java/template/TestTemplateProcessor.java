@@ -37,7 +37,7 @@ public class TestTemplateProcessor {
         var tr = new TemplateReader("<");
         var al = FormatSpec.Alignment.read(tr);
         assertNotNull(al);
-        assertEquals(' ', al.fill());
+        assertNull(al.fill());
         assertEquals(FormatSpec.AlignType.TO_LEFT, al.type());
     }
 
