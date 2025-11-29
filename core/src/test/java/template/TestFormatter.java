@@ -23,8 +23,7 @@ public class TestFormatter {
     }
 
     private String formatInt(String spec, int number) {
-        var format = FormatSpec.parse(spec, false);
-        return ArgConverters.INT_CONVERTER.format(number, format);
+        return ArgConverters.format(ArgConverters.INT_CONVERTER, spec, number);
     }
 
     @Test
@@ -52,8 +51,7 @@ public class TestFormatter {
     }
 
     private String formatStr(String spec, String text, boolean repr) {
-        var format = FormatSpec.parse(spec, repr);
-        return ArgConverters.STRING_CONVERTER.format(text, format);
+        return ArgConverters.format(ArgConverters.STRING_CONVERTER, spec, repr, text);
     }
 
     private String formatStr(String spec, String text) {
