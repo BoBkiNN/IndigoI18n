@@ -2,14 +2,12 @@ package template;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import xyz.bobkinn.indigoi18n.template.FormatSpec;
 import xyz.bobkinn.indigoi18n.template.ArgConverters;
 
 public class NumberConverterTest {
 
     private String formatNumber(String spec, Number number) {
-        var format = FormatSpec.parse(spec, false);
-        return ArgConverters.NUMBER_CONVERTER.format(number, format);
+        return ArgConverters.format(ArgConverters.NUMBER_CONVERTER, spec, number);
     }
 
     @Test
