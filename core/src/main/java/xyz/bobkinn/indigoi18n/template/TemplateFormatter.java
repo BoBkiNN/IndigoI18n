@@ -23,7 +23,7 @@ public abstract class TemplateFormatter<O> {
     }
 
     public static String stringRepr(String value) {
-        return TemplateFormatters.pyQuote(value);
+        return ArgConverters.pyQuote(value);
     }
 
     public abstract O createText(String value);

@@ -3,7 +3,7 @@ package template;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import xyz.bobkinn.indigoi18n.template.FormatSpec;
-import xyz.bobkinn.indigoi18n.template.TemplateFormatters;
+import xyz.bobkinn.indigoi18n.template.ArgConverters;
 
 public class TestFormatter {
     /**
@@ -12,19 +12,19 @@ public class TestFormatter {
     @Test
     public void testAlignNumber() {
         var alg = new FormatSpec.Alignment(FormatSpec.AlignType.SIGN, '_');
-        var v = TemplateFormatters.alignNumber(alg, 7, "+", "23");
+        var v = ArgConverters.alignNumber(alg, 7, "+", "23");
         Assertions.assertEquals("+____23", v);
     }
 
     @Test
     public void testNumberFormat() {
-        var f = TemplateFormatters.formatIntGrouped(230_000, 10, 3, "_");
+        var f = ArgConverters.formatIntGrouped(230_000, 10, 3, "_");
         Assertions.assertEquals("230_000", f);
     }
 
     private String formatInt(String spec, int number) {
         var format = FormatSpec.parse(spec, false);
-        return TemplateFormatters.INT_CONVERTER.format(number, format);
+        return ArgConverters.INT_CONVERTER.format(number, format);
     }
 
     @Test
@@ -53,7 +53,7 @@ public class TestFormatter {
 
     private String formatStr(String spec, String text, boolean repr) {
         var format = FormatSpec.parse(spec, repr);
-        return TemplateFormatters.STRING_CONVERTER.format(text, format);
+        return ArgConverters.STRING_CONVERTER.format(text, format);
     }
 
     private String formatStr(String spec, String text) {

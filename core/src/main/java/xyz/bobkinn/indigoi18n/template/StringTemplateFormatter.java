@@ -9,10 +9,10 @@ public class StringTemplateFormatter extends TemplateFormatter<String> {
 
     @Override
     protected void registerDefaultConverters() {
-        converters.put(String.class, TemplateFormatters.STRING_CONVERTER);
-        converters.put(Integer.class, TemplateFormatters.INT_CONVERTER);
-        converters.put(Double.class, TemplateFormatters.NUMBER_CONVERTER);
-        converters.put(Float.class, TemplateFormatters.NUMBER_CONVERTER);
+        converters.put(String.class, ArgConverters.STRING_CONVERTER);
+        converters.put(Integer.class, ArgConverters.INT_CONVERTER);
+        converters.put(Double.class, ArgConverters.NUMBER_CONVERTER);
+        converters.put(Float.class, ArgConverters.NUMBER_CONVERTER);
     }
 
     @Override
@@ -26,18 +26,18 @@ public class StringTemplateFormatter extends TemplateFormatter<String> {
         var doRepr = format.isDoRepr();
         if (doRepr) {
             var repr = createRepr(value);
-            var res = TemplateFormatters.STRING_CONVERTER.format(repr, format);
+            var res = ArgConverters.STRING_CONVERTER.format(repr, format);
             builder.append(res);
             return;
         }
         if (value == null) {
-            var res = TemplateFormatters.STRING_CONVERTER.format("null", format);
+            var res = ArgConverters.STRING_CONVERTER.format("null", format);
             builder.append(res);
             return;
         }
         var conv = getConverter(value);
         if (conv == null) {
-            var res = TemplateFormatters.STRING_CONVERTER.format(String.valueOf(value), format);
+            var res = ArgConverters.STRING_CONVERTER.format(String.valueOf(value), format);
             builder.append(res);
             return;
         }

@@ -3,7 +3,7 @@ package xyz.bobkinn.indigoi18n.template;
 import java.util.Locale;
 import java.util.Optional;
 
-public class TemplateFormatters {
+public class ArgConverters {
 
     /**
      * @param number number without sign
@@ -150,9 +150,6 @@ public class TemplateFormatters {
 
     public static final ArgumentConverter<String, String> STRING_CONVERTER =  (arg, format) -> {
         var s = arg;
-        if (format.isDoRepr()) {
-            s = pyQuote(s);
-        }
         // apply precision (cut)
         var pr = format.getPrecision();
         if (pr != null) {
