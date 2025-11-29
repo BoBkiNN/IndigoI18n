@@ -7,12 +7,17 @@ import java.util.function.Consumer;
 
 public class TemplateProcessor {
 
-    public TemplateArgument readArg(TemplateReader reader, int seqIdx) {
+    public static TemplateArgument readArg(TemplateReader reader, int seqIdx) {
         reader.consume('{');
         int argIndex = seqIdx;
         boolean hasExplicitIndex = false;
         if (reader.hasUnsignedNumber()) {
-            argIndex = reader.readUnsignedNumber();
+            argIndex = reader.readUnsignedNumber()-1;
+            if (argIndex == -1) {
+                throw new IllegalArgumentException("Argument indexes is starting with 1");
+            } else if (argIndex < 0) {
+                throw new IllegalArgumentException("Negative argument index "+argIndex);
+            }
             hasExplicitIndex = true;
         } else if (reader.peek() == 's') {
             reader.skip();
@@ -31,13 +36,13 @@ public class TemplateProcessor {
         if (reader.tryConsume(':')) {
             spec = FormatSpec.readFormatSpec(reader, doRepr);
         } else {
-            spec = null;
+            spec = FormatSpec.newDefault();
         }
         reader.consume('}');
         return new TemplateArgument(argIndex, hasExplicitIndex, spec);
     }
 
-    public void parse(String text, Consumer<String> plainConsumer, Consumer<TemplateArgument> argConsumer) {
+    public static void parse(String text, Consumer<String> plainConsumer, Consumer<TemplateArgument> argConsumer) {
         var reader = new TemplateReader(text);
         int seqArgIdx = 0;
         var plainBlock = new StringBuilder();
@@ -58,11 +63,11 @@ public class TemplateProcessor {
                 plainConsumer.accept(plainBlock.toString());
                 plainBlock.setLength(0);
                 // create arg
-                argConsumer.accept(new TemplateArgument(seqArgIdx, false, null));
+                argConsumer.accept(new TemplateArgument(seqArgIdx, false, FormatSpec.newDefault()));
                 seqArgIdx++;
             } else if (ch == '%' && reader.hasUnsignedNumber()) {
                 var aIdx = reader.readUnsignedNumber()-1;
-                if (aIdx == 0) {
+                if (aIdx == -1) {
                     throw new IllegalArgumentException("Argument indexes is starting with 1");
                 } else if (aIdx < 0) {
                     throw new IllegalArgumentException("Negative argument index "+aIdx);
@@ -71,7 +76,7 @@ public class TemplateProcessor {
                 plainConsumer.accept(plainBlock.toString());
                 plainBlock.setLength(0);
                 // create arg
-                argConsumer.accept(new TemplateArgument(aIdx, true, null));
+                argConsumer.accept(new TemplateArgument(aIdx, true, FormatSpec.newDefault()));
             } else if (ch == '%' && ch1 == '{') {
                 // flush plain
                 plainConsumer.accept(plainBlock.toString());
@@ -91,7 +96,7 @@ public class TemplateProcessor {
         }
     }
 
-    public ParsedEntry parse(String text) {
+    public static ParsedEntry parse(String text) {
         var ls = new ArrayList<>();
         parse(text, ls::add, ls::add);
         return new ParsedEntry(ls);

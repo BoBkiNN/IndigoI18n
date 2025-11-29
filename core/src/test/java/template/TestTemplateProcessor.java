@@ -10,10 +10,9 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TestTemplateProcessor {
     @Test
     public void test1() {
-        var tp = new TemplateProcessor();
         final int[] pn = {0};
         final int[] an = {0};
-        tp.parse("hello %s", s -> {
+        TemplateProcessor.parse("hello %s", s -> {
             pn[0]++;
             assertEquals("hello ", s);
         }, a -> {
@@ -78,9 +77,8 @@ public class TestTemplateProcessor {
 
     @Test
     public void testFormatSource() {
-        var tp = new TemplateProcessor();
         var tr = new TemplateReader("{:_^10}");
-        var arg = tp.readArg(tr, 0);
+        var arg = TemplateProcessor.readArg(tr, 0);
         assertNotNull(arg.getFormatSpec());
         assertEquals("_^10", arg.getFormatSpec().getSource());
     }
