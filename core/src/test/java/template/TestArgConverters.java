@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import xyz.bobkinn.indigoi18n.template.FormatSpec;
 import xyz.bobkinn.indigoi18n.template.ArgConverters;
 
-public class TestFormatter {
+public class TestArgConverters {
     /**
      * {@code _=+7}
      */

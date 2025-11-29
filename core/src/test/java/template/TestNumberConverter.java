@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import xyz.bobkinn.indigoi18n.template.ArgConverters;
 
-public class NumberConverterTest {
+public class TestNumberConverter {
 
     private String formatNumber(String spec, Number number) {
         return ArgConverters.format(ArgConverters.NUMBER_CONVERTER, spec, number);
