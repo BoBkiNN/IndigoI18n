@@ -1,5 +1,8 @@
 package xyz.bobkinn.indigoi18n.template;
 
+import xyz.bobkinn.indigoi18n.data.ParsedEntry;
+
+import java.util.ArrayList;
 import java.util.function.Consumer;
 
 public class TemplateProcessor {
@@ -86,5 +89,11 @@ public class TemplateProcessor {
         if (!plainBlock.isEmpty()) {
             plainConsumer.accept(plainBlock.toString());
         }
+    }
+
+    public ParsedEntry parse(String text) {
+        var ls = new ArrayList<>();
+        parse(text, ls::add, ls::add);
+        return new ParsedEntry(ls);
     }
 }
