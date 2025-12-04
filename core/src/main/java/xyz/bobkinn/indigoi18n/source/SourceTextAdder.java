@@ -9,8 +9,8 @@ import java.util.Map;
 import java.util.Set;
 
 @RequiredArgsConstructor
-public class TranslationAdder implements ITranslationAdder {
-    private final ITranslationAdder addFunction;
+public class SourceTextAdder implements ISourceTextAdder {
+    private final ISourceTextAdder addFunction;
     @Getter
     private final Map<String, Set<String>> addedKeys = new HashMap<>();
 

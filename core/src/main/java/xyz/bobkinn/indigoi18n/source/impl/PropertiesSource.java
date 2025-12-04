@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import xyz.bobkinn.indigoi18n.source.ITranslationAdder;
+import xyz.bobkinn.indigoi18n.source.ISourceTextAdder;
 import xyz.bobkinn.indigoi18n.source.TranslationLoadError;
 import xyz.bobkinn.indigoi18n.source.TranslationSource;
 
@@ -46,7 +46,7 @@ public class PropertiesSource implements TranslationSource {
     }
 
     @Override
-    public void load(ITranslationAdder to) {
+    public void load(ISourceTextAdder to) {
         var keys = properties.stringPropertyNames();
         for (String key : keys) {
             var v = properties.getProperty(key);

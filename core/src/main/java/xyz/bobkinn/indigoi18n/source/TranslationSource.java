@@ -6,7 +6,7 @@ import java.net.URI;
 
 public interface TranslationSource {
 
-    void load(ITranslationAdder to);
+    void load(ISourceTextAdder to);
 
     @Nullable URI getLocation();
 }

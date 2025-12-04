@@ -3,7 +3,7 @@ package xyz.bobkinn.indigoi18n;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import xyz.bobkinn.indigoi18n.source.TranslationAdder;
+import xyz.bobkinn.indigoi18n.source.SourceTextAdder;
 import xyz.bobkinn.indigoi18n.source.TranslationSource;
 
 import java.util.*;
@@ -21,7 +21,7 @@ public class Translations {
     private final Map<TranslationSource, Map<String, Set<String>>> keysBySource = new ConcurrentHashMap<>();
 
     public void load(@NotNull TranslationSource source) {
-        var adder = new TranslationAdder(this::put);
+        var adder = new SourceTextAdder(this::put);
         source.load(adder);
         keysBySource.put(source, adder.getAddedKeys());
     }

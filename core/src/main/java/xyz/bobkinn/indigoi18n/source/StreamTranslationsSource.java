@@ -15,7 +15,7 @@ public abstract class StreamTranslationsSource implements TranslationSource {
     public abstract InputStream open();
 
     @Override
-    public void load(ITranslationAdder to) {
+    public void load(ISourceTextAdder to) {
         try (var is = open()) {
             try {
                 read(is, to);
@@ -31,7 +31,7 @@ public abstract class StreamTranslationsSource implements TranslationSource {
         }
     }
 
-    protected abstract void read(InputStream stream, ITranslationAdder adder) throws IOException;
+    protected abstract void read(InputStream stream, ISourceTextAdder adder) throws IOException;
 
     @Override
     public @Nullable URI getLocation() {
