@@ -10,6 +10,7 @@ import xyz.bobkinn.indigoi18n.source.TranslationSource;
 
 import java.io.*;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 /**
@@ -33,9 +34,9 @@ public class PropertiesSource implements TranslationSource {
     }
 
     public static PropertiesSource fromFile(String language, File file) {
-        try (var is = new BufferedInputStream(new FileInputStream(file))) {
+        try (var reader = new BufferedReader(new FileReader(file, StandardCharsets.UTF_8))) {
             var props = new Properties();
-            props.load(is);
+            props.load(reader);
             return new PropertiesSource(file.toURI(), language, props);
         } catch (FileNotFoundException e) {
             throw new TranslationLoadError("No file found to load translations from", e);
