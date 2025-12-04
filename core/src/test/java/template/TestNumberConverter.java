@@ -2,7 +2,12 @@ package template;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import xyz.bobkinn.indigoi18n.template.ArgConverters;
+
+import java.util.stream.Stream;
 
 public class TestNumberConverter {
 
@@ -10,51 +15,49 @@ public class TestNumberConverter {
         return ArgConverters.format(ArgConverters.NUMBER_CONVERTER, spec, number);
     }
 
-    @Test
-    public void testFloatFixed() {
-        Assertions.assertEquals("123.456000", formatNumber("f", 123.456));
-        Assertions.assertEquals("+123.456000", formatNumber("+f", 123.456));
-        Assertions.assertEquals("123.45600", formatNumber(".5f", 123.456));
-        Assertions.assertEquals("123.456000", formatNumber("0=9f", 123.456));
-        Assertions.assertEquals("00123.456000", formatNumber("0=12f", 123.456));
-        Assertions.assertEquals("123.456000", formatNumber(">f", 123.456));
-        Assertions.assertEquals("123.456000   ", formatNumber("<13f", 123.456));
-        Assertions.assertEquals("123", formatNumber("#f", 123.0));
+    static Stream<Arguments> provideFloatFormats() {
+        return Stream.of(
+                // Fixed-point
+                Arguments.of("f", 123.456, "123.456000"),
+                Arguments.of("+f", 123.456, "+123.456000"),
+                Arguments.of(".5f", 123.456, "123.45600"),
+                Arguments.of("0=9f", 123.456, "123.456000"),
+                Arguments.of("0=12f", 123.456, "00123.456000"),
+                Arguments.of(">f", 123.456, "123.456000"),
+                Arguments.of("<13f", 123.456, "123.456000   "),
+                Arguments.of("#f", 123.0, "123"),
+
+                // Scientific
+                Arguments.of("e", 123.456, "1.234560e+02"),
+                Arguments.of("E", 123.456, "1.234560E+02"),
+                Arguments.of("+e", 123.456, "+1.234560e+02"),
+                Arguments.of(".5e", 123.456, "1.23456e+02"),
+                Arguments.of("e", 2, "2.000000e+00"),
+                Arguments.of("#e", 2, "2e+00"),
+
+                // Percent
+                Arguments.of("%", 123.456, "12345.600000%"),
+                Arguments.of("+.2%", 123.456, "+12345.60%"),
+                Arguments.of("+#.2%", 123.45, "+12345%"),
+
+                // Special cases
+                Arguments.of("f", Double.NaN, "nan"),
+                Arguments.of("F", Double.POSITIVE_INFINITY, "INF"),
+                Arguments.of("f", Double.NEGATIVE_INFINITY, "-inf"),
+
+                // Grouping
+                Arguments.of("_f", 1234.567, "1_234.567000"),
+                Arguments.of("+_f", 1234.567, "+1_234.567000"),
+                Arguments.of("_=12_f", 12345.6789, "12_345.678900"),
+
+                Arguments.of("_=+12_.3f", 12_345.678900, "+_12_345.679")
+        );
     }
 
-    @Test
-    public void testFloatScientific() {
-        Assertions.assertEquals("1.234560e+02", formatNumber("e", 123.456));
-        Assertions.assertEquals("1.234560E+02", formatNumber("E", 123.456));
-        Assertions.assertEquals("+1.234560e+02", formatNumber("+e", 123.456));
-        Assertions.assertEquals("1.23456e+02", formatNumber(".5e", 123.456));
-        Assertions.assertEquals("2.000000e+00", formatNumber("e", 2));
-        Assertions.assertEquals("2e+00", formatNumber("#e", 2));
+    @ParameterizedTest
+    @MethodSource("provideFloatFormats")
+    void testFloatNumberFormatting(String format, Number value, String expected) {
+        Assertions.assertEquals(expected, formatNumber(format, value));
     }
 
-    @Test
-    public void testFloatPercent() {
-        Assertions.assertEquals("12345.600000%", formatNumber("%", 123.456));
-        Assertions.assertEquals("+12345.60%", formatNumber("+.2%", 123.456));
-        Assertions.assertEquals("+12345%", formatNumber("+#.2%", 123.45));
-    }
-
-    @Test
-    public void testFloatSpecialCases() {
-        Assertions.assertEquals("nan", formatNumber("f", Double.NaN));
-        Assertions.assertEquals("INF", formatNumber("F", Double.POSITIVE_INFINITY));
-        Assertions.assertEquals("-inf", formatNumber("f", Double.NEGATIVE_INFINITY));
-    }
-
-    @Test
-    public void testFloatGrouping() {
-        Assertions.assertEquals("1_234.567000", formatNumber("_f", 1234.567));
-        Assertions.assertEquals("+1_234.567000", formatNumber("+_f", 1234.567));
-        Assertions.assertEquals("12_345.678900", formatNumber("_=12_f", 12345.6789));
-    }
-
-    @Test
-    public void testComplex() {
-        Assertions.assertEquals("+_12_345.679", formatNumber("_=+12_.3f", 12_345.678900));
-    }
 }

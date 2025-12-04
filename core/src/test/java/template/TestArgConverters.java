@@ -2,9 +2,14 @@ package template;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import xyz.bobkinn.indigoi18n.template.FormatSpec;
 import xyz.bobkinn.indigoi18n.template.ArgConverters;
 import xyz.bobkinn.indigoi18n.template.Utils;
+
+import java.util.stream.Stream;
 
 public class TestArgConverters {
     /**
@@ -27,56 +32,65 @@ public class TestArgConverters {
         return ArgConverters.format(ArgConverters.INT_CONVERTER, spec, number);
     }
 
-    @Test
-    public void testIntConverter() {
-        Assertions.assertEquals("0xfed0", formatInt("#x", 65232));
-        Assertions.assertEquals("fed0", formatInt("x", 65232));
-        Assertions.assertEquals("0XFED0", formatInt("#X", 65232));
-        Assertions.assertEquals("FED0", formatInt("X", 65232));
-        Assertions.assertEquals("101", formatInt("o", 65));
-        Assertions.assertEquals("0o101", formatInt("#o", 65));
-        Assertions.assertEquals("1000001", formatInt("b", 65));
-        Assertions.assertEquals("0b1000001", formatInt("#b", 65));
-        Assertions.assertEquals("+0o______________101", formatInt("_=+#20o", 65));
-        Assertions.assertEquals("@+16_384@@", formatInt("@^+10_", 16384));
-        Assertions.assertEquals("@@@@@@+4_0000@@@@@@@", formatInt("@^+20_o", 16384));
-        Assertions.assertEquals("zzzzzzzzzzzzz+4_0000", formatInt("z>+20_o", 16384));
-        Assertions.assertEquals("+4_0000zzzzzzzzzzzzz", formatInt("z<+20_o", 16384));
-        Assertions.assertEquals("+zzzzzzzzzzzzz4_0000", formatInt("z=+20_o", 16384));
-        Assertions.assertEquals("_________A", formatInt("_=10c", 65));
-        Assertions.assertEquals("_________A", formatInt("_>10c", 65));
-        Assertions.assertEquals("A_________", formatInt("_<10c", 65));
-        Assertions.assertEquals("____A_____", formatInt("_^10c", 65));
-        Assertions.assertEquals("%{2356456:c}", formatInt("c", 2356456));
-        Assertions.assertEquals("        12", formatInt("10", 12));
+    static Stream<Arguments> provideIntFormats() {
+        return Stream.of(
+                Arguments.of("#x", 65232, "0xfed0"),
+                Arguments.of("x", 65232, "fed0"),
+                Arguments.of("#X", 65232, "0XFED0"),
+                Arguments.of("X", 65232, "FED0"),
+                Arguments.of("o", 65, "101"),
+                Arguments.of("#o", 65, "0o101"),
+                Arguments.of("b", 65, "1000001"),
+                Arguments.of("#b", 65, "0b1000001"),
+                Arguments.of("_=+#20o", 65, "+0o______________101"),
+                Arguments.of("@^+10_", 16384, "@+16_384@@"),
+                Arguments.of("@^+20_o", 16384, "@@@@@@+4_0000@@@@@@@"),
+                Arguments.of("z>+20_o", 16384, "zzzzzzzzzzzzz+4_0000"),
+                Arguments.of("z<+20_o", 16384, "+4_0000zzzzzzzzzzzzz"),
+                Arguments.of("z=+20_o", 16384, "+zzzzzzzzzzzzz4_0000"),
+                Arguments.of("_=10c", 65, "_________A"),
+                Arguments.of("_>10c", 65, "_________A"),
+                Arguments.of("_<10c", 65, "A_________"),
+                Arguments.of("_^10c", 65, "____A_____"),
+                Arguments.of("c", 2356456, "%{2356456:c}"),
+                Arguments.of("10", 12, "        12")
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideIntFormats")
+    void testIntConverter(String format, int value, String expected) {
+        Assertions.assertEquals(expected, formatInt(format, value));
     }
 
     private String formatStr(String spec, String text, boolean repr) {
         return ArgConverters.format(ArgConverters.STRING_CONVERTER, spec, repr, text);
     }
 
-    private String formatStr(String spec, String text) {
-        return formatStr(spec, text, false);
+    static Stream<Arguments> provideStrFormats() {
+        return Stream.of(
+                Arguments.of("10", "a", false, "a         "),
+                Arguments.of(">10", "a", false, "         a"),
+                Arguments.of("^10", "a", false, "    a     "),
+                Arguments.of(".3", "hello", false, "hel"),
+                Arguments.of(".0", "hello", false, ""),
+                Arguments.of(".30", "hello", false, "hello"),
+                Arguments.of("10.3", "hello", false, "hel       "),
+                Arguments.of(">10.3", "hello", false, "       hel"),
+                Arguments.of("^10.3", "hello", false, "   hel    "),
+
+                Arguments.of("10.3", "hello", true, "'he       "),
+                Arguments.of(">10.3", "hello", true, "       'he"),
+                Arguments.of("^10.3", "hello", true, "   'he    "),
+                Arguments.of("_^10.3", "hello", true, "___'he____"),
+
+                Arguments.of(".3", "hello", true, "'he")
+        );
     }
 
-    @Test
-    public void testStrConverter() {
-        Assertions.assertEquals("a         ", formatStr("10", "a"));
-        Assertions.assertEquals("         a", formatStr(">10", "a"));
-        Assertions.assertEquals("    a     ", formatStr("^10", "a"));
-        Assertions.assertEquals("hel", formatStr(".3", "hello"));
-        Assertions.assertEquals("", formatStr(".0", "hello"));
-        Assertions.assertEquals("hello", formatStr(".30", "hello"));
-        Assertions.assertEquals("hel       ", formatStr("10.3", "hello"));
-        Assertions.assertEquals("       hel", formatStr(">10.3", "hello"));
-        Assertions.assertEquals("   hel    ", formatStr("^10.3", "hello"));
-
-        Assertions.assertEquals("'he       ", formatStr("10.3", "hello", true));
-        Assertions.assertEquals("       'he", formatStr(">10.3", "hello", true));
-        Assertions.assertEquals("   'he    ", formatStr("^10.3", "hello", true));
-
-        Assertions.assertEquals("___'he____", formatStr("_^10.3", "hello", true));
-
-        Assertions.assertEquals("'he", formatStr(".3", "hello", true));
+    @ParameterizedTest
+    @MethodSource("provideStrFormats")
+    void testStrConverter(String format, String input, boolean quote, String expected) {
+        Assertions.assertEquals(expected, formatStr(format, input, quote));
     }
 }

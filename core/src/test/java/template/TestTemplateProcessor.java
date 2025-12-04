@@ -1,6 +1,8 @@
 package template;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import xyz.bobkinn.indigoi18n.template.FormatSpec;
 import xyz.bobkinn.indigoi18n.template.TemplateProcessor;
 import xyz.bobkinn.indigoi18n.template.TemplateReader;
@@ -83,12 +85,15 @@ public class TestTemplateProcessor {
         assertEquals("_^10", arg.getFormatSpec().getSource());
     }
 
-    @Test
-    public void testEntrySize() {
-        assertEquals(2, TemplateProcessor.parse("%s%s").parts().size());
-        assertEquals(3, TemplateProcessor.parse("%s%s ").parts().size());
-        assertEquals(3, TemplateProcessor.parse(" %s%s").parts().size());
-        assertEquals(4, TemplateProcessor.parse(" %s%s ").parts().size());
-        assertEquals(5, TemplateProcessor.parse(" %s %s ").parts().size());
+    @ParameterizedTest
+    @CsvSource({
+            "'%s%s', 2",
+            "'%s%s ', 3",
+            "' %s%s', 3",
+            "' %s%s ', 4",
+            "' %s %s ', 5"
+    })
+    void testEntrySize(String template, int expectedSize) {
+        assertEquals(expectedSize, TemplateProcessor.parse(template).parts().size());
     }
 }

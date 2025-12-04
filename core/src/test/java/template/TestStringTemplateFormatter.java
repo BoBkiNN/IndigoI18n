@@ -1,11 +1,14 @@
 package template;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import xyz.bobkinn.indigoi18n.template.StringTemplateFormatter;
 import xyz.bobkinn.indigoi18n.template.TemplateProcessor;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 public class TestStringTemplateFormatter {
 
@@ -16,31 +19,45 @@ public class TestStringTemplateFormatter {
         return strF.format(entry, List.of(args));
     }
 
-    @Test
-    public void test() {
-        Assertions.assertEquals("test 1!", formatStr("test %1!", 1));
-        Assertions.assertEquals("test 1!", formatStr("test %{1}!", 1));
-        Assertions.assertEquals("test 1!", formatStr("test %s!", 1));
-        Assertions.assertEquals("test 1!", formatStr("test %{s}!", 1));
+    static Stream<Arguments> provideStrFormatCases() {
+        return Stream.of(
+                Arguments.of("test %1!", new Object[]{1}, "test 1!"),
+                Arguments.of("test %{1}!", new Object[]{1}, "test 1!"),
+                Arguments.of("test %s!", new Object[]{1}, "test 1!"),
+                Arguments.of("test %{s}!", new Object[]{1}, "test 1!"),
 
-        Assertions.assertEquals("test cat!", formatStr("test %1!", "cat"));
-        Assertions.assertEquals("test cat!", formatStr("test %{1}!", "cat"));
-        Assertions.assertEquals("test cat!", formatStr("test %s!", "cat"));
-        Assertions.assertEquals("test cat!", formatStr("test %{s}!", "cat"));
+                Arguments.of("test %1!", new Object[]{"cat"}, "test cat!"),
+                Arguments.of("test %{1}!", new Object[]{"cat"}, "test cat!"),
+                Arguments.of("test %s!", new Object[]{"cat"}, "test cat!"),
+                Arguments.of("test %{s}!", new Object[]{"cat"}, "test cat!"),
 
-        Assertions.assertEquals("float is 23.32", formatStr("float is %{s:.2}", 23.32));
-        Assertions.assertEquals("double is 23.3", formatStr("double is %{s:.1}", 23.3));
+                Arguments.of("float is %{s:.2}", new Object[]{23.32}, "float is 23.32"),
+                Arguments.of("double is %{s:.1}", new Object[]{23.3}, "double is 23.3"),
 
-        Assertions.assertEquals("chance is 55.000000%", formatStr("chance is %{s:%}", 0.55));
-        Assertions.assertEquals("chance is 55%", formatStr("chance is %{s:#%}", 0.55));
-        Assertions.assertEquals("chance is 55.3%", formatStr("chance is %{s:.1%}", 0.55321));
+                Arguments.of("chance is %{s:%}", new Object[]{0.55}, "chance is 55.000000%"),
+                Arguments.of("chance is %{s:#%}", new Object[]{0.55}, "chance is 55%"),
+                Arguments.of("chance is %{s:.1%}", new Object[]{0.55321}, "chance is 55.3%")
+        );
     }
 
-    @Test
-    public void testRepr() {
-        Assertions.assertEquals("test 1", formatStr("test %{s!r}", 1));
-        Assertions.assertEquals("test 1.1", formatStr("test %{s!r}", 1.1));
-        Assertions.assertEquals("test 'cat'!", formatStr("test %{s!r}!", "cat"));
-        Assertions.assertEquals("test 'c!", formatStr("test %{s!r:.2}!", "cat"));
+    @ParameterizedTest
+    @MethodSource("provideStrFormatCases")
+    void testStrFormatting(String format, Object[] args, String expected) {
+        Assertions.assertEquals(expected, formatStr(format, args));
+    }
+
+    static Stream<Arguments> provideStrReprCases() {
+        return Stream.of(
+                Arguments.of("test %{s!r}", new Object[]{1}, "test 1"),
+                Arguments.of("test %{s!r}", new Object[]{1.1}, "test 1.1"),
+                Arguments.of("test %{s!r}!", new Object[]{"cat"}, "test 'cat'!"),
+                Arguments.of("test %{s!r:.2}!", new Object[]{"cat"}, "test 'c!")
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideStrReprCases")
+    void testStrReprFormatting(String format, Object[] args, String expected) {
+        Assertions.assertEquals(expected, formatStr(format, args));
     }
 }
