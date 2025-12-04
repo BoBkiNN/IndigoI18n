@@ -60,8 +60,10 @@ public class TemplateProcessor {
             } else if (ch == '%' && ch1 == 's') {
                 reader.skip();
                 // flush plain
-                plainConsumer.accept(plainBlock.toString());
-                plainBlock.setLength(0);
+                if (!plainBlock.isEmpty()) {
+                    plainConsumer.accept(plainBlock.toString());
+                    plainBlock.setLength(0);
+                }
                 // create arg
                 argConsumer.accept(new TemplateArgument(seqArgIdx, false, FormatSpec.newDefault()));
                 seqArgIdx++;
@@ -73,14 +75,18 @@ public class TemplateProcessor {
                     throw new IllegalArgumentException("Negative argument index "+aIdx);
                 }
                 // flush plain
-                plainConsumer.accept(plainBlock.toString());
-                plainBlock.setLength(0);
+                if (!plainBlock.isEmpty()) {
+                    plainConsumer.accept(plainBlock.toString());
+                    plainBlock.setLength(0);
+                }
                 // create arg
                 argConsumer.accept(new TemplateArgument(aIdx, true, FormatSpec.newDefault()));
             } else if (ch == '%' && ch1 == '{') {
                 // flush plain
-                plainConsumer.accept(plainBlock.toString());
-                plainBlock.setLength(0);
+                if (!plainBlock.isEmpty()) {
+                    plainConsumer.accept(plainBlock.toString());
+                    plainBlock.setLength(0);
+                }
                 // read arg
                 var arg = readArg(reader, seqArgIdx);
                 if (!arg.isHasExplicitIndex()) {
@@ -102,6 +108,9 @@ public class TemplateProcessor {
             parse(text, ls::add, ls::add);
         } catch (Exception e) {
             throw new TemplateParseException("Failed to parse text '%s'".formatted(text), e);
+        }
+        if (ls.isEmpty()) {
+            return ParsedEntry.empty();
         }
         return new ParsedEntry(ls);
     }

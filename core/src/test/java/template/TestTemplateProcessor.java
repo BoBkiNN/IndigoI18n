@@ -82,4 +82,13 @@ public class TestTemplateProcessor {
         assertNotNull(arg.getFormatSpec());
         assertEquals("_^10", arg.getFormatSpec().getSource());
     }
+
+    @Test
+    public void testEntrySize() {
+        assertEquals(2, TemplateProcessor.parse("%s%s").parts().size());
+        assertEquals(3, TemplateProcessor.parse("%s%s ").parts().size());
+        assertEquals(3, TemplateProcessor.parse(" %s%s").parts().size());
+        assertEquals(4, TemplateProcessor.parse(" %s%s ").parts().size());
+        assertEquals(5, TemplateProcessor.parse(" %s %s ").parts().size());
+    }
 }
