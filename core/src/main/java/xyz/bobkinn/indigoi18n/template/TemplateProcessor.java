@@ -98,7 +98,11 @@ public class TemplateProcessor {
 
     public static ParsedEntry parse(String text) {
         var ls = new ArrayList<>();
-        parse(text, ls::add, ls::add);
+        try {
+            parse(text, ls::add, ls::add);
+        } catch (Exception e) {
+            throw new TemplateParseException("Failed to parse text '%s'".formatted(text), e);
+        }
         return new ParsedEntry(ls);
     }
 }
