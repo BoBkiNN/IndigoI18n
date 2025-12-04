@@ -5,6 +5,10 @@ import xyz.bobkinn.indigoi18n.template.TemplateArgument;
 import java.util.List;
 import java.util.function.Consumer;
 
+/**
+ * This class represents parsed text.
+ * @param parts Each part is either String or {@link TemplateArgument}. Order of elements must be saved.
+ */
 public record ParsedEntry(List<Object> parts) {
     public void process(Consumer<String> textConsumer, Consumer<TemplateArgument> argConsumer) {
         for (var part : parts) {
