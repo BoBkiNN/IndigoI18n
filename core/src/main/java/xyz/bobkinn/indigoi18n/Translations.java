@@ -73,6 +73,13 @@ public class Translations {
                 .put(lang, text);
     }
 
+    /**
+     * @see xyz.bobkinn.indigoi18n.resolver.TranslationResolver
+     * @param key translation key
+     * @param lang language id
+     * @param or value to return if text with that id not found
+     * @return text with this key and language or "or" argument
+     */
     @Contract("_,_,!null -> !null")
     public String getOr(String key, String lang, String or) {
         var lm = texts.get(key);
