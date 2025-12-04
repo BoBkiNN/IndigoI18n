@@ -11,6 +11,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 public class Translations {
+    /**
+     * Map of key to map of language to text
+     */
     private final Map<String, Map<String, String>> texts = new ConcurrentHashMap<>();
     /**
      * Map of source to map of language to keys
