@@ -70,6 +70,21 @@ public class Translations {
         return ret;
     }
 
+    /**
+     * Finds first source that has this language and key and creates TranslationInfo
+     * @return null if no sources contains text with passed key in passed language
+     */
+    public @Nullable TranslationInfo infoFor(String key, String lang) {
+        for (var e : keysBySource.entrySet()) {
+            var keys = e.getValue().get(lang);
+            if (keys == null) continue;
+            if (keys.contains(key)) {
+                return new TranslationInfo(e.getKey(), lang, key);
+            }
+        }
+        return null;
+    }
+
     public @NotNull Set<TranslationSource> sourcesFor(String key) {
         var ret = new HashSet<TranslationSource>();
         for (var e : loadedKeys().entrySet()) {

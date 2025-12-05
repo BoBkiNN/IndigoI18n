@@ -1,6 +1,7 @@
 package xyz.bobkinn.indigoi18n;
 
 import lombok.Setter;
+import org.jetbrains.annotations.Nullable;
 import xyz.bobkinn.indigoi18n.data.ParsedEntry;
 import xyz.bobkinn.indigoi18n.data.TranslationInfo;
 import xyz.bobkinn.indigoi18n.template.TemplateParseException;
@@ -18,20 +19,34 @@ public class TemplateCache {
     @Setter
     private TemplateErrorHandler templateErrorHandler = new TemplateErrorHandler.JULTemplateErrorHandler();
 
-    public void createCache(String text, TranslationInfo info) {
+    public ParsedEntry createCache(String text, TranslationInfo info) {
         ParsedEntry entry;
         try {
             entry = TemplateProcessor.parse(text);
         } catch (TemplateParseException e) {
             if (templateErrorHandler != null) {
                 templateErrorHandler.handleParseException(e, text, info);
-                return;
+                return null;
             } else throw e;
         }
         templateCache.put(text, entry);
+        return entry;
     }
 
     public void resetCache(String text) {
         templateCache.remove(text);
+    }
+
+    public @Nullable ParsedEntry get(String text) {
+        return templateCache.get(text);
+    }
+
+    /**
+     * @return null if failed to parse
+     */
+    public @Nullable ParsedEntry getOrCreate(String text, TranslationInfo info) {
+        var v = get(text);
+        if (v != null) return v;
+        return createCache(text, info);
     }
 }
