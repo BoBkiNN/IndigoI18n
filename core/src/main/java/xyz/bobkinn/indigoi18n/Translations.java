@@ -1,8 +1,10 @@
 package xyz.bobkinn.indigoi18n;
 
+import lombok.Getter;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import xyz.bobkinn.indigoi18n.data.TranslationInfo;
 import xyz.bobkinn.indigoi18n.source.SourceTextAdder;
 import xyz.bobkinn.indigoi18n.source.TranslationSource;
 
@@ -14,16 +16,25 @@ public class Translations {
     /**
      * Map of key to map of language to text
      */
-    private final Map<String, Map<String, String>> texts = new ConcurrentHashMap<>();
+    private final Map<String, Map<String, String>> texts = new ConcurrentHashMap<>(512);
     /**
      * Map of source to map of language to keys
      */
     private final Map<TranslationSource, Map<String, Set<String>>> keysBySource = new ConcurrentHashMap<>();
 
+    @Getter
+    private final TemplateCache cache = new TemplateCache();
+
     public void load(@NotNull TranslationSource source) {
         var adder = new SourceTextAdder(this::put);
         source.load(adder);
+        var added = adder.getAdded();
         keysBySource.put(source, adder.getAddedKeys());
+        for (var e : added.entrySet()) {
+            // pair of key and language
+            var pair = e.getKey();
+            cache.createCache(e.getValue(), new TranslationInfo(source, pair.getValue(), pair.getKey()));
+        }
     }
 
     public void unload(TranslationSource source) {
@@ -33,7 +44,8 @@ public class Translations {
             var lang = e.getKey();
             var keys = e.getValue();
             for (var key : keys) {
-                remove(lang, key);
+                var text = remove(lang, key);
+                if (text != null) cache.resetCache(text);
             }
         }
     }
@@ -69,7 +81,7 @@ public class Translations {
     // end sources info
 
     public void put(String key, String lang, String text) {
-        texts.computeIfAbsent(key, (s) -> new HashMap<>())
+        texts.computeIfAbsent(key, (s) -> new ConcurrentHashMap<>())
                 .put(lang, text);
     }
 
@@ -87,10 +99,10 @@ public class Translations {
         return lm.get(lang);
     }
 
-    public boolean remove(String lang, String key) {
+    public String remove(String lang, String key) {
         var m = texts.get(key);
-        if (m == null) return false;
-        return m.remove(lang) != null;
+        if (m == null) return null;
+        return m.remove(lang);
     }
 
 }
