@@ -7,7 +7,6 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import xyz.bobkinn.indigoi18n.template.format.FormatSpec;
 import xyz.bobkinn.indigoi18n.template.arg.ArgConverters;
-import xyz.bobkinn.indigoi18n.template.Utils;
 
 import java.util.stream.Stream;
 

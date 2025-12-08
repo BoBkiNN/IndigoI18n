@@ -4,8 +4,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import xyz.bobkinn.indigoi18n.template.format.FormatSpec;
-import xyz.bobkinn.indigoi18n.template.TemplateProcessor;
-import xyz.bobkinn.indigoi18n.template.TemplateReader;
 
 import static org.junit.jupiter.api.Assertions.*;
 

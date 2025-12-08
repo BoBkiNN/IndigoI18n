@@ -5,7 +5,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import xyz.bobkinn.indigoi18n.template.format.StringTemplateFormatter;
-import xyz.bobkinn.indigoi18n.template.TemplateProcessor;
 
 import java.util.List;
 import java.util.stream.Stream;
