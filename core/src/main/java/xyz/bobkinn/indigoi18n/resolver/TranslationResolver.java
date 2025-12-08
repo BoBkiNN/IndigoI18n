@@ -8,6 +8,7 @@ public interface TranslationResolver {
 
     String getOrNull(Translations texts, String key, String lang);
 
+    @SuppressWarnings("unused")
     default String getOrKey(Translations texts, String key, String lang) {
         var v = getOrNull(texts, key, lang);
         if (v == null) return key;

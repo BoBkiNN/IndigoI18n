@@ -25,6 +25,10 @@ public class Translations {
     @Getter
     private final TemplateCache cache = new TemplateCache();
 
+    public List<TranslationSource> sources() {
+        return List.copyOf(keysBySource.keySet());
+    }
+
     public void load(@NotNull TranslationSource source) {
         var adder = new SourceTextAdder(this::put);
         source.load(adder);
@@ -85,7 +89,21 @@ public class Translations {
         return null;
     }
 
-    public @NotNull Set<TranslationSource> sourcesFor(String key) {
+    @SuppressWarnings("unused")
+    public Set<TranslationSource> sourcesWith(String key, String lang) {
+        var ret = new HashSet<TranslationSource>();
+        for (var e : keysBySource.entrySet()) {
+            var keys = e.getValue().get(lang);
+            if (keys == null) continue;
+            if (keys.contains(key)) {
+                ret.add(e.getKey());
+            }
+        }
+        return ret;
+    }
+
+    @SuppressWarnings("unused")
+    public @NotNull Set<TranslationSource> sourcesWith(String key) {
         var ret = new HashSet<TranslationSource>();
         for (var e : loadedKeys().entrySet()) {
             if (e.getValue().contains(key)) ret.add(e.getKey());

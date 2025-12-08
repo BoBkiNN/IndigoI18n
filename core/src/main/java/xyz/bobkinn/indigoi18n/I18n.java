@@ -8,8 +8,10 @@ import xyz.bobkinn.indigoi18n.format.impl.StringI18nFormat;
 import xyz.bobkinn.indigoi18n.format.impl.StringI18nMixin;
 import xyz.bobkinn.indigoi18n.resolver.BasicTranslationResolver;
 import xyz.bobkinn.indigoi18n.resolver.TranslationResolver;
+import xyz.bobkinn.indigoi18n.source.TranslationSource;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -43,6 +45,18 @@ public class I18n implements StringI18nMixin {
     public <T> I18nFormat<T> getFormat(Class<T> cls) {
         var f = (I18nFormat<T>) formats.get(cls);
         return Objects.requireNonNull(f, "Unknown format for "+cls.getSimpleName());
+    }
+
+    public void load(TranslationSource source) {
+        translations.load(source);
+    }
+
+    public void unload(TranslationSource source) {
+        translations.unload(source);
+    }
+
+    public List<TranslationSource> sources() {
+        return translations.sources();
     }
 
     @Override
