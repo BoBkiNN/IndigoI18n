@@ -27,15 +27,24 @@ public class TestSources {
         assertEquals("Test 2", i18n.parse("en", "test2"));
         assertEquals("test3", i18n.parse("en", "test3"));
         assertEquals("test2", i18n.parse("ru", "test2"));
-        assertEquals(source, i18n.translations.sourcesWith("test2").stream().findFirst().orElseThrow());
-        assertTrue(i18n.translations.sourcesWith("test2").contains(source));
-        assertTrue(i18n.translations.sourcesWith("test").contains(source));
-        assertFalse(i18n.translations.sourcesWith("test3").contains(source));
-        assertTrue(i18n.translations.sourcesWith("test", "en").contains(source));
-        assertTrue(i18n.translations.sourcesWith("test2", "en").contains(source));
+        assertEquals(source, i18n.texts.sourcesWith("test2").stream().findFirst().orElseThrow());
+        assertTrue(i18n.texts.sourcesWith("test2").contains(source));
+        assertTrue(i18n.texts.sourcesWith("test").contains(source));
+        assertFalse(i18n.texts.sourcesWith("test3").contains(source));
+        assertTrue(i18n.texts.sourcesWith("test", "en").contains(source));
+        assertTrue(i18n.texts.sourcesWith("test2", "en").contains(source));
 
-        assertFalse(i18n.translations.sourcesWith("test2", "ru").contains(source));
-        assertFalse(i18n.translations.sourcesWith("test3", "ru").contains(source));
-        assertFalse(i18n.translations.sourcesWith("test3", "en").contains(source));
+        assertFalse(i18n.texts.sourcesWith("test2", "ru").contains(source));
+        assertFalse(i18n.texts.sourcesWith("test3", "ru").contains(source));
+        assertFalse(i18n.texts.sourcesWith("test3", "en").contains(source));
+    }
+
+    @Test
+    public void testUnload() {
+        var i18n = new StringI18n();
+        i18n.load(source);
+        assertEquals("Test 2", i18n.parse("en", "test2"));
+        i18n.unload(source);
+        assertEquals("test2", i18n.parse("en", "test2"));
     }
 }

@@ -20,13 +20,14 @@ import java.util.Objects;
  * @see StringI18n
  */
 public class I18n implements I18nBase {
-    protected final Translations translations;
+    @Getter
+    protected final Translations texts;
     @Getter
     private @NotNull TranslationResolver resolver;
     private final Map<Class<?>, I18nFormat<?>> formats;
 
     public I18n() {
-        translations = new Translations();
+        texts = new Translations();
         resolver = new BasicTranslationResolver();
         formats = new HashMap<>();
         addDefaultFormats();
@@ -47,20 +48,20 @@ public class I18n implements I18nBase {
     }
 
     public void load(TranslationSource source) {
-        translations.load(source);
+        texts.load(source);
     }
 
     public void unload(TranslationSource source) {
-        translations.unload(source);
+        texts.unload(source);
     }
 
     public List<TranslationSource> sources() {
-        return translations.sources();
+        return texts.sources();
     }
 
     @Override
     public TranslationInfo infoFor(String lang, String key) {
-        return translations.infoFor(key, lang);
+        return texts.infoFor(key, lang);
     }
 
     public void setResolver(TranslationResolver resolver) {
@@ -69,7 +70,7 @@ public class I18n implements I18nBase {
 
     @Override
     public String get(String key, String language) {
-        return resolver.get(translations, key, language);
+        return resolver.get(texts, key, language);
     }
 
 }
