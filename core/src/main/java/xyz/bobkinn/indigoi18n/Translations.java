@@ -129,7 +129,9 @@ public class Translations {
     public String getOr(String key, String lang, String or) {
         var lm = texts.get(key);
         if (lm == null) return or;
-        return lm.get(lang);
+        var v = lm.get(lang);
+        if (v == null) return or;
+        return v;
     }
 
     public String remove(String lang, String key) {
