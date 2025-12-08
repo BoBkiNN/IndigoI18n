@@ -7,8 +7,7 @@ import xyz.bobkinn.indigoi18n.source.impl.PropertiesSource;
 import java.net.URI;
 import java.util.Properties;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestSources {
 
@@ -28,5 +27,15 @@ public class TestSources {
         assertEquals("Test 2", i18n.parse("en", "test2"));
         assertEquals("test3", i18n.parse("en", "test3"));
         assertEquals("test2", i18n.parse("ru", "test2"));
+        assertEquals(source, i18n.translations.sourcesWith("test2").stream().findFirst().orElseThrow());
+        assertTrue(i18n.translations.sourcesWith("test2").contains(source));
+        assertTrue(i18n.translations.sourcesWith("test").contains(source));
+        assertFalse(i18n.translations.sourcesWith("test3").contains(source));
+        assertTrue(i18n.translations.sourcesWith("test", "en").contains(source));
+        assertTrue(i18n.translations.sourcesWith("test2", "en").contains(source));
+
+        assertFalse(i18n.translations.sourcesWith("test2", "ru").contains(source));
+        assertFalse(i18n.translations.sourcesWith("test3", "ru").contains(source));
+        assertFalse(i18n.translations.sourcesWith("test3", "en").contains(source));
     }
 }
