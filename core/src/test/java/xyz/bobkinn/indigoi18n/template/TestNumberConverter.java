@@ -1,4 +1,4 @@
-package template;
+package xyz.bobkinn.indigoi18n.template;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
