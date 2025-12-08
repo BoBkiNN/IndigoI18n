@@ -10,7 +10,12 @@ public class StringTemplateFormatter extends TemplateFormatter<String> {
     @Override
     protected void registerDefaultConverters() {
         converters.put(String.class, ArgConverters.STRING_CONVERTER);
+
+        converters.put(Byte.class, ArgConverters.INT_CONVERTER);
+        converters.put(Short.class, ArgConverters.INT_CONVERTER);
         converters.put(Integer.class, ArgConverters.INT_CONVERTER);
+        converters.put(Long.class, ArgConverters.INT_CONVERTER);
+
         converters.put(Double.class, ArgConverters.NUMBER_CONVERTER);
         converters.put(Float.class, ArgConverters.NUMBER_CONVERTER);
     }

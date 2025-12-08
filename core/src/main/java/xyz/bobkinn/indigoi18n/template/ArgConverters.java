@@ -87,7 +87,8 @@ public class ArgConverters {
     }
 
 
-    public static final ArgumentConverter<Integer, String> INT_CONVERTER =  (arg, format) -> {
+    public static final ArgumentConverter<Number, String> INT_CONVERTER =  (n, format) -> {
+        var arg = n.intValue();
         if (format.getType() == 'c') {
             try {
                 var s = Character.toString(arg);
@@ -96,7 +97,7 @@ public class ArgConverters {
                 return TemplateArgument.asString(arg, format);
             }
         }
-        var sign = arg > 0 ? 1 : (arg < 0 ? -1 : 0);
+        var sign = Integer.compare(arg, 0);
         var abs = Math.abs(arg);
         var type = format.getType();
         var radix = switch (type) {
