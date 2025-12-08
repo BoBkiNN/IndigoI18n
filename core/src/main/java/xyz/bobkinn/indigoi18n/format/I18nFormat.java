@@ -6,7 +6,7 @@ import xyz.bobkinn.indigoi18n.TemplateCache;
 import xyz.bobkinn.indigoi18n.Translations;
 import xyz.bobkinn.indigoi18n.data.ParsedEntry;
 import xyz.bobkinn.indigoi18n.data.TranslationInfo;
-import xyz.bobkinn.indigoi18n.template.TemplateFormatter;
+import xyz.bobkinn.indigoi18n.template.format.TemplateFormatter;
 
 import java.util.List;
 import java.util.Objects;

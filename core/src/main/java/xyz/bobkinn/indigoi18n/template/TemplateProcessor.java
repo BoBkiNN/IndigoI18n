@@ -1,6 +1,8 @@
 package xyz.bobkinn.indigoi18n.template;
 
 import xyz.bobkinn.indigoi18n.data.ParsedEntry;
+import xyz.bobkinn.indigoi18n.template.arg.TemplateArgument;
+import xyz.bobkinn.indigoi18n.template.format.FormatSpec;
 
 import java.util.ArrayList;
 import java.util.function.Consumer;

@@ -3,7 +3,7 @@ package template;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import xyz.bobkinn.indigoi18n.template.FormatSpec;
+import xyz.bobkinn.indigoi18n.template.format.FormatSpec;
 import xyz.bobkinn.indigoi18n.template.TemplateProcessor;
 import xyz.bobkinn.indigoi18n.template.TemplateReader;
 

@@ -1,8 +1,9 @@
-package xyz.bobkinn.indigoi18n.template;
+package xyz.bobkinn.indigoi18n.template.format;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+import xyz.bobkinn.indigoi18n.template.TemplateReader;
 
 @RequiredArgsConstructor
 @Getter
