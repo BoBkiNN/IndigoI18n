@@ -7,12 +7,12 @@ import xyz.bobkinn.indigoi18n.template.format.FormatPattern;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestTemplateProcessor {
+public class TestTemplateParser {
     @Test
     public void test1() {
         final int[] pn = {0};
         final int[] an = {0};
-        TemplateProcessor.parse("hello %s", s -> {
+        TemplateParser.parse("hello %s", s -> {
             pn[0]++;
             assertEquals("hello ", s);
         }, a -> {
@@ -78,7 +78,7 @@ public class TestTemplateProcessor {
     @Test
     public void testFormatSource() {
         var tr = new TemplateReader("{:_^10}");
-        var arg = TemplateProcessor.readArg(tr, 0);
+        var arg = TemplateParser.readArg(tr, 0);
         assertNotNull(arg.getPattern());
         assertEquals("_^10", arg.getPattern().getSource());
     }
@@ -92,6 +92,6 @@ public class TestTemplateProcessor {
             "' %s %s ', 5"
     })
     void testEntrySize(String template, int expectedSize) {
-        assertEquals(expectedSize, TemplateProcessor.parse(template).parts().size());
+        assertEquals(expectedSize, TemplateParser.parse(template).parts().size());
     }
 }

@@ -5,7 +5,7 @@ import org.jetbrains.annotations.Nullable;
 import xyz.bobkinn.indigoi18n.data.ParsedEntry;
 import xyz.bobkinn.indigoi18n.data.TranslationInfo;
 import xyz.bobkinn.indigoi18n.template.TemplateParseException;
-import xyz.bobkinn.indigoi18n.template.TemplateProcessor;
+import xyz.bobkinn.indigoi18n.template.TemplateParser;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -22,7 +22,7 @@ public class TemplateCache {
     public ParsedEntry createCache(String text, TranslationInfo info) {
         ParsedEntry entry;
         try {
-            entry = TemplateProcessor.parse(text);
+            entry = TemplateParser.parse(text);
         } catch (TemplateParseException e) {
             if (templateErrorHandler != null) {
                 templateErrorHandler.handleParseException(e, text, info);

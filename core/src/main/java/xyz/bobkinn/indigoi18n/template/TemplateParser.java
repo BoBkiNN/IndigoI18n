@@ -7,7 +7,7 @@ import xyz.bobkinn.indigoi18n.template.format.FormatPattern;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
-public class TemplateProcessor {
+public class TemplateParser {
 
     public static TemplateArgument readArg(TemplateReader reader, int seqIdx) {
         reader.consume('{');
