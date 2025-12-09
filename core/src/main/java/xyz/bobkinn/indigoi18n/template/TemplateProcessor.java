@@ -2,7 +2,7 @@ package xyz.bobkinn.indigoi18n.template;
 
 import xyz.bobkinn.indigoi18n.data.ParsedEntry;
 import xyz.bobkinn.indigoi18n.template.arg.TemplateArgument;
-import xyz.bobkinn.indigoi18n.template.format.FormatSpec;
+import xyz.bobkinn.indigoi18n.template.format.FormatPattern;
 
 import java.util.ArrayList;
 import java.util.function.Consumer;
@@ -34,11 +34,11 @@ public class TemplateProcessor {
         } else {
             doRepr = false;
         }
-        final FormatSpec spec;
+        final FormatPattern spec;
         if (reader.tryConsume(':')) {
-            spec = FormatSpec.readFormatSpec(reader, doRepr);
+            spec = FormatPattern.readFormatSpec(reader, doRepr);
         } else {
-            spec = FormatSpec.newDefault(doRepr);
+            spec = FormatPattern.newDefault(doRepr);
         }
         reader.consume('}');
         return new TemplateArgument(argIndex, hasExplicitIndex, spec);
@@ -68,7 +68,7 @@ public class TemplateProcessor {
                     plainBlock.setLength(0);
                 }
                 // create arg
-                argConsumer.accept(new TemplateArgument(seqArgIdx, false, FormatSpec.newDefault()));
+                argConsumer.accept(new TemplateArgument(seqArgIdx, false, FormatPattern.newDefault()));
                 seqArgIdx++;
             } else if (ch == '%' && reader.hasUnsignedNumber()) {
                 var aIdx = reader.readUnsignedNumber()-1;
@@ -83,7 +83,7 @@ public class TemplateProcessor {
                     plainBlock.setLength(0);
                 }
                 // create arg
-                argConsumer.accept(new TemplateArgument(aIdx, true, FormatSpec.newDefault()));
+                argConsumer.accept(new TemplateArgument(aIdx, true, FormatPattern.newDefault()));
             } else if (ch == '%' && ch1 == '{') {
                 // flush plain
                 if (!plainBlock.isEmpty()) {

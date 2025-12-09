@@ -27,14 +27,14 @@ public class StringTemplateFormatter extends TemplateFormatter<String> {
         return value;
     }
 
-    private String formatNull(FormatSpec format) {
+    private String formatNull(FormatPattern format) {
         var nConv = getConverter(null);
         if (nConv != null) return nConv.format(null, format);
         return "null";
     }
 
     private void formatArgument(StringBuilder builder, TemplateArgument arg, Object value) {
-        var format = arg.getFormatSpec();
+        var format = arg.getPattern();
         Objects.requireNonNull(format, "no format set for argument "+arg);
         var doRepr = format.isDoRepr();
         if (doRepr) {

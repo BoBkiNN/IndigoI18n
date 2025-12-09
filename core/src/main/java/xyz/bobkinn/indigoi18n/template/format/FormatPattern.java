@@ -8,7 +8,7 @@ import xyz.bobkinn.indigoi18n.template.TemplateReader;
 @RequiredArgsConstructor
 @Getter
 @ToString
-public class FormatSpec {
+public class FormatPattern {
     private final String source;
     private final boolean doRepr;
     private final Alignment alignment;
@@ -27,20 +27,20 @@ public class FormatSpec {
         } else return null;
     }
 
-    public static FormatSpec parse(String text, boolean doRepr) {
+    public static FormatPattern parse(String text, boolean doRepr) {
         return readFormatSpec(new TemplateReader(text), doRepr);
     }
 
-    public static FormatSpec newDefault(boolean repr) {
-        return new FormatSpec("", repr, null,
+    public static FormatPattern newDefault(boolean repr) {
+        return new FormatPattern("", repr, null,
                 Sign.NEGATIVE, false, null, null, null, 's');
     }
 
-    public static FormatSpec newDefault() {
+    public static FormatPattern newDefault() {
         return newDefault(false);
     }
 
-    public static FormatSpec readFormatSpec(TemplateReader reader, boolean doRepr) {
+    public static FormatPattern readFormatSpec(TemplateReader reader, boolean doRepr) {
         reader.mark();
         var alignment = Alignment.read(reader);
         var sign = Sign.read(reader);
@@ -71,7 +71,7 @@ public class FormatSpec {
             type = reader.next();
         } else type = 's';
         var source = reader.markedPart();
-        return new FormatSpec(source, doRepr, alignment, sign, special, width, precision, intPartGrouping, type);
+        return new FormatPattern(source, doRepr, alignment, sign, special, width, precision, intPartGrouping, type);
     }
 
     public enum AlignType {

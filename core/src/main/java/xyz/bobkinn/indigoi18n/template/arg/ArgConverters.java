@@ -1,7 +1,7 @@
 package xyz.bobkinn.indigoi18n.template.arg;
 
 import xyz.bobkinn.indigoi18n.template.Utils;
-import xyz.bobkinn.indigoi18n.template.format.FormatSpec;
+import xyz.bobkinn.indigoi18n.template.format.FormatPattern;
 
 import java.util.Locale;
 import java.util.Optional;
@@ -11,7 +11,7 @@ public class ArgConverters {
     /**
      * @param number number without sign
      */
-    public static String alignNumber(FormatSpec.Alignment alignment, Integer width, String sign, String number) {
+    public static String alignNumber(FormatPattern.Alignment alignment, Integer width, String sign, String number) {
         if (alignment == null || width == null) {
             return sign+number;
         }
@@ -42,7 +42,7 @@ public class ArgConverters {
         }
     }
 
-    public static String align(FormatSpec.Alignment alignment, Integer width, String text) {
+    public static String align(FormatPattern.Alignment alignment, Integer width, String text) {
         if (alignment == null || width == null) return text;
         final int fillCount = Math.max(0, width - text.length());
         switch (alignment.type()) {
@@ -73,17 +73,17 @@ public class ArgConverters {
     };
 
 
-    private static FormatSpec.Alignment getDefaultAlignment(Object arg) {
+    private static FormatPattern.Alignment getDefaultAlignment(Object arg) {
         if (arg instanceof String) {
-            return new FormatSpec.Alignment(FormatSpec.AlignType.TO_LEFT, ' ');
+            return new FormatPattern.Alignment(FormatPattern.AlignType.TO_LEFT, ' ');
         }
         if (arg instanceof Number) {
-            return new FormatSpec.Alignment(FormatSpec.AlignType.TO_RIGHT, ' ');
+            return new FormatPattern.Alignment(FormatPattern.AlignType.TO_RIGHT, ' ');
         }
         return null; // no default
     }
 
-    private static FormatSpec.Alignment alignmentOrDefault(FormatSpec format, Object arg) {
+    private static FormatPattern.Alignment alignmentOrDefault(FormatPattern format, Object arg) {
         var s = format.getAlignment();
         if (s != null) return s;
         return getDefaultAlignment(arg);
@@ -219,7 +219,7 @@ public class ArgConverters {
         return alignNumber(alignmentOrDefault(format, arg), format.getWidth(), signStr, formatted);
     };
 
-    public static  <T> String format(ArgumentConverter<T, String> conv, FormatSpec format, T value) {
+    public static  <T> String format(ArgumentConverter<T, String> conv, FormatPattern format, T value) {
         var doRepr = format.isDoRepr();
         if (doRepr) {
             var s = Utils.quote(String.valueOf(value));
@@ -229,7 +229,7 @@ public class ArgConverters {
     }
 
     public static  <T> String format(ArgumentConverter<T, String> conv, String format, boolean repr, T value) {
-        var f = FormatSpec.parse(format, repr);
+        var f = FormatPattern.parse(format, repr);
         return format(conv, f, value);
     }
 

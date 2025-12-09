@@ -2,16 +2,16 @@ package xyz.bobkinn.indigoi18n.template.arg;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import xyz.bobkinn.indigoi18n.template.format.FormatSpec;
+import xyz.bobkinn.indigoi18n.template.format.FormatPattern;
 
 @RequiredArgsConstructor
 @Getter
 public class TemplateArgument {
     private final int index;
     private final boolean hasExplicitIndex;
-    private final FormatSpec formatSpec;
+    private final FormatPattern pattern;
 
-    public static String asString(Object arg, FormatSpec format) {
-        return "%%{%s:%s}".formatted(arg, format.getSource());
+    public static String asString(Object arg, FormatPattern pattern) {
+        return "%%{%s:%s}".formatted(arg, pattern.getSource());
     }
 }

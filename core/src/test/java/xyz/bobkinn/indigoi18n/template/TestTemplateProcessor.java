@@ -3,7 +3,7 @@ package xyz.bobkinn.indigoi18n.template;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import xyz.bobkinn.indigoi18n.template.format.FormatSpec;
+import xyz.bobkinn.indigoi18n.template.format.FormatPattern;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,48 +26,48 @@ public class TestTemplateProcessor {
     @Test
     public void testAlignBoth() {
         var tr = new TemplateReader("<<");
-        var al = FormatSpec.Alignment.read(tr);
+        var al = FormatPattern.Alignment.read(tr);
         assertNotNull(al);
         assertEquals('<', al.fill());
-        assertEquals(FormatSpec.AlignType.TO_LEFT, al.type());
+        assertEquals(FormatPattern.AlignType.TO_LEFT, al.type());
     }
 
     @Test
     public void testAlignDef() {
         var tr = new TemplateReader("<");
-        var al = FormatSpec.Alignment.read(tr);
+        var al = FormatPattern.Alignment.read(tr);
         assertNotNull(al);
         assertNull(al.fill());
-        assertEquals(FormatSpec.AlignType.TO_LEFT, al.type());
+        assertEquals(FormatPattern.AlignType.TO_LEFT, al.type());
     }
 
     @Test
     public void testAlignChar() {
         var tr = new TemplateReader("0<");
-        var al = FormatSpec.Alignment.read(tr);
+        var al = FormatPattern.Alignment.read(tr);
         assertNotNull(al);
         assertEquals('0', al.fill());
-        assertEquals(FormatSpec.AlignType.TO_LEFT, al.type());
+        assertEquals(FormatPattern.AlignType.TO_LEFT, al.type());
     }
 
     @Test
     public void testAlignNone() {
         var tr = new TemplateReader("");
-        var al = FormatSpec.Alignment.read(tr);
+        var al = FormatPattern.Alignment.read(tr);
         assertNull(al);
     }
 
     @Test
     public void testAlignNone2() {
         var tr = new TemplateReader("d");
-        var al = FormatSpec.Alignment.read(tr);
+        var al = FormatPattern.Alignment.read(tr);
         assertNull(al);
     }
 
     @Test
     public void testFormatSpec() {
         var tr = new TemplateReader("_>10_.5E");
-        var fs = FormatSpec.readFormatSpec(tr, false);
+        var fs = FormatPattern.readFormatSpec(tr, false);
         System.out.println(fs);
         assertEquals(10, fs.getWidth());
         assertEquals(5, fs.getPrecision());
@@ -79,8 +79,8 @@ public class TestTemplateProcessor {
     public void testFormatSource() {
         var tr = new TemplateReader("{:_^10}");
         var arg = TemplateProcessor.readArg(tr, 0);
-        assertNotNull(arg.getFormatSpec());
-        assertEquals("_^10", arg.getFormatSpec().getSource());
+        assertNotNull(arg.getPattern());
+        assertEquals("_^10", arg.getPattern().getSource());
     }
 
     @ParameterizedTest
