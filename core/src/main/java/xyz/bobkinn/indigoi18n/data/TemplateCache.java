@@ -1,9 +1,8 @@
-package xyz.bobkinn.indigoi18n;
+package xyz.bobkinn.indigoi18n.data;
 
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
-import xyz.bobkinn.indigoi18n.data.ParsedEntry;
-import xyz.bobkinn.indigoi18n.data.TranslationInfo;
+import xyz.bobkinn.indigoi18n.template.TemplateErrorHandler;
 import xyz.bobkinn.indigoi18n.template.TemplateParseException;
 import xyz.bobkinn.indigoi18n.template.TemplateParser;
 

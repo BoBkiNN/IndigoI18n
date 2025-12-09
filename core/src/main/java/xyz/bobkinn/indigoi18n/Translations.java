@@ -4,6 +4,7 @@ import lombok.Getter;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import xyz.bobkinn.indigoi18n.data.TemplateCache;
 import xyz.bobkinn.indigoi18n.data.TranslationInfo;
 import xyz.bobkinn.indigoi18n.source.SourceTextAdder;
 import xyz.bobkinn.indigoi18n.source.TranslationLoadError;

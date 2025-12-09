@@ -1,7 +1,7 @@
 package xyz.bobkinn.indigoi18n.format;
 
 import lombok.RequiredArgsConstructor;
-import xyz.bobkinn.indigoi18n.TemplateCache;
+import xyz.bobkinn.indigoi18n.data.TemplateCache;
 import xyz.bobkinn.indigoi18n.Translations;
 import xyz.bobkinn.indigoi18n.data.TranslationInfo;
 
