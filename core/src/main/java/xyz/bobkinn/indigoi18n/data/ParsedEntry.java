@@ -1,5 +1,7 @@
 package xyz.bobkinn.indigoi18n.data;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import xyz.bobkinn.indigoi18n.template.arg.TemplateArgument;
 
 import java.util.List;
@@ -18,7 +20,12 @@ public record ParsedEntry(List<Object> parts) {
         }
     }
 
-    public static ParsedEntry empty() {
+    /**
+     * Used to create empty text - empty means it only contains empty string since entry must contain parts
+     * @return new entry with empty string in list
+     */
+    @Contract(" -> new")
+    public static @NotNull ParsedEntry empty() {
         return new ParsedEntry(List.of(""));
     }
 }
