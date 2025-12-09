@@ -8,6 +8,7 @@ import xyz.bobkinn.indigoi18n.template.Utils;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 
 public abstract class TemplateFormatter<O> {
@@ -45,6 +46,15 @@ public abstract class TemplateFormatter<O> {
     public <T> ArgumentConverter<T, O> getConverter(@Nullable T value) {
         var key = value == null ? null : value.getClass();
         return (ArgumentConverter<T, O>) converters.get(key);
+    }
+
+    public <T> void addConverter(@Nullable Class<? extends T> cls, ArgumentConverter<T, O> converter) {
+        converters.put(cls, Objects.requireNonNull(converter, "converter"));
+    }
+
+    @SuppressWarnings("unused")
+    public boolean removeConverter(@Nullable Class<?> cls) {
+        return converters.remove(cls) != null;
     }
 
     protected Function<Object, O> resolveRawReprCreator(Class<?> cls) {

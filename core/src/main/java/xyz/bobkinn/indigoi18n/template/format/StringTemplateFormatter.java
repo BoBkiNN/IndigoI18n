@@ -11,15 +11,15 @@ public class StringTemplateFormatter extends TemplateFormatter<String> {
 
     @Override
     protected void registerDefaultConverters() {
-        converters.put(String.class, ArgConverters.STRING_CONVERTER);
+        addConverter(String.class, ArgConverters.STRING_CONVERTER);
 
-        converters.put(Byte.class, ArgConverters.INT_CONVERTER);
-        converters.put(Short.class, ArgConverters.INT_CONVERTER);
-        converters.put(Integer.class, ArgConverters.INT_CONVERTER);
-        converters.put(Long.class, ArgConverters.INT_CONVERTER);
+        addConverter(Byte.class, ArgConverters.INT_CONVERTER);
+        addConverter(Short.class, ArgConverters.INT_CONVERTER);
+        addConverter(Integer.class, ArgConverters.INT_CONVERTER);
+        addConverter(Long.class, ArgConverters.INT_CONVERTER);
 
-        converters.put(Double.class, ArgConverters.NUMBER_CONVERTER);
-        converters.put(Float.class, ArgConverters.NUMBER_CONVERTER);
+        addConverter(Double.class, ArgConverters.NUMBER_CONVERTER);
+        addConverter(Float.class, ArgConverters.NUMBER_CONVERTER);
     }
 
     @Override
