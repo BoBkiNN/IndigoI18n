@@ -43,6 +43,11 @@ public class StringTemplateFormatter extends TemplateFormatter<String> {
             builder.append(res);
             return;
         }
+        var type = format.getType();
+        if (type == 'H' || type == 'h') {
+            builder.append(String.format("%"+type, value));
+            return;
+        }
         if (value == null) {
             var res = formatNull(format);
             builder.append(res);
