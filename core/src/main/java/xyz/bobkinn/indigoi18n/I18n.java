@@ -58,6 +58,7 @@ public class I18n implements I18nBase {
         texts.unload(source);
     }
 
+    @SuppressWarnings("unused")
     public List<TranslationSource> sources() {
         return texts.sources();
     }
