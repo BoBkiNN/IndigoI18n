@@ -16,7 +16,7 @@ public class TestFormat {
 
     {
         props.put("test", "Test %s %s");
-        props.put("test2", "Test %s %s %s");
+        props.put("test2", "Test %1 %1 %2");
     }
 
     @Test
@@ -28,5 +28,6 @@ public class TestFormat {
         assertEquals("Test 23 24", i18n.parse("en", "test", 23, 24));
         assertEquals("Test 23 24", i18n.parse("en", "test", 23, 24, 25));
         assertEquals("Test null 24", i18n.parse("en", "test", null, 24));
+        assertEquals("Test 23 23 24", i18n.parse("en", "test2", 23, 24));
     }
 }
