@@ -1,6 +1,7 @@
 plugins {
     id("java")
     id("io.freefair.lombok")
+    `maven-publish`
 }
 
 group = "xyz.bobkinn.indigoi18n"
@@ -18,4 +19,25 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+}
+
+java {
+    withSourcesJar()
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("mavenLocal") {
+            from(components["java"])
+
+            groupId = "io.github.bobkinn"
+            artifactId = "indigo-i18n-core"
+            version = "0.1.0"
+
+            pom {
+                name.set(rootProject.name)
+                description.set("IndigoI18n localization library core that also contains String localization")
+            }
+        }
+    }
 }
