@@ -237,6 +237,4 @@ public class ArgConverters {
         return format(conv, format, false, value);
     }
 
-    // TODO should we move alignment into post-converter step instead of inside for each.
-
 }
