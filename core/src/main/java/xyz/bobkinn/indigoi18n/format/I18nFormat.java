@@ -12,12 +12,26 @@ import java.util.List;
 import java.util.Objects;
 
 
+/**
+ * I18n format is used to work with specified output type
+ * @param <T> output text type
+ * @see xyz.bobkinn.indigoi18n.format.impl.StringI18nFormat format for String
+ */
 @RequiredArgsConstructor
 public abstract class I18nFormat<T> {
+    /**
+     * Cache that can be used
+     */
     protected final TemplateCache cache;
+    /**
+     * Primary template formatter that is used to replace arguments in text object
+     */
     @Getter
     private TemplateFormatter<T> templateFormatter;
 
+    /* TODO should we hide template formatter field into implementations?
+       TODO Im suggesting this because implementations like ComponentI18nFormat can use other template formatter internally
+     */
     public void setTemplateFormatter(TemplateFormatter<T> templateFormatter) {
         this.templateFormatter = Objects.requireNonNull(templateFormatter);
     }
