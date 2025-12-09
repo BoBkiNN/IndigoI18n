@@ -19,6 +19,7 @@ public class TestTemplateReader {
     public void testInt() {
         var tr = new TemplateReader("123");
         assertEquals(123, tr.readUnsignedNumber());
+        assertFalse(tr.hasUnsignedNumber());
     }
 
     @Test

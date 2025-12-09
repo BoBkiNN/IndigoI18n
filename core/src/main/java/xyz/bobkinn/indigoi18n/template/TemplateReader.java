@@ -41,7 +41,7 @@ public class TemplateReader {
     }
 
     public boolean hasUnsignedNumber() {
-        return Character.isDigit(peek());
+        return hasNext() && Character.isDigit(peek());
     }
 
     public int readUnsignedNumber() {
