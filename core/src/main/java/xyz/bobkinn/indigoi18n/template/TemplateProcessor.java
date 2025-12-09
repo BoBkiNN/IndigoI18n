@@ -44,6 +44,7 @@ public class TemplateProcessor {
         return new TemplateArgument(argIndex, hasExplicitIndex, spec);
     }
 
+    // TODO store source text into TemplateArgument
     public static void parse(String text, Consumer<String> plainConsumer, Consumer<TemplateArgument> argConsumer) {
         var reader = new TemplateReader(text);
         int seqArgIdx = 0;
