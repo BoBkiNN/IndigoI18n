@@ -69,6 +69,10 @@ public class FormatPattern {
         return new FormatPattern(source, alignment, sign, special, width, precision, intPartGrouping, type);
     }
 
+    public static String asString(Object arg, FormatPattern pattern) {
+        return "%%{%s:%s}".formatted(arg, pattern.getSource());
+    }
+
     public enum AlignType {
         TO_LEFT,
         TO_RIGHT,

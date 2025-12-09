@@ -97,7 +97,7 @@ public class ArgConverters {
                 var s = Character.toString(arg);
                 return align(alignmentOrDefault(format, arg), format.getWidth(), s);
             } catch (Exception e) {
-                return TemplateArgument.asString(arg, format);
+                return FormatPattern.asString(arg, format);
             }
         }
         var sign = Integer.compare(arg, 0);
