@@ -36,15 +36,20 @@ public class StringTemplateFormatter extends TemplateFormatter<String> {
     private void formatArgument(StringBuilder builder, TemplateArgument arg, Object value) {
         var format = arg.getPattern();
         Objects.requireNonNull(format, "no format set for argument "+arg);
-        if (arg.isDoRepr()) {
-            var repr = createRepr(value);
-            var res = ArgConverters.STRING_CONVERTER.format(repr, format);
+        if (arg.isRepr('r')) {
+            var rawRepr = createRawRepr(value);
+            var res = ArgConverters.STRING_CONVERTER.format(rawRepr, format);
             builder.append(res);
             return;
         }
-        var type = format.getType();
-        if (type == 'H' || type == 'h') {
-            builder.append(String.format("%"+type, value));
+        if (arg.isRepr('h', 'H')) {
+            builder.append(String.format("%"+arg.getRepr(), value));
+            return;
+        }
+        if (arg.isRepr('s') && (value == null || value.getClass() != String.class)) {
+            // !s converts any object (except string) to string and then formats using string converter
+            var res = ArgConverters.STRING_CONVERTER.format(String.valueOf(value), format);
+            builder.append(res);
             return;
         }
         if (value == null) {

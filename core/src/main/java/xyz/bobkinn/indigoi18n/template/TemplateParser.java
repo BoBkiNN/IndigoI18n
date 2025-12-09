@@ -24,15 +24,12 @@ public class TemplateParser {
         } else if (reader.peek() == 's') {
             reader.skip();
         }
-        final boolean doRepr;
+        final Character repr;
         if (reader.tryConsume('!')) {
             // conversion
-            var ct = reader.next();
-            if (ct == 'r') doRepr = true;
-            else if (ct == 's') doRepr = false;
-            else throw new IllegalArgumentException("Unknown conversion "+ct);
+            repr = reader.next();
         } else {
-            doRepr = false;
+            repr = null;
         }
         final FormatPattern spec;
         if (reader.tryConsume(':')) {
@@ -41,7 +38,7 @@ public class TemplateParser {
             spec = FormatPattern.newDefault();
         }
         reader.consume('}');
-        return new TemplateArgument(argIndex, hasExplicitIndex, spec, doRepr);
+        return new TemplateArgument(argIndex, hasExplicitIndex, spec, repr);
     }
 
     // TODO store source text into TemplateArgument
@@ -68,7 +65,7 @@ public class TemplateParser {
                     plainBlock.setLength(0);
                 }
                 // create arg
-                argConsumer.accept(new TemplateArgument(seqArgIdx, false, FormatPattern.newDefault(), false));
+                argConsumer.accept(new TemplateArgument(seqArgIdx, false, FormatPattern.newDefault(), null));
                 seqArgIdx++;
             } else if (ch == '%' && reader.hasUnsignedNumber()) {
                 var aIdx = reader.readUnsignedNumber()-1;
@@ -83,7 +80,7 @@ public class TemplateParser {
                     plainBlock.setLength(0);
                 }
                 // create arg
-                argConsumer.accept(new TemplateArgument(aIdx, true, FormatPattern.newDefault(), false));
+                argConsumer.accept(new TemplateArgument(aIdx, true, FormatPattern.newDefault(), null));
             } else if (ch == '%' && ch1 == '{') {
                 // flush plain
                 if (!plainBlock.isEmpty()) {

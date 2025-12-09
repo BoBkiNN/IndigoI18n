@@ -37,10 +37,14 @@ public class TestStringTemplateFormatter {
                 Arguments.of("chance is %{s:#%}", new Object[]{0.55}, "chance is 55%"),
                 Arguments.of("chance is %{s:.1%}", new Object[]{0.55321}, "chance is 55.3%"),
 
-                Arguments.of("test %{s:h}", new Object[]{"zz"}, "test f40"),
-                Arguments.of("test %{s:H}", new Object[]{"zz"}, "test F40"),
-                Arguments.of("test %{s:h}", new Object[]{null}, "test null"),
-                Arguments.of("test %{s:H}", new Object[]{null}, "test NULL")
+                Arguments.of("test %{s!h}", new Object[]{"zz"}, "test f40"),
+                Arguments.of("test %{s!H}", new Object[]{"zz"}, "test F40"),
+                Arguments.of("test %{s!h}", new Object[]{null}, "test null"),
+                Arguments.of("test %{s!H}", new Object[]{null}, "test NULL"),
+
+                Arguments.of("test %{s!s:.1}", new Object[]{255}, "test 2"),
+                // x (hexadecimal) type is ignored here because !s converts number into string
+                Arguments.of("test %{s!s:x}", new Object[]{255}, "test 255")
         );
     }
 

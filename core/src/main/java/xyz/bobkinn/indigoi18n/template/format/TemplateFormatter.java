@@ -15,7 +15,7 @@ public abstract class TemplateFormatter<O> {
      * Map of class type to its converter. null key may be mapped to null value converter
      */
     protected final Map<Class<?>, ArgumentConverter<?, O>> converters = new HashMap<>();
-    protected final Map<Class<?>, Function<Object, O>> reprCreators = new HashMap<>();
+    protected final Map<Class<?>, Function<Object, O>> rawReprCreators = new HashMap<>();
 
     public TemplateFormatter() {
         registerDefaultConverters();
@@ -25,13 +25,13 @@ public abstract class TemplateFormatter<O> {
     protected abstract void registerDefaultConverters();
 
     @SuppressWarnings("unchecked")
-    public <T> void registerRepr(Class<T> cls, Function<T, O> f) {
-        reprCreators.put(cls, (Function<Object, O>) f);
+    public <T> void registerRawRepr(Class<T> cls, Function<T, O> f) {
+        rawReprCreators.put(cls, (Function<Object, O>) f);
     }
 
     protected void registerDefaultReprCreators() {
         // represent number as-is
-        registerRepr(Number.class, n -> createText(n.toString()));
+        registerRawRepr(Number.class, n -> createText(n.toString()));
         // anything other will be quoted as default behaviour
     }
 
@@ -47,12 +47,12 @@ public abstract class TemplateFormatter<O> {
         return (ArgumentConverter<T, O>) converters.get(key);
     }
 
-    protected Function<Object, O> resolveReprCreator(Class<?> cls) {
+    protected Function<Object, O> resolveRawReprCreator(Class<?> cls) {
         // exact match
-        var f = reprCreators.get(cls);
+        var f = rawReprCreators.get(cls);
         if (f != null) return f;
         // by base class
-        for (var e : reprCreators.entrySet()) {
+        for (var e : rawReprCreators.entrySet()) {
             if (e.getKey().isAssignableFrom(cls)) {
                 return e.getValue();
             }
@@ -60,7 +60,7 @@ public abstract class TemplateFormatter<O> {
         return null;
     }
 
-    public static String stringRepr(String value) {
+    public static String stringRawRepr(String value) {
         return Utils.quote(value);
     }
 
@@ -69,11 +69,11 @@ public abstract class TemplateFormatter<O> {
     public abstract O format(ParsedEntry entry, List<Object> params);
 
 
-    public O createRepr(Object object) {
-        if (object == null) return createText(stringRepr("null"));
+    public O createRawRepr(Object object) {
+        if (object == null) return createText(stringRawRepr("null"));
         var cls = object.getClass();
-        var creator = resolveReprCreator(cls);
+        var creator = resolveRawReprCreator(cls);
         if (creator != null) return creator.apply(object);
-        return createText(stringRepr(String.valueOf(object)));
+        return createText(stringRawRepr(String.valueOf(object)));
     }
 }
