@@ -4,14 +4,16 @@ import xyz.bobkinn.indigoi18n.TemplateCache;
 import xyz.bobkinn.indigoi18n.data.TranslationInfo;
 import xyz.bobkinn.indigoi18n.format.I18nFormat;
 import xyz.bobkinn.indigoi18n.template.format.StringTemplateFormatter;
+import xyz.bobkinn.indigoi18n.template.format.TemplateFormatter;
 
 import java.util.List;
 
 public class StringI18nFormat extends I18nFormat<String> {
+    private final TemplateFormatter<String> templateFormatter;
 
     public StringI18nFormat(TemplateCache cache) {
         super(cache);
-        setTemplateFormatter(new StringTemplateFormatter());
+        templateFormatter = new StringTemplateFormatter();
     }
 
     @Override
@@ -25,6 +27,6 @@ public class StringI18nFormat extends I18nFormat<String> {
         if (parsed == null) {
             return info.key();
         }
-        return replaceArgs(parsed, args);
+        return templateFormatter.format(parsed, args);
     }
 }
