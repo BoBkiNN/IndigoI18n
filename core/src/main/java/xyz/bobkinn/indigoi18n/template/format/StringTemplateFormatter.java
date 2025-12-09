@@ -27,6 +27,12 @@ public class StringTemplateFormatter extends TemplateFormatter<String> {
         return value;
     }
 
+    private String formatNull(FormatSpec format) {
+        var nConv = getConverter(null);
+        if (nConv != null) return nConv.format(null, format);
+        return "null";
+    }
+
     private void formatArgument(StringBuilder builder, TemplateArgument arg, Object value) {
         var format = arg.getFormatSpec();
         Objects.requireNonNull(format, "no format set for argument "+arg);
@@ -38,7 +44,7 @@ public class StringTemplateFormatter extends TemplateFormatter<String> {
             return;
         }
         if (value == null) {
-            var res = ArgConverters.STRING_CONVERTER.format("null", format);
+            var res = formatNull(format);
             builder.append(res);
             return;
         }
@@ -59,7 +65,7 @@ public class StringTemplateFormatter extends TemplateFormatter<String> {
             var idx = arg.getIndex();
             if (idx >= params.size()) {
                 // unknown argument
-                result.append("%").append(idx);
+                result.append("%").append(idx+1);
                 return;
             }
             var p = params.get(idx);

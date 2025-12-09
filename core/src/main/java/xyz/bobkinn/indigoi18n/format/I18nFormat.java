@@ -39,13 +39,12 @@ public abstract class I18nFormat<T> {
     public abstract T replaceArguments(TranslationInfo info, T input, List<Object> args);
 
     /**
-     * Produces new object and replaces arguments inside if any passed.
+     * Produces new object and replaces arguments
      * @param text original text
      * @param args arguments
      */
     public T format(TranslationInfo info, String text, List<Object> args) {
         var obj = produce(text);
-        if (args.isEmpty()) return obj;
         return replaceArguments(info, obj, args);
     }
 
