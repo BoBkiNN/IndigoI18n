@@ -22,6 +22,9 @@ import java.util.Objects;
 public class I18n implements I18nBase {
     @Getter
     protected final Translations texts;
+    /**
+     * Resolver that is used to lookup texts to find text by key and language
+     */
     @Getter
     private @NotNull TranslationResolver resolver;
     private final Map<Class<?>, I18nFormat<?>> formats;
@@ -64,6 +67,7 @@ public class I18n implements I18nBase {
         return texts.infoFor(key, lang);
     }
 
+    @SuppressWarnings("unused")
     public void setResolver(TranslationResolver resolver) {
         this.resolver = Objects.requireNonNull(resolver);
     }
