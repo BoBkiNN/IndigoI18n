@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "xyz.bobkinn.indigoi18n"
-version = "1.0-SNAPSHOT"
+version = property("version") as String
 
 repositories {
     mavenCentral()

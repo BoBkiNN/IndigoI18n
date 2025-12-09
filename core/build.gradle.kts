@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "xyz.bobkinn.indigoi18n"
-version = "1.0-SNAPSHOT"
+version = rootProject.version
 
 repositories {
     mavenCentral()
