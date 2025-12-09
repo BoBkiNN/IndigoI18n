@@ -2,6 +2,7 @@ package xyz.bobkinn.indigoi18n.format.impl;
 
 import xyz.bobkinn.indigoi18n.format.I18nMixin;
 
+import java.util.Arrays;
 import java.util.List;
 
 @SuppressWarnings("unused")
