@@ -219,22 +219,21 @@ public class ArgConverters {
         return alignNumber(alignmentOrDefault(format, arg), format.getWidth(), signStr, formatted);
     };
 
-    public static  <T> String format(ArgumentConverter<T, String> conv, FormatPattern format, T value) {
-        var doRepr = format.isDoRepr();
-        if (doRepr) {
+    public static <T> String format(ArgumentConverter<T, String> conv, FormatPattern format, T value, boolean repr) {
+        if (repr) {
             var s = Utils.quote(String.valueOf(value));
             return STRING_CONVERTER.format(s, format);
         }
         return conv.format(value, format);
     }
 
-    public static  <T> String format(ArgumentConverter<T, String> conv, String format, boolean repr, T value) {
-        var f = FormatPattern.parse(format, repr);
-        return format(conv, f, value);
+    public static <T> String format(ArgumentConverter<T, String> conv, String format, T value, boolean repr) {
+        var f = FormatPattern.parse(format);
+        return format(conv, f, value, repr);
     }
 
-    public static  <T> String format(ArgumentConverter<T, String> conv, String format, T value) {
-        return format(conv, format, false, value);
+    public static <T> String format(ArgumentConverter<T, String> conv, String format, T value) {
+        return format(conv, format, value, false);
     }
 
 }

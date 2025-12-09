@@ -10,7 +10,6 @@ import xyz.bobkinn.indigoi18n.template.TemplateReader;
 @ToString
 public class FormatPattern {
     private final String source;
-    private final boolean doRepr;
     private final Alignment alignment;
     private final Sign sign;
     private final boolean special;
@@ -27,20 +26,16 @@ public class FormatPattern {
         } else return null;
     }
 
-    public static FormatPattern parse(String text, boolean doRepr) {
-        return readFormatSpec(new TemplateReader(text), doRepr);
-    }
-
-    public static FormatPattern newDefault(boolean repr) {
-        return new FormatPattern("", repr, null,
-                Sign.NEGATIVE, false, null, null, null, 's');
+    public static FormatPattern parse(String text) {
+        return readFormatSpec(new TemplateReader(text));
     }
 
     public static FormatPattern newDefault() {
-        return newDefault(false);
+        return new FormatPattern("", null,
+                Sign.NEGATIVE, false, null, null, null, 's');
     }
 
-    public static FormatPattern readFormatSpec(TemplateReader reader, boolean doRepr) {
+    public static FormatPattern readFormatSpec(TemplateReader reader) {
         reader.mark();
         var alignment = Alignment.read(reader);
         var sign = Sign.read(reader);
@@ -71,7 +66,7 @@ public class FormatPattern {
             type = reader.next();
         } else type = 's';
         var source = reader.markedPart();
-        return new FormatPattern(source, doRepr, alignment, sign, special, width, precision, intPartGrouping, type);
+        return new FormatPattern(source, alignment, sign, special, width, precision, intPartGrouping, type);
     }
 
     public enum AlignType {

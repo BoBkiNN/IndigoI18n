@@ -63,7 +63,7 @@ public class TestArgConverters {
     }
 
     private String formatStr(String spec, String text, boolean repr) {
-        return ArgConverters.format(ArgConverters.STRING_CONVERTER, spec, repr, text);
+        return ArgConverters.format(ArgConverters.STRING_CONVERTER, spec, text, repr);
     }
 
     static Stream<Arguments> provideStrFormats() {

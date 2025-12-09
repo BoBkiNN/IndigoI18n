@@ -36,12 +36,12 @@ public class TemplateProcessor {
         }
         final FormatPattern spec;
         if (reader.tryConsume(':')) {
-            spec = FormatPattern.readFormatSpec(reader, doRepr);
+            spec = FormatPattern.readFormatSpec(reader);
         } else {
-            spec = FormatPattern.newDefault(doRepr);
+            spec = FormatPattern.newDefault();
         }
         reader.consume('}');
-        return new TemplateArgument(argIndex, hasExplicitIndex, spec);
+        return new TemplateArgument(argIndex, hasExplicitIndex, spec, doRepr);
     }
 
     // TODO store source text into TemplateArgument
@@ -68,7 +68,7 @@ public class TemplateProcessor {
                     plainBlock.setLength(0);
                 }
                 // create arg
-                argConsumer.accept(new TemplateArgument(seqArgIdx, false, FormatPattern.newDefault()));
+                argConsumer.accept(new TemplateArgument(seqArgIdx, false, FormatPattern.newDefault(), false));
                 seqArgIdx++;
             } else if (ch == '%' && reader.hasUnsignedNumber()) {
                 var aIdx = reader.readUnsignedNumber()-1;
@@ -83,7 +83,7 @@ public class TemplateProcessor {
                     plainBlock.setLength(0);
                 }
                 // create arg
-                argConsumer.accept(new TemplateArgument(aIdx, true, FormatPattern.newDefault()));
+                argConsumer.accept(new TemplateArgument(aIdx, true, FormatPattern.newDefault(), false));
             } else if (ch == '%' && ch1 == '{') {
                 // flush plain
                 if (!plainBlock.isEmpty()) {

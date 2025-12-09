@@ -36,8 +36,7 @@ public class StringTemplateFormatter extends TemplateFormatter<String> {
     private void formatArgument(StringBuilder builder, TemplateArgument arg, Object value) {
         var format = arg.getPattern();
         Objects.requireNonNull(format, "no format set for argument "+arg);
-        var doRepr = format.isDoRepr();
-        if (doRepr) {
+        if (arg.isDoRepr()) {
             var repr = createRepr(value);
             var res = ArgConverters.STRING_CONVERTER.format(repr, format);
             builder.append(res);

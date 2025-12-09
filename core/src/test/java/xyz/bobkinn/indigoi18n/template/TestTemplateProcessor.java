@@ -67,7 +67,7 @@ public class TestTemplateProcessor {
     @Test
     public void testFormatSpec() {
         var tr = new TemplateReader("_>10_.5E");
-        var fs = FormatPattern.readFormatSpec(tr, false);
+        var fs = FormatPattern.readFormatSpec(tr);
         System.out.println(fs);
         assertEquals(10, fs.getWidth());
         assertEquals(5, fs.getPrecision());
