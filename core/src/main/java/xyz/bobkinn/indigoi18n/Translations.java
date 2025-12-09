@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.bobkinn.indigoi18n.data.TranslationInfo;
 import xyz.bobkinn.indigoi18n.source.SourceTextAdder;
+import xyz.bobkinn.indigoi18n.source.TranslationLoadError;
 import xyz.bobkinn.indigoi18n.source.TranslationSource;
 
 import java.util.*;
@@ -31,7 +32,12 @@ public class Translations {
 
     public void load(@NotNull TranslationSource source) {
         var adder = new SourceTextAdder(this::put);
-        source.load(adder);
+        try {
+            source.load(adder);
+        } catch (Exception e) {
+            throw new TranslationLoadError("Failed to load source %s (%s)"
+                    .formatted(source, source.getLocation()), e);
+        }
         var added = adder.getAdded();
         keysBySource.put(source, adder.getAddedKeys());
         for (var e : added.entrySet()) {
