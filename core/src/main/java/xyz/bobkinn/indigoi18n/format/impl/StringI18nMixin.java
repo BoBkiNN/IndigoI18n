@@ -11,6 +11,6 @@ public interface StringI18nMixin extends I18nMixin {
     }
 
     default String parse(String lang, String key, Object... args) {
-        return parse(lang, key, List.of(args));
+        return parse(lang, key, Arrays.asList(args));
     }
 }
