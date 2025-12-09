@@ -35,6 +35,12 @@ public abstract class TemplateFormatter<O> {
         // anything other will be quoted as default behaviour
     }
 
+    /**
+     * Returns converter based value class. <br>
+     * If value is null, then null is key for converters map and null converter is returned if it set.
+     * @param value value to find converter for
+     * @return argument converter for this value of argument
+     */
     @SuppressWarnings("unchecked")
     public <T> ArgumentConverter<T, O> getConverter(@Nullable T value) {
         var key = value == null ? null : value.getClass();
