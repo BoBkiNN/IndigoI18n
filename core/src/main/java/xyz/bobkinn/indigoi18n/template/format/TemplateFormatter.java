@@ -1,5 +1,6 @@
 package xyz.bobkinn.indigoi18n.template.format;
 
+import org.jetbrains.annotations.Nullable;
 import xyz.bobkinn.indigoi18n.data.ParsedEntry;
 import xyz.bobkinn.indigoi18n.template.arg.ArgumentConverter;
 import xyz.bobkinn.indigoi18n.template.Utils;
@@ -10,6 +11,9 @@ import java.util.Map;
 import java.util.function.Function;
 
 public abstract class TemplateFormatter<O> {
+    /**
+     * Map of class type to its converter. null key may be mapped to null value converter
+     */
     protected final Map<Class<?>, ArgumentConverter<?, O>> converters = new HashMap<>();
     protected final Map<Class<?>, Function<Object, O>> reprCreators = new HashMap<>();
 
@@ -32,8 +36,9 @@ public abstract class TemplateFormatter<O> {
     }
 
     @SuppressWarnings("unchecked")
-    public <T> ArgumentConverter<T, O> getConverter(T value) {
-        return (ArgumentConverter<T, O>) converters.get(value.getClass());
+    public <T> ArgumentConverter<T, O> getConverter(@Nullable T value) {
+        var key = value == null ? null : value.getClass();
+        return (ArgumentConverter<T, O>) converters.get(key);
     }
 
     protected Function<Object, O> resolveReprCreator(Class<?> cls) {
