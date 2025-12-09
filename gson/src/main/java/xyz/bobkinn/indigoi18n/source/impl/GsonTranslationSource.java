@@ -4,11 +4,13 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.bobkinn.indigoi18n.source.ISourceTextAdder;
+import xyz.bobkinn.indigoi18n.source.SingleLangSource;
 import xyz.bobkinn.indigoi18n.source.TranslationLoadError;
 import xyz.bobkinn.indigoi18n.source.TranslationSource;
 
@@ -24,7 +26,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 @RequiredArgsConstructor
-public class GsonTranslationSource implements TranslationSource {
+public class GsonTranslationSource implements TranslationSource, SingleLangSource {
 
     private static final TypeToken<Map<String, String>> TOKEN = new TypeToken<>() {
     };
@@ -32,6 +34,7 @@ public class GsonTranslationSource implements TranslationSource {
     private final @Nullable URI location;
     private final Function<Gson, JsonElement> jsonSupplier;
     private final Supplier<Gson> gsonSupplier;
+    @Getter
     private final String language;
 
     private static final Supplier<Gson> DEFAULT_GSON_SUPPLIER = Gson::new;

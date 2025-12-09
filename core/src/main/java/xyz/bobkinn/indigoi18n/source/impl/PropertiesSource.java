@@ -1,10 +1,12 @@
 package xyz.bobkinn.indigoi18n.source.impl;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.bobkinn.indigoi18n.source.ISourceTextAdder;
+import xyz.bobkinn.indigoi18n.source.SingleLangSource;
 import xyz.bobkinn.indigoi18n.source.TranslationLoadError;
 import xyz.bobkinn.indigoi18n.source.TranslationSource;
 
@@ -18,8 +20,9 @@ import java.util.Properties;
  */
 @SuppressWarnings("unused")
 @RequiredArgsConstructor
-public class PropertiesSource implements TranslationSource {
+public class PropertiesSource implements TranslationSource, SingleLangSource {
     private final URI location;
+    @Getter
     private final String language;
     private final Properties properties;
 
