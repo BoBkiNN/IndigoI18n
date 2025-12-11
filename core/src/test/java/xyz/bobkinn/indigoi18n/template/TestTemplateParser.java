@@ -94,4 +94,13 @@ public class TestTemplateParser {
     void testEntrySize(String template, int expectedSize) {
         assertEquals(expectedSize, TemplateParser.parse(template).parts().size());
     }
+
+    @ParameterizedTest
+    @CsvSource({
+            "'%%s', '%s'",
+            "'%%{s:.3e}', '%{s:.3e}'",
+    })
+    void testEscaping(String template, String text) {
+        assertEquals(text, TemplateParser.parse(template).parts().get(0));
+    }
 }
