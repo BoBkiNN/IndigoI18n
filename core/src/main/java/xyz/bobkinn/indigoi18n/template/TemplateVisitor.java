@@ -6,4 +6,6 @@ public interface TemplateVisitor {
     void visitPlain(String text);
 
     void visitArgument(TemplateArgument argument);
+
+    void visitInline(InlineTranslation inline);
 }

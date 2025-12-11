@@ -1,27 +1,19 @@
 package xyz.bobkinn.indigoi18n.template;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
+import xyz.bobkinn.indigoi18n.template.arg.TemplateArgument;
 import xyz.bobkinn.indigoi18n.template.format.FormatPattern;
+
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestTemplateParser {
-    @Test
-    public void test1() {
-        final int[] pn = {0};
-        final int[] an = {0};
-        TemplateParser.parse("hello %s", s -> {
-            pn[0]++;
-            assertEquals("hello ", s);
-        }, a -> {
-            an[0]++;
-            assertEquals(0, a.getIndex());
-        });
-        assertEquals(1, pn[0]);
-        assertEquals(1, an[0]);
-    }
 
     @Test
     public void testAlignBoth() {
@@ -102,5 +94,33 @@ public class TestTemplateParser {
     })
     void testEscaping(String template, String text) {
         assertEquals(text, TemplateParser.parse(template).parts().get(0));
+    }
+
+    static Stream<Arguments> provideInlineArgs() {
+        return Stream.of(
+                Arguments.of("abc", new InlineTranslation("abc")),
+                Arguments.of("abc:", new InlineTranslation("abc")),
+                Arguments.of("abc::", new InlineTranslation("abc")),
+                Arguments.of("abc::", new InlineTranslation("abc")),
+                Arguments.of("abc:2:", new InlineTranslation("abc", 2, null)),
+                Arguments.of("abc:26:", new InlineTranslation("abc", 26, null)),
+                Arguments.of("abc:2:en", new InlineTranslation("abc", 2, "en")),
+                Arguments.of("abc::en", new InlineTranslation("abc", 1, "en"))
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideInlineArgs")
+    void testInlineParse(String input, InlineTranslation expected) {
+        Assertions.assertEquals(expected, TemplateParser.readInline(new TemplateReader(input)));
+    }
+
+    @Test
+    void testInlines() {
+        var entry = TemplateParser.parse("%s%{t:key}lol");
+        assertInstanceOf(TemplateArgument.class, entry.part(0));
+        assertEquals(new InlineTranslation("key"), entry.part(1));
+        assertEquals("lol", entry.part(2));
+        assertEquals(3, entry.parts().size());
     }
 }

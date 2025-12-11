@@ -1,6 +1,7 @@
 package xyz.bobkinn.indigoi18n.template;
 
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
 public class TemplateReader {
     private final String text;
@@ -100,6 +101,48 @@ public class TemplateReader {
             );
         }
         return text.charAt(idx);
+    }
+
+    /**
+     * Reads characters from the current position up to (but not including) the specified delimiter.
+     * <p>
+     * If {@code requireDelimiter} is {@code true}, the method throws an {@link IllegalStateException}
+     * if the delimiter is not found. If {@code requireDelimiter} is {@code false}, the method
+     * returns all remaining characters up to the end of the text when the delimiter is not found.
+     * <p>
+     * The {@code next} position is updated as follows:
+     * <ul>
+     *     <li>If the delimiter is found, {@code next} points to the first character of the delimiter.</li>
+     *     <li>If the delimiter is not found and {@code requireDelimiter} is {@code false}, {@code next} points to the end of the text.</li>
+     * </ul>
+     *
+     * @param delimiter the string to read until; must not be empty
+     * @param requireDelimiter if {@code true}, throws an exception if the delimiter is not found;
+     *                         if {@code false}, returns the rest of the text when delimiter is absent
+     * @return the substring from the current position up to (but not including) the delimiter,
+     *         or the remaining text if the delimiter is not found and {@code requireDelimiter} is {@code false}
+     * @throws IllegalArgumentException if {@code delimiter} is empty
+     * @throws IllegalStateException if {@code requireDelimiter} is {@code true} and the delimiter is not found
+     */
+
+    public String readUntil(@NotNull String delimiter, boolean requireDelimiter) {
+        if (delimiter.isEmpty()) {
+            throw new IllegalArgumentException("Delimiter cannot be empty");
+        }
+
+        int start = next;
+        int idx = text.indexOf(delimiter, next);
+        if (requireDelimiter) {
+            if (idx == -1) {
+                throw new IllegalStateException("Delimiter '" + delimiter + "' not found");
+            }
+            next = idx; // move next to the start of delimiter
+        } else {
+            // use entire string if delimiter not found
+            next = text.length();
+        }
+
+        return text.substring(start, next);
     }
 }
 

@@ -1,11 +1,12 @@
 package xyz.bobkinn.indigoi18n.template;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import xyz.bobkinn.indigoi18n.data.ParsedEntry;
 import xyz.bobkinn.indigoi18n.template.arg.TemplateArgument;
 import xyz.bobkinn.indigoi18n.template.format.FormatPattern;
 
 import java.util.ArrayList;
-import java.util.function.Consumer;
 
 public class TemplateParser {
 
@@ -39,8 +40,40 @@ public class TemplateParser {
         return new TemplateArgument(argIndex, hasExplicitIndex, spec, repr);
     }
 
+    @Contract("_ -> new")
+    public static @NotNull InlineTranslation readInline(@NotNull TemplateReader reader) {
+        StringBuilder key = new StringBuilder();
+        char peeked = reader.peek();
+        while (reader.hasNext() && peeked != ':' && peeked != '}') {
+            key.append(reader.next());
+            if (!reader.hasNext()) break;
+            peeked = reader.peek();
+        }
+        if (key.isEmpty() || key.toString().isBlank()) {
+            throw new IllegalArgumentException("key is empty");
+        }
+        int depth = 1;
+        String lang = null;
+        if (reader.tryConsume(':')) {
+            if (reader.hasUnsignedNumber()) {
+                depth = reader.readUnsignedNumber();
+            }
+            // second colon
+            if (reader.tryConsume(':')) {
+                lang = reader.readUntil("}", false); // do not require delimiter for tests
+                if (lang.isEmpty()) {
+                    // treat missing language as default language
+                    lang = null;
+                } else if (lang.isBlank()) {
+                    throw new IllegalArgumentException("language is blank");
+                }
+            }
+        }
+        return new InlineTranslation(key.toString(), depth, lang);
+    }
+
     // TODO store source text into TemplateArgument
-    public static void parse(String text, Consumer<String> plainConsumer, Consumer<TemplateArgument> argConsumer) {
+    public static void parse(String text, TemplateVisitor visitor) {
         var reader = new TemplateReader(text);
         int seqArgIdx = 0;
         var plainBlock = new StringBuilder();
@@ -59,11 +92,11 @@ public class TemplateParser {
                 reader.skip();
                 // flush plain
                 if (!plainBlock.isEmpty()) {
-                    plainConsumer.accept(plainBlock.toString());
+                    visitor.visitPlain(plainBlock.toString());
                     plainBlock.setLength(0);
                 }
                 // create arg
-                argConsumer.accept(new TemplateArgument(seqArgIdx, false, FormatPattern.newDefault(), null));
+                visitor.visitArgument(new TemplateArgument(seqArgIdx, false, FormatPattern.newDefault(), null));
                 seqArgIdx++;
             } else if (ch == '%' && reader.hasUnsignedNumber()) {
                 var aIdx = reader.readUnsignedNumber()-1;
@@ -74,38 +107,66 @@ public class TemplateParser {
                 }
                 // flush plain
                 if (!plainBlock.isEmpty()) {
-                    plainConsumer.accept(plainBlock.toString());
+                    visitor.visitPlain(plainBlock.toString());
                     plainBlock.setLength(0);
                 }
                 // create arg
-                argConsumer.accept(new TemplateArgument(aIdx, true, FormatPattern.newDefault(), null));
+                visitor.visitArgument(new TemplateArgument(aIdx, true, FormatPattern.newDefault(), null));
             } else if (ch == '%' && ch1 == '{') {
                 // flush plain
                 if (!plainBlock.isEmpty()) {
-                    plainConsumer.accept(plainBlock.toString());
+                    visitor.visitPlain(plainBlock.toString());
                     plainBlock.setLength(0);
                 }
                 reader.consume('{');
-                // read arg
-                var arg = readArg(reader, seqArgIdx);
-                if (!arg.isHasExplicitIndex()) {
-                    seqArgIdx++;
+                if (reader.tryConsume('t')) {
+                    reader.consume(':');
+                    // inline translation
+                    InlineTranslation tr;
+                    try {
+                        tr = readInline(reader);
+                    } catch (Exception e) {
+                        throw new IllegalArgumentException("Failed to read inline translation", e);
+                    }
+                    visitor.visitInline(tr);
+                } else {
+                    // read arg
+                    var arg = readArg(reader, seqArgIdx);
+                    if (!arg.isHasExplicitIndex()) {
+                        seqArgIdx++;
+                    }
+                    visitor.visitArgument(arg);
                 }
                 reader.consume('}');
-                argConsumer.accept(arg);
             } else {
                 plainBlock.append(ch);
             }
         }
         if (!plainBlock.isEmpty()) {
-            plainConsumer.accept(plainBlock.toString());
+            visitor.visitPlain(plainBlock.toString());
         }
     }
 
     public static ParsedEntry parse(String text) {
         var ls = new ArrayList<>();
+        var visitor = new TemplateVisitor() {
+            @Override
+            public void visitPlain(String text) {
+                ls.add(text);
+            }
+
+            @Override
+            public void visitArgument(TemplateArgument argument) {
+                ls.add(argument);
+            }
+
+            @Override
+            public void visitInline(InlineTranslation inline) {
+                ls.add(inline);
+            }
+        };
         try {
-            parse(text, ls::add, ls::add);
+            parse(text, visitor);
         } catch (Exception e) {
             throw new TemplateParseException("Failed to parse text '%s'".formatted(text), e);
         }

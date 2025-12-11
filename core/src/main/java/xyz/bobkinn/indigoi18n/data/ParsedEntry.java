@@ -12,6 +12,11 @@ import java.util.function.Consumer;
  * @param parts Each part is either String or {@link TemplateArgument}. Order of elements must be saved. Never empty
  */
 public record ParsedEntry(List<Object> parts) {
+
+    public Object part(int index) {
+        return parts.get(index);
+    }
+
     // TODO use visitor to visit different types of parts
     public void process(Consumer<String> textConsumer, Consumer<TemplateArgument> argConsumer) {
         for (var part : parts) {
