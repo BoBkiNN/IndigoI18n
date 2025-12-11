@@ -10,7 +10,10 @@ import org.jetbrains.annotations.Nullable;
 @RequiredArgsConstructor
 public class InlineTranslation {
     private final String key;
-    private final int depth;
+    /**
+     * Maximum recursion depth. 0 means no inlining is happening
+     */
+    private final int maxDepth;
     private final @Nullable String lang;
 
     public InlineTranslation(String key) {

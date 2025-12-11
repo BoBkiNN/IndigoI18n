@@ -15,7 +15,7 @@ public class TestStringTemplateFormatter {
 
     private String formatStr(String text, Object... args) {
         var entry = TemplateParser.parse(text);
-        return strF.format(entry, Arrays.asList(args));
+        return strF.format(null, entry, Arrays.asList(args));
     }
 
     static Stream<Arguments> provideStrFormatCases() {

@@ -1,6 +1,7 @@
 package xyz.bobkinn.indigoi18n.template.format;
 
 import org.jetbrains.annotations.Nullable;
+import xyz.bobkinn.indigoi18n.context.Context;
 import xyz.bobkinn.indigoi18n.data.ParsedEntry;
 import xyz.bobkinn.indigoi18n.template.arg.ArgumentConverter;
 import xyz.bobkinn.indigoi18n.template.Utils;
@@ -76,7 +77,7 @@ public abstract class TemplateFormatter<O> {
 
     public abstract O createText(String value);
 
-    public abstract O format(ParsedEntry entry, List<Object> params);
+    public abstract O format(Context ctx, ParsedEntry entry, List<Object> params);
 
 
     public O createRawRepr(Object object) {

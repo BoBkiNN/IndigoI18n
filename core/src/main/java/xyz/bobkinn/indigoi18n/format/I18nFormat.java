@@ -1,6 +1,7 @@
 package xyz.bobkinn.indigoi18n.format;
 
 import lombok.RequiredArgsConstructor;
+import xyz.bobkinn.indigoi18n.context.Context;
 import xyz.bobkinn.indigoi18n.data.TemplateCache;
 import xyz.bobkinn.indigoi18n.Translations;
 import xyz.bobkinn.indigoi18n.data.TranslationInfo;
@@ -29,16 +30,16 @@ public abstract class I18nFormat<T> {
     /**
      * Replaces arguments inside input original object
      */
-    public abstract T replaceArguments(TranslationInfo info, T input, List<Object> args);
+    public abstract T replaceArguments(Context ctx, T input, List<Object> args);
 
     /**
      * Produces new object and replaces arguments
      * @param text original text
      * @param args arguments
      */
-    public T format(TranslationInfo info, String text, List<Object> args) {
+    public T format(Context ctx, String text, List<Object> args) {
         var obj = produce(text);
-        return replaceArguments(info, obj, args);
+        return replaceArguments(ctx, obj, args);
     }
 
 }

@@ -1,5 +1,9 @@
 package xyz.bobkinn.indigoi18n;
 
+import org.jetbrains.annotations.Nullable;
+import xyz.bobkinn.indigoi18n.context.Context;
+import xyz.bobkinn.indigoi18n.context.impl.LangKeyContext;
+import xyz.bobkinn.indigoi18n.context.impl.SourceContext;
 import xyz.bobkinn.indigoi18n.data.TranslationInfo;
 import xyz.bobkinn.indigoi18n.format.I18nFormat;
 
@@ -13,7 +17,24 @@ public interface I18nBase {
 
     TranslationInfo infoFor(String lang, String key);
 
-    default <T> T parse(Class<T> cls, String lang, String key, List<Object> args) {
-        return getFormat(cls).format(infoFor(lang, key), get(key, lang), args);
+    default Context newContext(@Nullable TranslationInfo info, String lang, String key) {
+        var ctx = new Context(null, this);
+        if (info != null) {
+            ctx.set(new SourceContext(info.source()));
+        }
+        ctx.set(new LangKeyContext(lang, key));
+        return ctx;
+    }
+
+    default Context newContext(String lang, String key) {
+        return newContext(null, lang, key);
+    }
+
+    default <T> T parse(Class<T> cls, @Nullable Context ctx, String lang, String key, List<Object> args) {
+        var info = infoFor(lang, key);
+        var targetCtx = ctx != null ? ctx : newContext(info, lang, key);
+        // compute source context if available
+        if (info != null) targetCtx.compute(SourceContext.class, () -> new SourceContext(info.source()));
+        return getFormat(cls).format(targetCtx, get(key, lang), args);
     }
 }
