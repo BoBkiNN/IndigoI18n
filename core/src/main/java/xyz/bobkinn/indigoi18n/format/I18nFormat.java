@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import xyz.bobkinn.indigoi18n.context.Context;
 import xyz.bobkinn.indigoi18n.data.TemplateCache;
 import xyz.bobkinn.indigoi18n.Translations;
-import xyz.bobkinn.indigoi18n.data.TranslationInfo;
 
 import java.util.List;
 
