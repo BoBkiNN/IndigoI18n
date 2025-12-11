@@ -77,7 +77,7 @@ public class TestTemplateParser {
 
     @Test
     public void testFormatSource() {
-        var tr = new TemplateReader("{:_^10}");
+        var tr = new TemplateReader(":_^10");
         var arg = TemplateParser.readArg(tr, 0);
         assertNotNull(arg.getPattern());
         assertEquals("_^10", arg.getPattern().getSource());

@@ -10,7 +10,6 @@ import java.util.function.Consumer;
 public class TemplateParser {
 
     public static TemplateArgument readArg(TemplateReader reader, int seqIdx) {
-        reader.consume('{');
         int argIndex = seqIdx;
         boolean hasExplicitIndex = false;
         if (reader.hasUnsignedNumber()) {
@@ -37,7 +36,6 @@ public class TemplateParser {
         } else {
             spec = FormatPattern.newDefault();
         }
-        reader.consume('}');
         return new TemplateArgument(argIndex, hasExplicitIndex, spec, repr);
     }
 
@@ -87,11 +85,13 @@ public class TemplateParser {
                     plainConsumer.accept(plainBlock.toString());
                     plainBlock.setLength(0);
                 }
+                reader.consume('{');
                 // read arg
                 var arg = readArg(reader, seqArgIdx);
                 if (!arg.isHasExplicitIndex()) {
                     seqArgIdx++;
                 }
+                reader.consume('}');
                 argConsumer.accept(arg);
             } else {
                 plainBlock.append(ch);
