@@ -92,7 +92,7 @@ public class StringTemplateFormatter extends TemplateFormatter<String> {
 
             @Override
             public void visitInline(InlineTranslation inline) {
-
+                // TODO impl
             }
         });
         return result.toString();
