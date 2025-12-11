@@ -7,7 +7,6 @@ import xyz.bobkinn.indigoi18n.template.TemplateVisitor;
 import xyz.bobkinn.indigoi18n.template.arg.TemplateArgument;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 /**
  * This class represents parsed text.
