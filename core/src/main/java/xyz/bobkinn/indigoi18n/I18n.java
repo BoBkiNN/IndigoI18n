@@ -4,7 +4,7 @@ import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import xyz.bobkinn.indigoi18n.data.TranslationInfo;
 import xyz.bobkinn.indigoi18n.format.I18nFormat;
-import xyz.bobkinn.indigoi18n.resolver.BasicTranslationResolver;
+import xyz.bobkinn.indigoi18n.resolver.DefaultTranslationResolver;
 import xyz.bobkinn.indigoi18n.resolver.TranslationResolver;
 import xyz.bobkinn.indigoi18n.source.TranslationSource;
 
@@ -31,7 +31,7 @@ public class I18n implements I18nBase {
 
     public I18n() {
         texts = new Translations();
-        resolver = new BasicTranslationResolver();
+        resolver = new DefaultTranslationResolver();
         formats = new HashMap<>();
         addDefaultFormats();
     }

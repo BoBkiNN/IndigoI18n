@@ -3,9 +3,9 @@ package xyz.bobkinn.indigoi18n.resolver;
 import xyz.bobkinn.indigoi18n.Translations;
 
 /**
- * Returns key if exact translation for exact language not found
+ * Returns key if exact translation for exact language not found inside {@link Translations} texts map
  */
-public class BasicTranslationResolver implements TranslationResolver {
+public class DefaultTranslationResolver implements TranslationResolver {
 
     @Override
     public String get(Translations texts, String key, String lang) {
