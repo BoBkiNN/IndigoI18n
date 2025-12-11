@@ -1,8 +1,6 @@
 package xyz.bobkinn.indigoi18n.template.format;
 
 import xyz.bobkinn.indigoi18n.context.Context;
-import xyz.bobkinn.indigoi18n.context.impl.InlineContext;
-import xyz.bobkinn.indigoi18n.context.impl.LangKeyContext;
 import xyz.bobkinn.indigoi18n.data.ParsedEntry;
 import xyz.bobkinn.indigoi18n.template.InlineTranslation;
 import xyz.bobkinn.indigoi18n.template.TemplateVisitor;
@@ -106,27 +104,8 @@ public class StringTemplateFormatter extends TemplateFormatter<String> {
         return result.toString();
     }
 
-    private static void formatInline(InlineTranslation inline, Context ctx, StringBuilder result, List<Object> params) {
-        int cd = ctx.getOptional(InlineContext.class)
-                .map(InlineContext::getRemainingDepth)
-                .orElse(inline.getMaxDepth());
-        var key = inline.getKey();
-        if (cd <= 0) {
-            // no remaining depth
-            throw new IllegalStateException("Depth limit exceeded");
-        }
-        var i18n = ctx.resolveI18n();
-        var sub = ctx.sub();
-        sub.set(new InlineContext(cd-1));
-        String targetLang;
-        if (inline.getLang() != null) {
-            targetLang = inline.getLang();
-        } else {
-            targetLang = ctx.resolveOptional(LangKeyContext.class)
-                    .map(LangKeyContext::getLang)
-                    .orElseThrow(() -> new IllegalStateException("No language in current context tree"));
-        }
-        var res = i18n.parse(String.class, sub, targetLang, key, params);
+    private void formatInline(InlineTranslation inline, Context ctx, StringBuilder result, List<Object> params) {
+        var res = formatInline(String.class, inline, ctx, params);
         result.append(res);
     }
 }

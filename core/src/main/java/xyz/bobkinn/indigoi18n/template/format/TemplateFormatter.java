@@ -1,8 +1,12 @@
 package xyz.bobkinn.indigoi18n.template.format;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.bobkinn.indigoi18n.context.Context;
+import xyz.bobkinn.indigoi18n.context.impl.InlineContext;
+import xyz.bobkinn.indigoi18n.context.impl.LangKeyContext;
 import xyz.bobkinn.indigoi18n.data.ParsedEntry;
+import xyz.bobkinn.indigoi18n.template.InlineTranslation;
 import xyz.bobkinn.indigoi18n.template.arg.ArgumentConverter;
 import xyz.bobkinn.indigoi18n.template.Utils;
 
@@ -86,5 +90,41 @@ public abstract class TemplateFormatter<O> {
         var creator = resolveRawReprCreator(cls);
         if (creator != null) return creator.apply(object);
         return createText(stringRawRepr(String.valueOf(object)));
+    }
+
+    /**
+     * Uses {@link xyz.bobkinn.indigoi18n.I18nBase#parse(Class, Context, String, String, List) parse method}
+     * to parse and return text specified by key and translation inside {@link InlineTranslation}.<br>
+     * Each inlining decreases remaining depth in passed sub-context.<br>
+     * When no inlining were previously done, remaining depth is equals to maxDepth from {@link InlineTranslation}.<br>
+     * If remaining depth <= 0, exception is thrown.<br>
+     * If context tree does not contain {@link LangKeyContext} when language override not declared,
+     * exception is thrown.
+     * @param cls output class
+     * @param params list of arguments
+     */
+    protected O formatInline(@SuppressWarnings("SameParameterValue") Class<O> cls,
+                             @NotNull InlineTranslation inline,
+                             @NotNull Context ctx, List<Object> params) {
+        int cd = ctx.getOptional(InlineContext.class)
+                .map(InlineContext::getRemainingDepth)
+                .orElse(inline.getMaxDepth());
+        var key = inline.getKey();
+        if (cd <= 0) {
+            // no remaining depth
+            throw new IllegalStateException("Depth limit exceeded");
+        }
+        var i18n = ctx.resolveI18n();
+        var sub = ctx.sub();
+        sub.set(new InlineContext(cd-1));
+        String targetLang;
+        if (inline.getLang() != null) {
+            targetLang = inline.getLang();
+        } else {
+            targetLang = ctx.resolveOptional(LangKeyContext.class)
+                    .map(LangKeyContext::getLang)
+                    .orElseThrow(() -> new IllegalStateException("No language in current context tree"));
+        }
+        return i18n.parse(cls, sub, targetLang, key, params);
     }
 }
