@@ -1,6 +1,8 @@
 package xyz.bobkinn.indigoi18n.template.format;
 
 import xyz.bobkinn.indigoi18n.data.ParsedEntry;
+import xyz.bobkinn.indigoi18n.template.InlineTranslation;
+import xyz.bobkinn.indigoi18n.template.TemplateVisitor;
 import xyz.bobkinn.indigoi18n.template.arg.ArgConverters;
 import xyz.bobkinn.indigoi18n.template.arg.TemplateArgument;
 
@@ -70,15 +72,28 @@ public class StringTemplateFormatter extends TemplateFormatter<String> {
     @Override
     public String format(ParsedEntry entry, List<Object> params) {
         var result = new StringBuilder();
-        entry.process(result::append, arg -> {
-            var idx = arg.getIndex();
-            if (idx >= params.size()) {
-                // unknown argument
-                result.append("%").append(idx+1);
-                return;
+        entry.visit(new TemplateVisitor() {
+            @Override
+            public void visitPlain(String text) {
+                result.append(text);
             }
-            var p = params.get(idx);
-            formatArgument(result, arg, p);
+
+            @Override
+            public void visitArgument(TemplateArgument arg) {
+                var idx = arg.getIndex();
+                if (idx >= params.size()) {
+                    // unknown argument
+                    result.append("%").append(idx+1);
+                    return;
+                }
+                var p = params.get(idx);
+                formatArgument(result, arg, p);
+            }
+
+            @Override
+            public void visitInline(InlineTranslation inline) {
+
+            }
         });
         return result.toString();
     }

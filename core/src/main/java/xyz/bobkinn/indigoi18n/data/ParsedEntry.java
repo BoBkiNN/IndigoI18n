@@ -2,6 +2,8 @@ package xyz.bobkinn.indigoi18n.data;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import xyz.bobkinn.indigoi18n.template.InlineTranslation;
+import xyz.bobkinn.indigoi18n.template.TemplateVisitor;
 import xyz.bobkinn.indigoi18n.template.arg.TemplateArgument;
 
 import java.util.List;
@@ -17,11 +19,11 @@ public record ParsedEntry(List<Object> parts) {
         return parts.get(index);
     }
 
-    // TODO use visitor to visit different types of parts
-    public void process(Consumer<String> textConsumer, Consumer<TemplateArgument> argConsumer) {
+    public void visit(TemplateVisitor visitor) {
         for (var part : parts) {
-            if (part instanceof String s) textConsumer.accept(s);
-            else if (part instanceof TemplateArgument arg) argConsumer.accept(arg);
+            if (part instanceof String s) visitor.visitPlain(s);
+            else if (part instanceof TemplateArgument arg) visitor.visitArgument(arg);
+            else if (part instanceof InlineTranslation inline) visitor.visitInline(inline);
             else throw new IllegalArgumentException("Unknown part type: "+part);
         }
     }
