@@ -5,6 +5,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.bobkinn.indigoi18n.data.TemplateCache;
+import xyz.bobkinn.indigoi18n.data.Translation;
 import xyz.bobkinn.indigoi18n.data.TranslationInfo;
 import xyz.bobkinn.indigoi18n.source.SourceTextAdder;
 import xyz.bobkinn.indigoi18n.source.TranslationLoadError;
@@ -18,7 +19,7 @@ public class Translations {
     /**
      * Map of key to map of language to text
      */
-    private final Map<String, Map<String, String>> texts = new ConcurrentHashMap<>(512);
+    private final Map<String, Map<String, Translation>> texts = new ConcurrentHashMap<>(512);
     /**
      * Map of source to map of language to keys
      */
@@ -44,7 +45,8 @@ public class Translations {
         for (var e : added.entrySet()) {
             // pair of key and language
             var pair = e.getKey();
-            cache.createCache(e.getValue(), new TranslationInfo(source, pair.getValue(), pair.getKey()));
+            var info = new TranslationInfo(source, pair.getValue(), pair.getKey());
+            e.getValue().createCache(cache, info);
         }
     }
 
@@ -56,7 +58,7 @@ public class Translations {
             var keys = e.getValue();
             for (var key : keys) {
                 var text = remove(lang, key);
-                if (text != null) cache.resetCache(text);
+                if (text != null) text.resetCache(cache);
             }
         }
     }
@@ -120,7 +122,7 @@ public class Translations {
 
     // end sources info
 
-    public void put(String key, String lang, String text) {
+    public void put(String key, String lang, Translation text) {
         texts.computeIfAbsent(key, (s) -> new ConcurrentHashMap<>())
                 .put(lang, text);
     }
@@ -133,7 +135,7 @@ public class Translations {
      * @return text with this key and language or "or" argument
      */
     @Contract("_,_,!null -> !null")
-    public String getOr(String key, String lang, String or) {
+    public Translation getOr(String key, String lang, Translation or) {
         var lm = texts.get(key);
         if (lm == null) return or;
         var v = lm.get(lang);
@@ -141,7 +143,7 @@ public class Translations {
         return v;
     }
 
-    public String remove(String lang, String key) {
+    public Translation remove(String lang, String key) {
         var m = texts.get(key);
         if (m == null) return null;
         return m.remove(lang);

@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import xyz.bobkinn.indigoi18n.data.Translation;
 import xyz.bobkinn.indigoi18n.source.ISourceTextAdder;
 import xyz.bobkinn.indigoi18n.source.SingleLangSource;
 import xyz.bobkinn.indigoi18n.source.TranslationLoadError;
@@ -53,7 +54,7 @@ public class PropertiesSource implements TranslationSource, SingleLangSource {
         var keys = properties.stringPropertyNames();
         for (String key : keys) {
             var v = properties.getProperty(key);
-            to.add(key, language, v);
+            to.add(key, language, Translation.create(v));
         }
     }
 

@@ -1,6 +1,9 @@
 package xyz.bobkinn.indigoi18n.source.impl;
 
+import com.google.gson.JsonObject;
 import org.junit.jupiter.api.Test;
+import xyz.bobkinn.indigoi18n.data.DefaultTranslation;
+import xyz.bobkinn.indigoi18n.data.Translation;
 import xyz.bobkinn.indigoi18n.source.ISourceTextAdder;
 
 import java.io.File;
@@ -13,11 +16,12 @@ import static org.junit.jupiter.api.Assertions.*;
 class GsonTranslationSourceTest {
 
     static class TestAdder implements ISourceTextAdder {
+        // TODO store Translation here instead of forcing DefaultTranslation in add()
         Map<String, String> data = new HashMap<>();
 
         @Override
-        public void add(String key, String language, String value) {
-            data.put(key, value);
+        public void add(String key, String language, Translation value) {
+            data.put(key, ((DefaultTranslation) value).getText());
         }
     }
 
@@ -42,7 +46,7 @@ class GsonTranslationSourceTest {
 
     @Test
     void testLoadFromElement() {
-        var json = new com.google.gson.JsonObject();
+        var json = new JsonObject();
         json.addProperty("key1", "value1");
         json.addProperty("key2", "value2");
 

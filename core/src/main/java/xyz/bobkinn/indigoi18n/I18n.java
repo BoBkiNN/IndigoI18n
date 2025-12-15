@@ -2,6 +2,7 @@ package xyz.bobkinn.indigoi18n;
 
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
+import xyz.bobkinn.indigoi18n.context.Context;
 import xyz.bobkinn.indigoi18n.data.TranslationInfo;
 import xyz.bobkinn.indigoi18n.format.I18nFormat;
 import xyz.bobkinn.indigoi18n.resolver.DefaultTranslationResolver;
@@ -29,10 +30,14 @@ public class I18n implements I18nBase {
     private @NotNull TranslationResolver resolver;
     private final Map<Class<?>, I18nFormat<?>> formats;
 
+    @Getter
+    private final LocaleResolver localeResolver;
+
     public I18n() {
         texts = new Translations();
         resolver = new DefaultTranslationResolver();
         formats = new HashMap<>();
+        localeResolver = LocaleResolver.DEFAULT;
         addDefaultFormats();
     }
 
@@ -74,8 +79,8 @@ public class I18n implements I18nBase {
     }
 
     @Override
-    public String get(String key, String language) {
-        return resolver.get(texts, key, language);
+    public String get(Context context, String key, String language) {
+        return resolver.get(context, texts, key, language);
     }
 
 }

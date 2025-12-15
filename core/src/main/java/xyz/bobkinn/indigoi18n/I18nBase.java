@@ -11,7 +11,7 @@ import java.util.List;
 
 
 public interface I18nBase {
-    String get(String key, String language);
+    String get(Context context, String key, String language);
 
     <T> I18nFormat<T> getFormat(Class<T> cls);
 
@@ -35,6 +35,8 @@ public interface I18nBase {
         var targetCtx = ctx != null ? ctx : newContext(info, lang, key);
         // compute source context if available
         if (info != null) targetCtx.compute(SourceContext.class, () -> new SourceContext(info.source()));
-        return getFormat(cls).format(targetCtx, get(key, lang), args);
+        return getFormat(cls).format(targetCtx, get(targetCtx, key, lang), args);
     }
+
+    LocaleResolver getLocaleResolver();
 }

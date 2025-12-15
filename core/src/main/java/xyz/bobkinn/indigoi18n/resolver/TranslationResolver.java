@@ -1,6 +1,7 @@
 package xyz.bobkinn.indigoi18n.resolver;
 
 import xyz.bobkinn.indigoi18n.Translations;
+import xyz.bobkinn.indigoi18n.context.Context;
 
 /**
  * Translation resolver is used to perform lookup in texts map.
@@ -13,20 +14,20 @@ public interface TranslationResolver {
      * Lookups text in passed language by passed key
      * @return text or any other value (including null) if text not found
      */
-    String get(Translations texts, String key, String lang);
+    String get(Context ctx, Translations texts, String key, String lang);
 
     /**
      * @return string or null if text not found
-     * @see #get(Translations, String, String)
+     * @see #get(Context, Translations, String, String)
      */
-    String getOrNull(Translations texts, String key, String lang);
+    String getOrNull(Context ctx, Translations texts, String key, String lang);
 
     /**
      * @return string or passed key if text with this key not found
      */
     @SuppressWarnings("unused")
-    default String getOrKey(Translations texts, String key, String lang) {
-        var v = getOrNull(texts, key, lang);
+    default String getOrKey(Context ctx, Translations texts, String key, String lang) {
+        var v = getOrNull(ctx, texts, key, lang);
         if (v == null) return key;
         return null;
     }
