@@ -32,7 +32,17 @@ public interface I18nBase {
 
     default <T> T parse(Class<T> cls, @Nullable Context ctx, String lang, String key, List<Object> args) {
         var info = infoFor(lang, key);
-        var targetCtx = ctx != null ? ctx : newContext(info, lang, key);
+        Context targetCtx;
+        if (ctx == null) {
+            targetCtx = newContext(info, lang, key);
+        } else if (!ctx.isComplete()) {
+            // passed context is incomplete (missing root data)
+            // so create correct context and merge with passed
+            targetCtx = newContext(info, lang, key);
+            targetCtx.merge(ctx);
+        } else {
+            targetCtx = ctx;
+        }
         // compute source context if available
         if (info != null) targetCtx.compute(SourceContext.class, () -> new SourceContext(info.source()));
         return getFormat(cls).format(targetCtx, get(targetCtx, key, lang), args);

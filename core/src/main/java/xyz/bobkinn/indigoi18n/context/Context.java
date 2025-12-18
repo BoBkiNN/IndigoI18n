@@ -1,5 +1,6 @@
 package xyz.bobkinn.indigoi18n.context;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -17,11 +18,26 @@ import java.util.function.Supplier;
 @RequiredArgsConstructor
 public class Context implements ContextEntry {
     private final @Nullable Context parent;
+    @Getter
     private final @Nullable I18nBase i18n;
     private final Map<Class<?>, ContextEntry> data = new HashMap<>();
 
+    public Context() {
+        this(null, null);
+    }
+
     public Context sub() {
         return new Context(this, null);
+    }
+
+    public boolean isComplete() {
+        return i18n != null;
+    }
+
+    public void merge(Context other) {
+        for (var e : other.data.entrySet()) {
+            data.computeIfAbsent(e.getKey(), k -> e.getValue());
+        }
     }
 
     public I18nBase resolveI18n() {
@@ -97,5 +113,9 @@ public class Context implements ContextEntry {
         return null;
     }
 
+    public <T extends ContextEntry> Context with(T entry) {
+        set(entry.getClass(), entry);
+        return this;
+    }
 
 }
