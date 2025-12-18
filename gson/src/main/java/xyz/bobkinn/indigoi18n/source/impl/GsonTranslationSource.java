@@ -1,14 +1,17 @@
 package xyz.bobkinn.indigoi18n.source.impl;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import xyz.bobkinn.indigoi18n.data.DefaultTranslation;
+import xyz.bobkinn.indigoi18n.data.PluralTranslation;
+import xyz.bobkinn.indigoi18n.data.Translation;
 import xyz.bobkinn.indigoi18n.source.ISourceTextAdder;
 import xyz.bobkinn.indigoi18n.source.SingleLangSource;
 import xyz.bobkinn.indigoi18n.source.TranslationLoadError;
@@ -27,17 +30,21 @@ import java.util.function.Supplier;
 
 @RequiredArgsConstructor
 public class GsonTranslationSource implements TranslationSource, SingleLangSource {
-
-    private static final TypeToken<Map<String, String>> TOKEN = new TypeToken<>() {
-    };
-
     private final @Nullable URI location;
     private final Function<Gson, JsonElement> jsonSupplier;
     private final Supplier<Gson> gsonSupplier;
     @Getter
     private final String language;
 
-    private static final Supplier<Gson> DEFAULT_GSON_SUPPLIER = Gson::new;
+    public static final Map<String, Class<? extends Translation>> TRANSLATION_TYPES = Map.of(
+            "default", DefaultTranslation.class,
+            "plural", PluralTranslation.class
+    ) ;
+
+    private static final Supplier<Gson> DEFAULT_GSON_SUPPLIER = () -> new GsonBuilder()
+            .registerTypeAdapter(Translation.class, DiscriminatorAdapter.mapping(TRANSLATION_TYPES))
+            .registerTypeAdapter(PluralTranslation.class, new PluralTranslationAdapter())
+            .create();
 
     @Contract("_, _, _ -> new")
     public static @NotNull GsonTranslationSource fromElement(@Nullable URI location, String language, JsonElement element) {
@@ -55,15 +62,30 @@ public class GsonTranslationSource implements TranslationSource, SingleLangSourc
         }, DEFAULT_GSON_SUPPLIER, language);
     }
 
+    public static @Nullable Translation parseTranslation(Gson gson, JsonElement value) {
+        if (value == null) return null;
+        if (value.isJsonPrimitive() && value.getAsJsonPrimitive().isString()) {
+            var t = value.getAsString();
+            return Translation.create(t);
+        } else if (value.isJsonObject()) {
+            return gson.fromJson(value, Translation.class);
+        }
+        return null;
+    }
+
     @Override
     public void load(ISourceTextAdder to) {
         var gson = Objects.requireNonNull(gsonSupplier.get(),
                 "Supplied Gson instance is null");
         var json = jsonSupplier.apply(gson);
         if (json == null) return;
-        var map = gson.fromJson(json, TOKEN);
-        for (var e : map.entrySet()) {
-            to.add(e.getKey(), language, e.getValue());
+        var obj = json.getAsJsonObject();
+        for (var e : obj.entrySet()) {
+            var key = e.getKey();
+            var v = e.getValue();
+            var t = parseTranslation(gson, v);
+            if (t == null) throw new IllegalArgumentException("Unknown JSON value to use as translation: "+v);
+            to.add(key, language, t);
         }
     }
 

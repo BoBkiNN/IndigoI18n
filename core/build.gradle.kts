@@ -1,5 +1,5 @@
 plugins {
-    id("java")
+    `java-library`
     id("io.freefair.lombok")
     `maven-publish`
 }
@@ -16,7 +16,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
-    implementation("net.xyzsd.plurals:cldr-plural-rules:41")
+    api("net.xyzsd.plurals:cldr-plural-rules:41")
 }
 
 tasks.test {

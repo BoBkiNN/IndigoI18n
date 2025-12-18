@@ -1,5 +1,5 @@
 plugins {
-    id("java")
+    `java-library`
     id("io.freefair.lombok")
 }
 
@@ -11,8 +11,8 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":core"))
-    implementation("com.google.code.gson:gson:2.13.2")
+    api(project(":core"))
+    api("com.google.code.gson:gson:2.13.2")
 
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")

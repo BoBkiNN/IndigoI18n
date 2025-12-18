@@ -2,7 +2,10 @@ package xyz.bobkinn.indigoi18n.source.impl;
 
 import com.google.gson.JsonObject;
 import org.junit.jupiter.api.Test;
+import xyz.bobkinn.indigoi18n.StringI18n;
+import xyz.bobkinn.indigoi18n.context.impl.CountContext;
 import xyz.bobkinn.indigoi18n.data.DefaultTranslation;
+import xyz.bobkinn.indigoi18n.data.PluralTranslation;
 import xyz.bobkinn.indigoi18n.data.Translation;
 import xyz.bobkinn.indigoi18n.source.ISourceTextAdder;
 
@@ -16,12 +19,22 @@ import static org.junit.jupiter.api.Assertions.*;
 class GsonTranslationSourceTest {
 
     static class TestAdder implements ISourceTextAdder {
-        // TODO store Translation here instead of forcing DefaultTranslation in add()
-        Map<String, String> data = new HashMap<>();
+        Map<String, Translation> data = new HashMap<>();
 
         @Override
         public void add(String key, String language, Translation value) {
-            data.put(key, ((DefaultTranslation) value).getText());
+            data.put(key, value);
+        }
+
+        public String plain(String key) {
+            return ((DefaultTranslation) data.get(key)).getText();
+        }
+
+        public String plural(String key, String language, int count) {
+            var ctx = new StringI18n().newContext(language, key);
+            ctx.set(new CountContext(count));
+            var t = (PluralTranslation) data.get(key);
+            return t.get(ctx, language);
         }
     }
 
@@ -39,9 +52,12 @@ class GsonTranslationSourceTest {
         TestAdder adder = new TestAdder();
         source.load(adder);
 
-        assertEquals(2, adder.data.size());
-        assertEquals("Hello", adder.data.get("hello"));
-        assertEquals("Goodbye", adder.data.get("bye"));
+        assertEquals(3, adder.data.size());
+        assertEquals("Hello", adder.plain("hello"));
+        assertEquals("Goodbye", adder.plain("bye"));
+        assertEquals("1", adder.plural("pl", "ru", 1));
+        assertEquals("25", adder.plural("pl", "ru", 25));
+        assertEquals("3", adder.plural("pl", "ru", 3));
     }
 
     @Test
@@ -56,7 +72,7 @@ class GsonTranslationSourceTest {
         source.load(adder);
 
         assertEquals(2, adder.data.size());
-        assertEquals("value1", adder.data.get("key1"));
-        assertEquals("value2", adder.data.get("key2"));
+        assertEquals("value1", adder.plain("key1"));
+        assertEquals("value2", adder.plain("key2"));
     }
 }

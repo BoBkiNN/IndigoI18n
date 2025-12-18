@@ -1,4 +1,10 @@
 {
   "hello": "Hello",
-  "bye": "Goodbye"
+  "bye": "Goodbye",
+  "pl": {
+    "type": "plural",
+    "one": "1",
+    "other": "25",
+    "few": "3"
+  }
 }
