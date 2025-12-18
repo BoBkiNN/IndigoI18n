@@ -1,10 +1,10 @@
 package xyz.bobkinn.indigoi18n.context;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.bobkinn.indigoi18n.I18nBase;
+import xyz.bobkinn.indigoi18n.context.impl.I18nContext;
 import xyz.bobkinn.indigoi18n.context.impl.LangKeyContext;
 import xyz.bobkinn.indigoi18n.context.impl.SourceContext;
 import xyz.bobkinn.indigoi18n.data.TranslationInfo;
@@ -18,20 +18,30 @@ import java.util.function.Supplier;
 @RequiredArgsConstructor
 public class Context implements ContextEntry {
     private final @Nullable Context parent;
-    @Getter
-    private final @Nullable I18nBase i18n;
     private final Map<Class<?>, ContextEntry> data = new HashMap<>();
 
     public Context() {
-        this(null, null);
+        this(null);
     }
 
     public Context sub() {
-        return new Context(this, null);
+        return new Context(this);
+    }
+
+    /**
+     * Sets I18n into context if not already.<br>
+     * Does nothing if already exists in current context (not tree).
+     */
+    public void setI18n(I18nBase i18n) {
+        data.computeIfAbsent(I18nContext.class, k -> new I18nContext(i18n));
+    }
+
+    public I18nBase resolveI18n() {
+        return resolveOptional(I18nContext.class).map(I18nContext::getI18n).orElse(null);
     }
 
     public boolean isComplete() {
-        return i18n != null;
+        return resolveI18n() != null;
     }
 
     public void merge(Context other) {
@@ -40,14 +50,8 @@ public class Context implements ContextEntry {
         }
     }
 
-    public I18nBase resolveI18n() {
-        var v = i18n;
-        var p = parent;
-        while (v == null && p != null) {
-            v = p.i18n;
-            p = p.parent;
-        }
-        return Objects.requireNonNull(v, "No I18n instance in current context tree");
+    public I18nBase getI18n() {
+        return Objects.requireNonNull(resolveI18n(), "No I18n instance in current context tree");
     }
 
     public <T extends ContextEntry> @Nullable T resolve(Class<T> cls) {

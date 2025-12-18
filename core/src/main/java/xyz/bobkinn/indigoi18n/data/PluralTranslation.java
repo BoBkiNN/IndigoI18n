@@ -33,7 +33,7 @@ public class PluralTranslation extends Translation {
         if (count == null) {
             return get(PluralCategory.OTHER);
         }
-        var lr = ctx.resolveI18n().getLocaleResolver();
+        var lr = ctx.getI18n().getLocaleResolver();
         var locale = lr.getLocale(lang);
         if (locale == null) throw new IllegalStateException("No locale resolved from language "+lang);
         var rule = PluralRule.create(locale, PluralRuleType.CARDINAL).orElse(null);

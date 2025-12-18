@@ -19,7 +19,8 @@ public interface I18nBase {
     TranslationInfo infoFor(String lang, String key);
 
     default Context newContext(@Nullable TranslationInfo info, String lang, String key) {
-        var ctx = new Context(null, this);
+        var ctx = new Context(null);
+        ctx.setI18n(this);
         if (info != null) {
             ctx.set(new SourceContext(info.source()));
         }

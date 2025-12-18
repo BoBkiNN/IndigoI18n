@@ -114,7 +114,7 @@ public abstract class TemplateFormatter<O> {
             // no remaining depth
             throw new IllegalStateException("Depth limit exceeded");
         }
-        var i18n = ctx.resolveI18n();
+        var i18n = ctx.getI18n();
         var sub = ctx.sub();
         sub.set(new InlineContext(cd-1));
         String targetLang;
