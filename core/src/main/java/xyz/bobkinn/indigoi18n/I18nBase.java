@@ -1,5 +1,6 @@
 package xyz.bobkinn.indigoi18n;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.bobkinn.indigoi18n.context.Context;
 import xyz.bobkinn.indigoi18n.context.impl.LangKeyContext;
@@ -48,5 +49,8 @@ public interface I18nBase {
         return getFormat(cls).format(targetCtx, get(targetCtx, key, lang), args);
     }
 
-    LocaleResolver getLocaleResolver();
+    /**
+     * Locale resolver used in this I18n instance
+     */
+    @NotNull LocaleResolver getLocaleResolver();
 }
