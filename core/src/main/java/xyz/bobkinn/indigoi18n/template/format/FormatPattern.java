@@ -36,7 +36,7 @@ public class FormatPattern {
     }
 
     public static FormatPattern readFormatSpec(TemplateReader reader) {
-        reader.mark();
+        reader.pushMark(); // make a mark
         var alignment = Alignment.read(reader);
         var sign = Sign.read(reader);
         boolean special = reader.tryConsume('#');
@@ -66,6 +66,7 @@ public class FormatPattern {
             type = reader.next();
         } else type = 's';
         var source = reader.markedPart();
+        reader.popMark(false); // pop mark without resetting to its pos
         return new FormatPattern(source, alignment, sign, special, width, precision, intPartGrouping, type);
     }
 

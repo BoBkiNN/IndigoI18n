@@ -26,11 +26,11 @@ public class TestTemplateReader {
     public void testMark() {
         var tr = new TemplateReader("abcdef");
         tr.skip();
-        tr.mark();
+        tr.pushMark();
         tr.skip();
         tr.skip();
         assertEquals("bc", tr.markedPart());
-        tr.reset();
+        tr.popMark(true);
         assertEquals('b', tr.next());
     }
 

@@ -1,29 +1,52 @@
 package xyz.bobkinn.indigoi18n.template;
 
-import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 public class TemplateReader {
     private final String text;
     private int next = 0;
-    @Getter
-    private int mark = 0;
+
+    private final Deque<Integer> markStack = new ArrayDeque<>();
 
     public TemplateReader(String text) {
         this.text = text;
     }
 
-    public void mark() {
-        mark = next;
+    /**
+     * Pushes the current read position onto the mark stack.
+     */
+    public void pushMark() {
+        markStack.push(next);
     }
 
-    public void reset() {
-        next = mark;
+    /**
+     * Pops the top mark from the stack and moves the reading position back to it if set arg set to true.
+     * @throws IllegalStateException if the mark stack is empty
+     */
+    public void popMark(boolean set) {
+        if (markStack.isEmpty()) {
+            throw new IllegalStateException("Mark stack is empty");
+        }
+        var idx = markStack.pop();
+        if (set) next = idx;
     }
 
+    /**
+     * Returns the text from the top mark (most recent pushMark) to the current position.
+     * @throws IllegalStateException if mark stack is empty
+     */
     public String markedPart() {
-        if (mark > next) throw new IllegalStateException("Mark is bigger than next");
-        return text.substring(mark, next);
+        if (markStack.isEmpty()) {
+            throw new IllegalStateException("Mark stack is empty");
+        }
+        int topMark = markStack.peek();
+        if (topMark > next) {
+            throw new IllegalStateException("Top mark is bigger than next");
+        }
+        return text.substring(topMark, next);
     }
 
     public boolean hasNext() {
