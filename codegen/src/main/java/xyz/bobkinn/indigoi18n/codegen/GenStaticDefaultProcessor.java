@@ -8,7 +8,6 @@ import javax.lang.model.element.*;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
 import java.io.IOException;
-import java.util.List;
 import java.util.Set;
 
 @SupportedAnnotationTypes("xyz.bobkinn.indigoi18n.codegen.GenStaticDefault")
@@ -17,85 +16,120 @@ public class GenStaticDefaultProcessor extends AbstractProcessor {
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-        for (Element elem : roundEnv.getElementsAnnotatedWith(GenStaticDefault.class)) {
-            if (elem.getKind() != ElementKind.CLASS) continue;
+        for (Element element : roundEnv.getElementsAnnotatedWith(GenStaticDefault.class)) {
+            if (element.getKind() != ElementKind.CLASS) continue;
+            processClass((TypeElement) element);
+        }
+        return true;
+    }
 
-            TypeElement classElement = (TypeElement) elem;
-            processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, "Processor triggered for: " + classElement.getSimpleName());
-            GenStaticDefault ann = classElement.getAnnotation(GenStaticDefault.class);
+    // =========================
+    // Core processing
+    // =========================
 
-            String packageName = processingEnv.getElementUtils().getPackageOf(classElement).getQualifiedName().toString();
-            String generatedClassName = ann.name();
-            String creator = ann.creator();
-            String originalClassName = classElement.getSimpleName().toString();
+    private void processClass(TypeElement classElement) {
+        processingEnv.getMessager().printMessage(
+                Diagnostic.Kind.NOTE,
+                "Processor triggered for: " + classElement.getSimpleName()
+        );
 
-            ClassName originalClass = ClassName.get(packageName, originalClassName);
+        GenStaticDefault ann = classElement.getAnnotation(GenStaticDefault.class);
 
-            // Create INSTANCE field
-            FieldSpec instanceField = FieldSpec.builder(originalClass, "INSTANCE")
-                    .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
-                    .initializer("$T.$L()", originalClass, creator)
-                    .build();
+        String packageName = getPackageName(classElement);
+        String generatedClassName = ann.name();
 
-            TypeSpec.Builder classBuilder = TypeSpec.classBuilder(generatedClassName)
-                    .addModifiers(Modifier.PUBLIC)
-                    .addField(instanceField);
+        ClassName originalClass = ClassName.get(classElement);
+        FieldSpec instanceField = createInstanceField(originalClass, ann.creator());
 
-            // Iterate over interfaces
-            List<? extends TypeMirror> interfaces = classElement.getInterfaces();
+        TypeSpec.Builder classBuilder = TypeSpec.classBuilder(generatedClassName)
+                .addModifiers(Modifier.PUBLIC)
+                .addField(instanceField);
 
-            for (TypeMirror iFace : interfaces) {
-                TypeElement iFaceElement = (TypeElement) processingEnv.getTypeUtils().asElement(iFace);
+        addInterfaceMethods(classBuilder, classElement);
 
-                for (Element iFaceMember : iFaceElement.getEnclosedElements()) {
-                    if (iFaceMember.getKind() != ElementKind.METHOD) continue;
+        writeClass(packageName, classBuilder.build());
+    }
 
-                    ExecutableElement method = (ExecutableElement) iFaceMember;
-                    String methodName = method.getSimpleName().toString();
+    // =========================
+    // Helpers
+    // =========================
 
-                    // Return type
-                    TypeName returnType = TypeName.get(method.getReturnType());
+    private String getPackageName(TypeElement type) {
+        return processingEnv.getElementUtils()
+                .getPackageOf(type)
+                .getQualifiedName()
+                .toString();
+    }
 
-                    // Parameters
-                    MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder(methodName)
-                            .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-                            .returns(returnType);
+    private FieldSpec createInstanceField(ClassName originalClass, String creator) {
+        return FieldSpec.builder(originalClass, "INSTANCE")
+                .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+                .initializer("$T.$L()", originalClass, creator)
+                .build();
+    }
 
-                    for (VariableElement param : method.getParameters()) {
-                        TypeName paramType = TypeName.get(param.asType());
-                        methodBuilder.addParameter(paramType, param.getSimpleName().toString());
-                    }
+    private void addInterfaceMethods(TypeSpec.Builder classBuilder, TypeElement classElement) {
+        for (TypeMirror iface : classElement.getInterfaces()) {
+            TypeElement ifaceElement =
+                    (TypeElement) processingEnv.getTypeUtils().asElement(iface);
 
-                    // Build method body
-                    StringBuilder call = new StringBuilder("INSTANCE." + methodName + "(");
-                    boolean first = true;
-                    for (VariableElement param : method.getParameters()) {
-                        if (!first) call.append(", ");
-                        call.append(param.getSimpleName().toString());
-                        first = false;
-                    }
-                    call.append(")");
-
-                    if (returnType.equals(TypeName.VOID)) {
-                        methodBuilder.addStatement("$L", call.toString());
-                    } else {
-                        methodBuilder.addStatement("return $L", call.toString());
-                    }
-
-                    classBuilder.addMethod(methodBuilder.build());
-                }
-            }
-
-            // Write class
-            TypeSpec generatedClass = classBuilder.build();
-            JavaFile javaFile = JavaFile.builder(packageName, generatedClass).build();
-            try {
-                javaFile.writeTo(processingEnv.getFiler());
-            } catch (IOException e) {
-                processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, e.toString());
+            for (Element member : ifaceElement.getEnclosedElements()) {
+                if (member.getKind() != ElementKind.METHOD) continue;
+                classBuilder.addMethod(createDelegatingMethod((ExecutableElement) member));
             }
         }
+    }
 
-        return true;
+    private MethodSpec createDelegatingMethod(ExecutableElement method) {
+        MethodSpec.Builder builder = MethodSpec.methodBuilder(
+                        method.getSimpleName().toString()
+                )
+                .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+                .returns(TypeName.get(method.getReturnType()));
+
+        // parameters
+        for (VariableElement param : method.getParameters()) {
+            builder.addParameter(
+                    TypeName.get(param.asType()),
+                    param.getSimpleName().toString()
+            );
+        }
+
+        // call
+        CodeBlock call = buildCall(method);
+
+        if (method.getReturnType().getKind().name().equals("VOID")) {
+            builder.addStatement("$L", call);
+        } else {
+            builder.addStatement("return $L", call);
+        }
+
+        return builder.build();
+    }
+
+    private CodeBlock buildCall(ExecutableElement method) {
+        CodeBlock.Builder call = CodeBlock.builder()
+                .add("INSTANCE.$L(", method.getSimpleName());
+
+        boolean first = true;
+        for (VariableElement param : method.getParameters()) {
+            if (!first) call.add(", ");
+            call.add("$L", param.getSimpleName());
+            first = false;
+        }
+
+        call.add(")");
+        return call.build();
+    }
+
+    private void writeClass(String packageName, TypeSpec type) {
+        try {
+            JavaFile.builder(packageName, type)
+                    .build()
+                    .writeTo(processingEnv.getFiler());
+        } catch (IOException e) {
+            processingEnv.getMessager()
+                    .printMessage(Diagnostic.Kind.ERROR, e.toString());
+        }
     }
 }
