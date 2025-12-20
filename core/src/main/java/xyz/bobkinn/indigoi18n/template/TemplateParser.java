@@ -13,7 +13,8 @@ public class TemplateParser {
     /**
      * @return new TemplateArgument with source containing '%{' and '}' around
      */
-    public static TemplateArgument readArg(TemplateReader reader, int seqIdx) {
+    @Contract("_, _ -> new")
+    public static @NotNull TemplateArgument parseAdvancedArg(TemplateReader reader, int seqIdx) {
         int argIndex = seqIdx;
         boolean hasExplicitIndex = false;
         if (reader.hasUnsignedNumber()) {
@@ -45,7 +46,7 @@ public class TemplateParser {
     }
 
     @Contract("_ -> new")
-    public static @NotNull InlineTranslation readInline(@NotNull TemplateReader reader) {
+    public static @NotNull InlineTranslation parseInline(@NotNull TemplateReader reader) {
         StringBuilder key = new StringBuilder();
         char peeked = reader.peek();
         while (reader.hasNext() && peeked != ':' && peeked != '}') {
@@ -85,7 +86,7 @@ public class TemplateParser {
         if (reader.tryConsume('t')) {
             reader.consume(':');
             try {
-                visitor.visitInline(readInline(reader));
+                visitor.visitInline(parseInline(reader));
             } catch (Exception e) {
                 throw new IllegalArgumentException("Failed to read inline translation", e);
             } finally {
@@ -94,7 +95,7 @@ public class TemplateParser {
             return seqArgIdx;
         }
 
-        var arg = readArg(reader, seqArgIdx);
+        var arg = parseAdvancedArg(reader, seqArgIdx);
         if (!arg.isHasExplicitIndex()) {
             seqArgIdx++;
         }

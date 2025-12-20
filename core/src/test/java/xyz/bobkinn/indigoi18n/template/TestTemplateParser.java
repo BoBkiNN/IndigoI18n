@@ -70,7 +70,7 @@ public class TestTemplateParser {
     @Test
     public void testFormatSource() {
         var tr = new TemplateReader(":_^10");
-        var arg = TemplateParser.readArg(tr, 0);
+        var arg = TemplateParser.parseAdvancedArg(tr, 0);
         assertNotNull(arg.getPattern());
         assertEquals("_^10", arg.getPattern().getSource());
     }
@@ -112,7 +112,7 @@ public class TestTemplateParser {
     @ParameterizedTest
     @MethodSource("provideInlineArgs")
     void testInlineParse(String input, InlineTranslation expected) {
-        Assertions.assertEquals(expected, TemplateParser.readInline(new TemplateReader(input)));
+        Assertions.assertEquals(expected, TemplateParser.parseInline(new TemplateReader(input)));
     }
 
     @Test
