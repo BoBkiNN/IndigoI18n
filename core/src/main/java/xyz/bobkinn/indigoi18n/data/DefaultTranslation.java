@@ -10,7 +10,7 @@ public class DefaultTranslation extends Translation {
     private final String text;
 
     @Override
-    public String get(Context ctx, String lang) {
+    public String get(Context ctx) {
         return text;
     }
 

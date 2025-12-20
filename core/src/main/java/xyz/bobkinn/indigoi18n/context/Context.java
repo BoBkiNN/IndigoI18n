@@ -106,6 +106,11 @@ public class Context implements ContextEntry {
         return lk.map(LangKeyContext::getKey).orElseThrow(() -> new IllegalStateException("No key in context found"));
     }
 
+    public @NotNull String language() {
+        var lk = resolveOptional(LangKeyContext.class);
+        return lk.map(LangKeyContext::getLang).orElseThrow(() -> new IllegalStateException("No language in context found"));
+    }
+
     public TranslationInfo collectInfo() {
         var lk = resolve(LangKeyContext.class);
         var sc = resolve(SourceContext.class);

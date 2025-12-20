@@ -27,12 +27,13 @@ public class PluralTranslation extends Translation {
     }
 
     @Override
-    public String get(Context ctx, String lang) {
+    public String get(Context ctx) {
         var count = ctx.resolveOptional(CountContext.class)
                 .map(CountContext::getCount).orElse(null);
         if (count == null) {
             return get(PluralCategory.OTHER);
         }
+        var lang = ctx.language();
         var lr = ctx.getI18n().getLocaleResolver();
         var locale = lr.getLocale(lang);
         if (locale == null) throw new IllegalStateException("No locale resolved from language "+lang);
