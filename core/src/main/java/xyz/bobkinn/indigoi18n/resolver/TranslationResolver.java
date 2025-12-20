@@ -1,11 +1,12 @@
 package xyz.bobkinn.indigoi18n.resolver;
 
+import xyz.bobkinn.indigoi18n.IndigoI18n;
 import xyz.bobkinn.indigoi18n.Translations;
 import xyz.bobkinn.indigoi18n.context.Context;
 
 /**
  * Translation resolver is used to perform lookup in texts map.
- * It is used by {@link xyz.bobkinn.indigoi18n.I18n}.<br>
+ * It is used by {@link IndigoI18n}.<br>
  * Its main purpose is to allow changing how unknown translations are handled.
  */
 public interface TranslationResolver {

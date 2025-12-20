@@ -20,7 +20,7 @@ import java.util.Objects;
  * Uses default resolver and do not include any translations
  * @see StringI18n
  */
-public class I18n implements I18nBase {
+public class IndigoI18n implements I18nBase {
     @Getter
     protected final Translations texts;
     /**
@@ -33,7 +33,7 @@ public class I18n implements I18nBase {
     @Getter
     private final LocaleResolver localeResolver;
 
-    public I18n() {
+    public IndigoI18n() {
         texts = new Translations();
         resolver = new DefaultTranslationResolver();
         formats = new HashMap<>();
