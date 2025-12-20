@@ -39,9 +39,9 @@ public interface I18nBase {
             targetCtx = newContext(info, lang, key);
         } else if (!ctx.isComplete()) {
             // passed context is incomplete (missing root data)
-            // so create correct context and merge with passed
+            // so create correct context and merge with passed without overriding
             targetCtx = newContext(info, lang, key);
-            targetCtx.merge(ctx);
+            targetCtx.merge(ctx, false);
         } else {
             targetCtx = ctx;
         }

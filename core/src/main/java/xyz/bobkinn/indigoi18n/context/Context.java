@@ -51,9 +51,10 @@ public class Context implements ContextEntry {
         return resolveI18n() != null;
     }
 
-    public void merge(Context other) {
+    public void merge(Context other, boolean override) {
         for (var e : other.data.entrySet()) {
-            data.computeIfAbsent(e.getKey(), k -> e.getValue());
+            if (override) data.put(e.getKey(), e.getValue());
+            else data.computeIfAbsent(e.getKey(), k -> e.getValue());
         }
     }
 
