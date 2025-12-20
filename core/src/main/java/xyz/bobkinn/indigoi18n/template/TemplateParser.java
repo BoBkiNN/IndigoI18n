@@ -72,80 +72,95 @@ public class TemplateParser {
         return new InlineTranslation(key.toString(), depth, lang);
     }
 
+    private static int parseAdvanced(
+            TemplateReader reader,
+            TemplateVisitor visitor,
+            int seqArgIdx
+    ) {
+        if (reader.tryConsume('t')) {
+            reader.consume(':');
+            try {
+                visitor.visitInline(readInline(reader));
+            } catch (Exception e) {
+                throw new IllegalArgumentException("Failed to read inline translation", e);
+            }
+            return seqArgIdx;
+        }
+
+        var arg = readArg(reader, seqArgIdx);
+        if (!arg.isHasExplicitIndex()) {
+            seqArgIdx++;
+        }
+        visitor.visitArgument(arg);
+        return seqArgIdx;
+    }
+
     // TODO store source text into TemplateArgument
     public static void parse(String text, TemplateVisitor visitor) {
         var reader = new TemplateReader(text);
         int seqArgIdx = 0;
-        var plainBlock = new StringBuilder();
+        var plain = new StringBuilder();
+
+        Runnable flush = () -> {
+            if (!plain.isEmpty()) {
+                visitor.visitPlain(plain.toString());
+                plain.setLength(0);
+            }
+        };
 
         while (reader.hasNext()) {
-            var ch = reader.next();
-            if (!reader.hasNext()) {
-                plainBlock.append(ch);
+            char ch = reader.next();
+
+            if (ch != '%') { // not a start of template entry
+                plain.append(ch);
+                continue;
+            }
+
+            if (!reader.hasNext()) { // check for %<EOL> here so peek() wont throw error
+                plain.append('%');
                 break;
             }
-            var ch1 = reader.peek();
-            if (ch == '%' && ch1 == '%') {
-                reader.skip();
-                plainBlock.append('%');
-            } else if (ch == '%' && ch1 == 's') {
-                reader.skip();
-                // flush plain
-                if (!plainBlock.isEmpty()) {
-                    visitor.visitPlain(plainBlock.toString());
-                    plainBlock.setLength(0);
+
+            char next = reader.peek();
+
+            switch (next) {
+                case '%' -> { // %%
+                    reader.skip();
+                    plain.append('%');
                 }
-                // create arg
-                visitor.visitArgument(new TemplateArgument(seqArgIdx, false, FormatPattern.newDefault(), null));
-                seqArgIdx++;
-            } else if (ch == '%' && reader.hasUnsignedNumber()) {
-                var aIdx = reader.readUnsignedNumber()-1;
-                if (aIdx == -1) {
-                    throw new IllegalArgumentException("Argument indexes is starting with 1");
-                } else if (aIdx < 0) {
-                    throw new IllegalArgumentException("Negative argument index "+aIdx);
+
+                case 's' -> { // %s
+                    reader.skip();
+                    flush.run();
+                    visitor.visitArgument(
+                            new TemplateArgument(seqArgIdx++, false, FormatPattern.newDefault(), null)
+                    );
                 }
-                // flush plain
-                if (!plainBlock.isEmpty()) {
-                    visitor.visitPlain(plainBlock.toString());
-                    plainBlock.setLength(0);
+
+                case '{' -> { // %{...}
+                    flush.run();
+                    reader.consume('{');
+                    seqArgIdx = parseAdvanced(reader, visitor, seqArgIdx);
+                    reader.consume('}');
                 }
-                // create arg
-                visitor.visitArgument(new TemplateArgument(aIdx, true, FormatPattern.newDefault(), null));
-            } else if (ch == '%' && ch1 == '{') {
-                // flush plain
-                if (!plainBlock.isEmpty()) {
-                    visitor.visitPlain(plainBlock.toString());
-                    plainBlock.setLength(0);
+
+                default -> { // %1 OR %just text
+                    if (reader.hasUnsignedNumber()) {
+                        flush.run();
+                        int idx = reader.readUnsignedNumber() - 1;
+                        if (idx < 0) throw new IllegalArgumentException("Argument indexes start from 1");
+
+                        visitor.visitArgument(
+                                new TemplateArgument(idx, true, FormatPattern.newDefault(), null)
+                        );
+                    } else plain.append('%');
                 }
-                reader.consume('{');
-                if (reader.tryConsume('t')) {
-                    reader.consume(':');
-                    // inline translation
-                    InlineTranslation tr;
-                    try {
-                        tr = readInline(reader);
-                    } catch (Exception e) {
-                        throw new IllegalArgumentException("Failed to read inline translation", e);
-                    }
-                    visitor.visitInline(tr);
-                } else {
-                    // read arg
-                    var arg = readArg(reader, seqArgIdx);
-                    if (!arg.isHasExplicitIndex()) {
-                        seqArgIdx++;
-                    }
-                    visitor.visitArgument(arg);
-                }
-                reader.consume('}');
-            } else {
-                plainBlock.append(ch);
             }
         }
-        if (!plainBlock.isEmpty()) {
-            visitor.visitPlain(plainBlock.toString());
-        }
+
+        flush.run();
     }
+
 
     public static ParsedEntry parse(String text) {
         var ls = new ArrayList<>();
