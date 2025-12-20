@@ -17,6 +17,8 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
     api("net.xyzsd.plurals:cldr-plural-rules:41")
+    implementation(project(":codegen"))
+    annotationProcessor(project(":codegen"))
 }
 
 tasks.test {
