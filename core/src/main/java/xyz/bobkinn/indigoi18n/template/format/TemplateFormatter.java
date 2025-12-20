@@ -115,8 +115,6 @@ public abstract class TemplateFormatter<O> {
             throw new IllegalStateException("Depth limit exceeded");
         }
         var i18n = ctx.getI18n();
-        var sub = ctx.sub();
-        sub.set(new InlineContext(cd-1));
         String targetLang;
         if (inline.getLang() != null) {
             targetLang = inline.getLang();
@@ -125,10 +123,11 @@ public abstract class TemplateFormatter<O> {
                     .map(LangKeyContext::getLang)
                     .orElseThrow(() -> new IllegalStateException("No language in current context tree"));
         }
+        var sub = ctx.sub(targetLang, key);
+        sub.set(new InlineContext(cd-1));
         /* Set lang & key in this context. We still can find original language in key by using parent context.
         With this we ensure that all deeper translations share target language
         unless override set at deeper InlineTranslation */
-        sub.set(new LangKeyContext(targetLang, key));
         return i18n.parse(cls, sub, targetLang, key, params);
     }
 }

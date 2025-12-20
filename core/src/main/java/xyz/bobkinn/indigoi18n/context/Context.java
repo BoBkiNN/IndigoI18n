@@ -29,6 +29,13 @@ public class Context implements ContextEntry {
     }
 
     /**
+     * @return new sub-context with new LangKeyContext set
+     */
+    public Context sub(String lang, String key) {
+        return sub().with(new LangKeyContext(lang, key));
+    }
+
+    /**
      * Sets I18n into context if not already.<br>
      * Does nothing if already exists in current context (not tree).
      */
