@@ -10,6 +10,9 @@ import java.util.ArrayList;
 
 public class TemplateParser {
 
+    /**
+     * @return new TemplateArgument with source containing '%{' and '}' around
+     */
     public static TemplateArgument readArg(TemplateReader reader, int seqIdx) {
         int argIndex = seqIdx;
         boolean hasExplicitIndex = false;
@@ -37,7 +40,8 @@ public class TemplateParser {
         } else {
             spec = FormatPattern.newDefault();
         }
-        return new TemplateArgument(argIndex, hasExplicitIndex, spec, repr);
+        var src = "%{" + reader.markedPart() + "}";
+        return new TemplateArgument(src, argIndex, hasExplicitIndex, spec, repr);
     }
 
     @Contract("_ -> new")
@@ -77,12 +81,15 @@ public class TemplateParser {
             TemplateVisitor visitor,
             int seqArgIdx
     ) {
+        reader.pushMark(); // pos is after %{
         if (reader.tryConsume('t')) {
             reader.consume(':');
             try {
                 visitor.visitInline(readInline(reader));
             } catch (Exception e) {
                 throw new IllegalArgumentException("Failed to read inline translation", e);
+            } finally {
+                reader.popMark(false); // pop mark before return
             }
             return seqArgIdx;
         }
@@ -92,10 +99,10 @@ public class TemplateParser {
             seqArgIdx++;
         }
         visitor.visitArgument(arg);
+        reader.popMark(false); // pop push mark earlier
         return seqArgIdx;
     }
 
-    // TODO store source text into TemplateArgument
     public static void parse(String text, TemplateVisitor visitor) {
         var reader = new TemplateReader(text);
         int seqArgIdx = 0;
@@ -133,7 +140,7 @@ public class TemplateParser {
                     reader.skip();
                     flush.run();
                     visitor.visitArgument(
-                            new TemplateArgument(seqArgIdx++, false, FormatPattern.newDefault(), null)
+                            new TemplateArgument("%s", seqArgIdx++, false, FormatPattern.newDefault(), null)
                     );
                 }
 
@@ -151,7 +158,8 @@ public class TemplateParser {
                         if (idx < 0) throw new IllegalArgumentException("Argument indexes start from 1");
 
                         visitor.visitArgument(
-                                new TemplateArgument(idx, true, FormatPattern.newDefault(), null)
+                                new TemplateArgument("%"+(idx+1), idx, true,
+                                        FormatPattern.newDefault(), null)
                         );
                     } else plain.append('%');
                 }

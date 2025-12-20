@@ -18,6 +18,15 @@ public record ParsedEntry(List<Object> parts) {
         return parts.get(index);
     }
 
+    /**
+     * @param index global part index
+     * @throws ClassCastException when part is not TemplateArgument
+     */
+    public TemplateArgument argumentAt(int index) {
+        var part = parts.get(index);
+        return (TemplateArgument) part;
+    }
+
     public void visit(TemplateVisitor visitor) {
         for (var part : parts) {
             if (part instanceof String s) visitor.visitPlain(s);

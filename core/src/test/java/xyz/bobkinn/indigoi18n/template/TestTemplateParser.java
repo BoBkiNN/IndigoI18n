@@ -123,4 +123,12 @@ public class TestTemplateParser {
         assertEquals("lol", entry.part(2));
         assertEquals(3, entry.parts().size());
     }
+
+    @Test
+    void testSource() {
+        var entry = TemplateParser.parse("abc %s%{s!r:.3} %5");
+        assertEquals("%s", entry.argumentAt(1).getSource());
+        assertEquals("%{s!r:.3}", entry.argumentAt(2).getSource());
+        assertEquals("%5", entry.argumentAt(4).getSource());
+    }
 }

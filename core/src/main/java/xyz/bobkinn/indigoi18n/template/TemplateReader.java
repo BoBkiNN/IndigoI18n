@@ -36,13 +36,10 @@ public class TemplateReader {
 
     /**
      * Returns the text from the top mark (most recent pushMark) to the current position.
-     * @throws IllegalStateException if mark stack is empty
+     * If no marks set, mark index assumed to be 0
      */
     public String markedPart() {
-        if (markStack.isEmpty()) {
-            throw new IllegalStateException("Mark stack is empty");
-        }
-        int topMark = markStack.peek();
+        int topMark = markStack.isEmpty() ? 0 : markStack.peek();
         if (topMark > next) {
             throw new IllegalStateException("Top mark is bigger than next");
         }

@@ -7,6 +7,7 @@ import xyz.bobkinn.indigoi18n.template.format.FormatPattern;
 @RequiredArgsConstructor
 @Getter
 public class TemplateArgument {
+    private final String source;
     private final int index;
     private final boolean hasExplicitIndex;
     private final FormatPattern pattern;
