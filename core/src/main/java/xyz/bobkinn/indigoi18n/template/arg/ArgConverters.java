@@ -7,6 +7,10 @@ import xyz.bobkinn.indigoi18n.context.impl.LangKeyContext;
 import xyz.bobkinn.indigoi18n.template.Utils;
 import xyz.bobkinn.indigoi18n.template.format.FormatPattern;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.time.temporal.TemporalAccessor;
 import java.util.Calendar;
 import java.util.Date;
@@ -255,6 +259,131 @@ public class ArgConverters {
                 var s = DateFormatUtil.format(arg, format.getType(), contextLanguage(ctx));
                 return applyGenericStringFormat(s, format);
             };
+
+    public static final ArgumentConverter<BigInteger, String> BIG_INT_CONVERTER =
+            (ctx, arg, format) -> {
+
+                int sign = arg.signum();
+                BigInteger abs = arg.abs();
+                char type = format.getType();
+
+                int radix = switch (type) {
+                    case 'b' -> 2;
+                    case 'o' -> 8;
+                    case 'x', 'X' -> 16;
+                    default -> 10;
+                };
+
+                String digits = abs.toString(radix);
+                if (type == 'X') digits = digits.toUpperCase();
+
+                String groupChar = Optional.ofNullable(format.getIntPartGrouping())
+                        .map(String::valueOf).orElse(null);
+
+                int groupSize = switch (radix) {
+                    case 2, 8, 16 -> 4;
+                    default -> 3;
+                };
+
+                if (groupChar != null) {
+                    digits = Utils.formatIntGrouped(digits, groupSize, groupChar);
+                }
+
+                String prefix = "";
+                if (format.isSpecial()) {
+                    prefix = switch (radix) {
+                        case 16 -> type == 'X' ? "0X" : "0x";
+                        case 2 -> "0b";
+                        case 8 -> "0o";
+                        default -> "";
+                    };
+                }
+
+                Character signChar = format.getSign().charFor(sign);
+                if (signChar != null) {
+                    prefix = signChar + prefix;
+                }
+
+                return alignNumber(
+                        alignmentOrDefault(format, arg),
+                        format.getWidth(),
+                        prefix,
+                        digits
+                );
+            };
+
+    public static final ArgumentConverter<BigDecimal, String> BIG_DECIMAL_CONVERTER =
+            (ctx, arg, format) -> {
+
+                char type = format.getType();
+                int sign = arg.signum();
+                BigDecimal abs = arg.abs();
+
+                Integer precision = format.getPrecision();
+                if (precision == null) precision = 6;
+
+                Character signChar = format.getSign().charFor(sign);
+                String signStr = signChar == null ? "" : String.valueOf(signChar);
+
+                String formatted;
+
+                switch (type) {
+                    case 'f', 'F' -> {
+                        formatted = abs
+                                .setScale(precision, RoundingMode.HALF_UP)
+                                .toPlainString();
+                        if (type == 'F') formatted = formatted.toUpperCase();
+                    }
+
+                    case 'e', 'E' -> {
+                        BigDecimal scaled = abs.round(new MathContext(precision, RoundingMode.HALF_UP));
+                        formatted = scaled.toEngineeringString();
+
+                        if (!formatted.contains("E") && !formatted.contains("e")) {
+                            formatted += "E+0";
+                        }
+
+                        if (type == 'E') formatted = formatted.toUpperCase();
+                    }
+
+                    case '%' -> {
+                        BigDecimal pct = abs.multiply(BigDecimal.valueOf(100));
+                        formatted = pct
+                                .setScale(precision, RoundingMode.HALF_UP)
+                                .toPlainString() + "%";
+                    }
+
+                    default -> formatted = abs.toPlainString();
+                }
+
+                // grouping integer part
+                if (format.getIntPartGrouping() != null && !formatted.contains("E") && !formatted.contains("e")) {
+                    String[] parts = formatted.split("\\.", 2);
+                    String intPart = Utils.formatIntGrouped(
+                            parts[0],
+                            3,
+                            format.getIntPartGrouping().toString()
+                    );
+                    formatted = parts.length == 2 ? intPart + "." + parts[1] : intPart;
+                }
+
+                // '#' — remove trailing .0
+                if (format.isSpecial()) {
+                    int dot = formatted.indexOf('.');
+                    if (dot >= 0 && Utils.fractionalPartIsZero(formatted, dot)) {
+                        formatted = formatted.substring(0, dot);
+                        if (type == '%') formatted += "%";
+                    }
+                }
+
+                return alignNumber(
+                        alignmentOrDefault(format, arg),
+                        format.getWidth(),
+                        signStr,
+                        formatted
+                );
+            };
+
 
     public static <T> String format(ArgumentConverter<T, String> conv, FormatPattern format, T value, boolean repr) {
         var ctx = new Context(); // create empty context

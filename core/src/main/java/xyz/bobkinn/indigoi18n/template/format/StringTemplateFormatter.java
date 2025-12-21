@@ -7,6 +7,8 @@ import xyz.bobkinn.indigoi18n.template.TemplateVisitor;
 import xyz.bobkinn.indigoi18n.template.arg.ArgConverters;
 import xyz.bobkinn.indigoi18n.template.arg.TemplateArgument;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.*;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -26,6 +28,9 @@ public class StringTemplateFormatter extends TemplateFormatter<String> {
 
         addConverter(Double.class, ArgConverters.NUMBER_CONVERTER);
         addConverter(Float.class, ArgConverters.NUMBER_CONVERTER);
+
+        addConverter(BigInteger.class, ArgConverters.BIG_INT_CONVERTER);
+        addConverter(BigDecimal.class, ArgConverters.BIG_DECIMAL_CONVERTER);
 
         // java.time
         addConverter(LocalDateTime.class, ArgConverters.TEMPORAL_CONVERTER);
