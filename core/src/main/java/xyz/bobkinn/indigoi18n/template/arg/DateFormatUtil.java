@@ -26,7 +26,9 @@ public class DateFormatUtil {
 
             // Locale-aware
             case 'N' -> formatLocale(dt, locale, FormatStyle.FULL);
+            case 'B' -> formatLocale(dt, locale, FormatStyle.LONG);
             case 'n' -> formatLocale(dt, locale, FormatStyle.MEDIUM);
+            case 'b' -> formatLocale(dt, locale, FormatStyle.SHORT);
 
             // Timezone
             case 'z' -> getZoneName(dt);
