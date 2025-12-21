@@ -62,7 +62,9 @@ public class ArgConverters {
     }
 
 
-    public static final ArgumentConverter<String, String> STRING_CONVERTER =  (arg, format) -> {
+    public static final ArgumentConverter<String, String> STRING_CONVERTER = ArgConverters::applyGenericStringFormat;
+
+    private static String applyGenericStringFormat(String arg, FormatPattern format) {
         var s = arg;
         // apply precision (cut)
         var pr = format.getPrecision();
@@ -70,7 +72,7 @@ public class ArgConverters {
             s = s.substring(0, Math.min(s.length(), pr));
         }
         return align(alignmentOrDefault(format, arg), format.getWidth(), s);
-    };
+    }
 
 
     private static FormatPattern.Alignment getDefaultAlignment(Object arg) {
