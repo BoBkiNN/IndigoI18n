@@ -5,4 +5,4 @@ TODO:
 - kotlin bukkit extension methods
 - `Map<String, Map<String, String>>` source
 - dynamic resolver (not uses texts stored in Translations)
-- datetime converter
+- n type for localized numbers
