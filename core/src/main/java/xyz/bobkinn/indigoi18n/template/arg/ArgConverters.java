@@ -1,9 +1,15 @@
 package xyz.bobkinn.indigoi18n.template.arg;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import xyz.bobkinn.indigoi18n.context.Context;
+import xyz.bobkinn.indigoi18n.context.impl.LangKeyContext;
 import xyz.bobkinn.indigoi18n.template.Utils;
 import xyz.bobkinn.indigoi18n.template.format.FormatPattern;
 
+import java.time.temporal.TemporalAccessor;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 import java.util.Optional;
 
@@ -221,6 +227,34 @@ public class ArgConverters {
 
         return alignNumber(alignmentOrDefault(format, arg), format.getWidth(), signStr, formatted);
     };
+
+    private static @Nullable Locale contextLanguage(@NotNull Context ctx) {
+        var lang = ctx.resolveOptional(LangKeyContext.class)
+                .map(LangKeyContext::getLang).orElse(null);
+        var i18n = ctx.resolveI18n();
+        if (i18n != null) {
+            var lr = i18n.getLocaleResolver();
+            return lr.getLocale(lang);
+        } else return null;
+    }
+
+    public static final ArgumentConverter<TemporalAccessor, String> TEMPORAL_CONVERTER =
+            (ctx, arg, format) -> {
+        var s = DateFormatUtil.format(arg, format.getType(), contextLanguage(ctx));
+        return applyGenericStringFormat(s, format);
+    };
+
+    public static final ArgumentConverter<Date, String> DATE_CONVERTER =
+            (ctx, arg, format) -> {
+                var s = DateFormatUtil.format(arg, format.getType(), contextLanguage(ctx));
+                return applyGenericStringFormat(s, format);
+            };
+
+    public static final ArgumentConverter<Calendar, String> CALENDAR_CONVERTER =
+            (ctx, arg, format) -> {
+                var s = DateFormatUtil.format(arg, format.getType(), contextLanguage(ctx));
+                return applyGenericStringFormat(s, format);
+            };
 
     public static <T> String format(ArgumentConverter<T, String> conv, FormatPattern format, T value, boolean repr) {
         var ctx = new Context(); // create empty context

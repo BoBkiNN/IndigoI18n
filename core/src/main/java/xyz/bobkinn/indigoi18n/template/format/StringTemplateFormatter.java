@@ -7,6 +7,9 @@ import xyz.bobkinn.indigoi18n.template.TemplateVisitor;
 import xyz.bobkinn.indigoi18n.template.arg.ArgConverters;
 import xyz.bobkinn.indigoi18n.template.arg.TemplateArgument;
 
+import java.time.*;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Objects;
 
@@ -23,6 +26,20 @@ public class StringTemplateFormatter extends TemplateFormatter<String> {
 
         addConverter(Double.class, ArgConverters.NUMBER_CONVERTER);
         addConverter(Float.class, ArgConverters.NUMBER_CONVERTER);
+
+        // java.time
+        addConverter(LocalDateTime.class, ArgConverters.TEMPORAL_CONVERTER);
+        addConverter(LocalDate.class, ArgConverters.TEMPORAL_CONVERTER);
+        addConverter(LocalTime.class, ArgConverters.TEMPORAL_CONVERTER);
+
+        addConverter(ZonedDateTime.class, ArgConverters.TEMPORAL_CONVERTER);
+        addConverter(OffsetDateTime.class, ArgConverters.TEMPORAL_CONVERTER);
+        addConverter(OffsetTime.class, ArgConverters.TEMPORAL_CONVERTER);
+        addConverter(Instant.class, ArgConverters.TEMPORAL_CONVERTER);
+
+        // legacy
+        addConverter(GregorianCalendar.class, ArgConverters.CALENDAR_CONVERTER);
+        addConverter(Date.class, ArgConverters.DATE_CONVERTER);
     }
 
     @Override
