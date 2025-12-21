@@ -8,7 +8,7 @@ import java.util.*;
 import java.text.*;
 
 /**
- * Support {@link TemporalAccessor}, {@link Date}, {@link Calendar}
+ * Supports {@link TemporalAccessor}, {@link Date}, {@link Calendar}
  */
 public class DateFormatUtil {
 
