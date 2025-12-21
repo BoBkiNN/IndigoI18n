@@ -1,5 +1,6 @@
 package xyz.bobkinn.indigoi18n.template.arg;
 
+import xyz.bobkinn.indigoi18n.context.Context;
 import xyz.bobkinn.indigoi18n.template.Utils;
 import xyz.bobkinn.indigoi18n.template.format.FormatPattern;
 
@@ -62,7 +63,7 @@ public class ArgConverters {
     }
 
 
-    public static final ArgumentConverter<String, String> STRING_CONVERTER = ArgConverters::applyGenericStringFormat;
+    public static final ArgumentConverter<String, String> STRING_CONVERTER = (ctx, arg, format) -> applyGenericStringFormat(arg, format);
 
     private static String applyGenericStringFormat(String arg, FormatPattern format) {
         var s = arg;
@@ -92,7 +93,7 @@ public class ArgConverters {
     }
 
 
-    public static final ArgumentConverter<Number, String> INT_CONVERTER =  (n, format) -> {
+    public static final ArgumentConverter<Number, String> INT_CONVERTER =  (ctx, n, format) -> {
         var arg = n.intValue();
         if (format.getType() == 'c') {
             try {
@@ -142,7 +143,7 @@ public class ArgConverters {
      * double and float
      */
     @SuppressWarnings("MalformedFormatString")
-    public static final ArgumentConverter<Number, String> NUMBER_CONVERTER = (arg, format) -> {
+    public static final ArgumentConverter<Number, String> NUMBER_CONVERTER = (ctx, arg, format) -> {
         double value = arg.doubleValue();
 
         boolean isNaN = Double.isNaN(value);
@@ -222,11 +223,12 @@ public class ArgConverters {
     };
 
     public static <T> String format(ArgumentConverter<T, String> conv, FormatPattern format, T value, boolean repr) {
+        var ctx = new Context(); // create empty context
         if (repr) {
             var s = Utils.quote(String.valueOf(value));
-            return STRING_CONVERTER.format(s, format);
+            return STRING_CONVERTER.format(ctx, s, format);
         }
-        return conv.format(value, format);
+        return conv.format(ctx, value, format);
     }
 
     public static <T> String format(ArgumentConverter<T, String> conv, String format, T value, boolean repr) {

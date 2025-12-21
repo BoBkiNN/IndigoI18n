@@ -30,18 +30,18 @@ public class StringTemplateFormatter extends TemplateFormatter<String> {
         return value;
     }
 
-    private String formatNull(FormatPattern format) {
+    private String formatNull(Context ctx, FormatPattern format) {
         var nConv = getConverter(null);
-        if (nConv != null) return nConv.format(null, format);
+        if (nConv != null) return nConv.format(ctx, null, format);
         return "null";
     }
 
-    private void formatArgument(StringBuilder builder, TemplateArgument arg, Object value) {
+    private void formatArgument(Context ctx, StringBuilder builder, TemplateArgument arg, Object value) {
         var format = arg.getPattern();
         Objects.requireNonNull(format, "no format set for argument "+arg);
         if (arg.isRepr('r')) {
             var rawRepr = createRawRepr(value);
-            var res = ArgConverters.STRING_CONVERTER.format(rawRepr, format);
+            var res = ArgConverters.STRING_CONVERTER.format(ctx, rawRepr, format);
             builder.append(res);
             return;
         }
@@ -51,22 +51,22 @@ public class StringTemplateFormatter extends TemplateFormatter<String> {
         }
         if (arg.isRepr('s') && (value == null || value.getClass() != String.class)) {
             // !s converts any object (except string) to string and then formats using string converter
-            var res = ArgConverters.STRING_CONVERTER.format(String.valueOf(value), format);
+            var res = ArgConverters.STRING_CONVERTER.format(ctx, String.valueOf(value), format);
             builder.append(res);
             return;
         }
         if (value == null) {
-            var res = formatNull(format);
+            var res = formatNull(ctx, format);
             builder.append(res);
             return;
         }
         var conv = getConverter(value);
         if (conv == null) {
-            var res = ArgConverters.STRING_CONVERTER.format(String.valueOf(value), format);
+            var res = ArgConverters.STRING_CONVERTER.format(ctx, String.valueOf(value), format);
             builder.append(res);
             return;
         }
-        var content = conv.format(value, format);
+        var content = conv.format(ctx, value, format);
         builder.append(content);
     }
 
@@ -88,7 +88,7 @@ public class StringTemplateFormatter extends TemplateFormatter<String> {
                     return;
                 }
                 var p = params.get(idx);
-                formatArgument(result, arg, p);
+                formatArgument(ctx, result, arg, p);
             }
 
             @Override
