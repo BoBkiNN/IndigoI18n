@@ -24,7 +24,7 @@ public class TestArgConverters {
 
     @Test
     public void testNumberFormat() {
-        var f = Utils.formatIntGrouped(230_000, 10, 3, "_");
+        var f = Utils.formatLongGrouped(230_000, 10, 3, "_");
         Assertions.assertEquals("230_000", f);
     }
 

@@ -106,12 +106,12 @@ public class ArgConverters {
 
 
     public static final ArgumentConverter<Number, String> INT_CONVERTER = (ctx, n, format) -> {
-        var arg = n.intValue();
+        var arg = n.longValue();
         char type = format.getType();
         // char
         if (type == 'c') {
             try {
-                var s = Character.toString(arg);
+                var s = Character.toString((int) arg);
                 return align(alignmentOrDefault(format, arg), format.getWidth(), s);
             } catch (Exception e) {
                 return FormatPattern.asString(arg, format);
@@ -130,7 +130,7 @@ public class ArgConverters {
 
             String formatted = nf.format(Math.abs(arg));
 
-            int sign = Integer.compare(arg, 0);
+            int sign = Long.compare(arg, 0);
             Character signChar = format.getSign().charFor(sign);
             String signStr = signChar == null ? "" : String.valueOf(signChar);
 
@@ -146,8 +146,8 @@ public class ArgConverters {
          * existing logic
          * ========================= */
 
-        int sign = Integer.compare(arg, 0);
-        int abs = Math.abs(arg);
+        int sign = Long.compare(arg, 0);
+        var abs = Math.abs(arg);
 
         int radix = switch (type) {
             case 'b' -> 2;
@@ -163,7 +163,7 @@ public class ArgConverters {
             case 2, 8, 16 -> 4;
             default -> 3;
         };
-        var uf = Utils.formatIntGrouped(abs, radix, groupSize, groupChar);
+        var uf = Utils.formatLongGrouped(abs, radix, groupSize, groupChar);
         if (type == 'X') {
             uf = uf.toUpperCase();
         }

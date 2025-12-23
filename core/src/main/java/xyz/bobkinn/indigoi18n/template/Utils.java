@@ -1,14 +1,14 @@
 package xyz.bobkinn.indigoi18n.template;
 
 public class Utils {
-    public static String formatIntGrouped(
-            int value,
+    public static String formatLongGrouped(
+            long value,
             int radix,
             int groupSize,
             String separator
     ) {
         // Convert number to requested radix
-        String s = Integer.toString(value, radix);
+        String s = Long.toString(value, radix);
 
         // No grouping requested
         if (separator == null || groupSize <= 0) {
