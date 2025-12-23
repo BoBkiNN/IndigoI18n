@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import xyz.bobkinn.indigoi18n.Indigo;
 import xyz.bobkinn.indigoi18n.template.format.FormatPattern;
 import xyz.bobkinn.indigoi18n.template.arg.ArgConverters;
 
@@ -52,7 +53,12 @@ public class TestArgConverters {
                 Arguments.of("_<10c", 65, "A_________"),
                 Arguments.of("_^10c", 65, "____A_____"),
                 Arguments.of("c", 2356456, "%{2356456:c}"),
-                Arguments.of("10", 12, "        12")
+                Arguments.of("10", 12, "        12"),
+
+                Arguments.of(".=+10n", 12_500, "+...12,500"),
+                Arguments.of(".=-10n", 12_500, "....12,500"),
+                Arguments.of(".=-10n", -12_500, "-...12,500"),
+                Arguments.of(".= 10n", 12_500, " ...12,500")
         );
     }
 
@@ -60,6 +66,14 @@ public class TestArgConverters {
     @MethodSource("provideIntFormats")
     void testIntConverter(String format, int value, String expected) {
         Assertions.assertEquals(expected, formatInt(format, value));
+    }
+
+    @Test
+    void testNSign() {
+        var ctx = Indigo.INSTANCE.newContext("ru_ru", "test");
+        var f = FormatPattern.parse(".=+10n");
+        var r = ArgConverters.INT_CONVERTER.format(ctx, 12_500, f);
+        Assertions.assertEquals("+...12 500", r); // no-break space here
     }
 
     private String formatStr(String spec, String text, boolean repr) {

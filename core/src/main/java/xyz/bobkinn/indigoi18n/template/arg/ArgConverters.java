@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.text.NumberFormat;
 import java.time.temporal.TemporalAccessor;
 import java.util.Calendar;
 import java.util.Date;
@@ -103,9 +104,11 @@ public class ArgConverters {
     }
 
 
-    public static final ArgumentConverter<Number, String> INT_CONVERTER =  (ctx, n, format) -> {
+    public static final ArgumentConverter<Number, String> INT_CONVERTER = (ctx, n, format) -> {
         var arg = n.intValue();
-        if (format.getType() == 'c') {
+        char type = format.getType();
+        // char
+        if (type == 'c') {
             try {
                 var s = Character.toString(arg);
                 return align(alignmentOrDefault(format, arg), format.getWidth(), s);
@@ -113,18 +116,48 @@ public class ArgConverters {
                 return FormatPattern.asString(arg, format);
             }
         }
-        var sign = Integer.compare(arg, 0);
-        var abs = Math.abs(arg);
-        var type = format.getType();
-        var radix = switch (type) {
+
+        /* =========================
+         * locale-aware integer ('n')
+         * ========================= */
+        if (type == 'n') {
+            Locale locale = contextLanguage(ctx);
+            if (locale == null) locale = Locale.ROOT;
+
+            NumberFormat nf = NumberFormat.getIntegerInstance(locale);
+            nf.setGroupingUsed(true);
+
+            String formatted = nf.format(Math.abs(arg));
+
+            int sign = Integer.compare(arg, 0);
+            Character signChar = format.getSign().charFor(sign);
+            String signStr = signChar == null ? "" : String.valueOf(signChar);
+
+            return alignNumber(
+                    alignmentOrDefault(format, arg),
+                    format.getWidth(),
+                    signStr,
+                    formatted
+            );
+        }
+
+        /* =========================
+         * existing logic
+         * ========================= */
+
+        int sign = Integer.compare(arg, 0);
+        int abs = Math.abs(arg);
+
+        int radix = switch (type) {
             case 'b' -> 2;
             case 'o' -> 8;
             case 'x', 'X' -> 16;
             default -> 10;
         };
+
         var groupChar = Optional.ofNullable(format.getIntPartGrouping())
                 .map(String::valueOf).orElse(null);
-        var pmSign = format.getSign().charFor(sign);
+
         int groupSize = switch (radix) {
             case 2, 8, 16 -> 4;
             default -> 3;
@@ -134,14 +167,13 @@ public class ArgConverters {
             uf = uf.toUpperCase();
         }
         String outSign = "";
-        if (format.isSpecial() && radix == 16) {
-            if (type == 'X') outSign = "0X";
-            else outSign = "0x";
-        } else if (format.isSpecial() && radix == 2) {
-            outSign = "0b";
-        } else if (format.isSpecial() && radix == 8) {
-            outSign = "0o";
+        if (format.isSpecial()) {
+            if (radix == 16) outSign = (type == 'X') ? "0X" : "0x";
+            else if (radix == 2) outSign = "0b";
+            else if (radix == 8) outSign = "0o";
         }
+
+        var pmSign = format.getSign().charFor(sign);
         if (pmSign != null) {
             outSign = pmSign + outSign;
         }
