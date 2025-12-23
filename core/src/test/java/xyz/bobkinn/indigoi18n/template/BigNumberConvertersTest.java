@@ -140,4 +140,51 @@ class BigNumberConvertersTest {
         assertEquals("-.12.500.000",
                 formatLangBigInt("de_de", ".=+12n", new BigInteger("-12500000")));
     }
+
+    @SuppressWarnings("SameParameterValue")
+    private static String formatLangBigDecimal(String lang, String format, BigDecimal number) {
+        var ctx = Indigo.INSTANCE.newContext(lang, "test");
+        var f = FormatPattern.parse(format);
+        return ArgConverters.BIG_DECIMAL_CONVERTER.format(ctx, number, f);
+    }
+
+    @Test
+    void testNModePositiveDecimal() {
+        BigDecimal val = new BigDecimal("12500000.12");
+
+        // ru_RU — non-breaking space, comma decimal
+        assertEquals("+.12 500 000,12",
+                formatLangBigDecimal("ru_ru", ".=+15n", val));
+
+        // de_DE — dot grouping, comma decimal
+        assertEquals("+.12.500.000,12",
+                formatLangBigDecimal("de_de", ".=+15n", val));
+    }
+
+    @Test
+    void testNModeNegativeDecimal() {
+        BigDecimal val = new BigDecimal("-12500000.12");
+
+        // ru_RU negative
+        assertEquals("-.12 500 000,12",
+                formatLangBigDecimal("ru_ru", ".=+15n", val));
+
+        // de_DE negative
+        assertEquals("-.12.500.000,12",
+                formatLangBigDecimal("de_de", ".=+15n", val));
+    }
+
+    @Test
+    void testNModeZeroTrimSpecial() {
+        // value with .00 fractional part, '#' (special) should trim zeros
+        BigDecimal val = new BigDecimal("12500000.00");
+
+        // ru_RU locale, `,00` is trimmed
+        assertEquals("+....12 500 000",
+                formatLangBigDecimal("ru_ru", ".=+15n#", val));
+
+        // de_DE locale, `,00` is trimmed
+        assertEquals("+....12.500.000",
+                formatLangBigDecimal("de_de", ".=+15n#", val));
+    }
 }

@@ -12,6 +12,7 @@ import java.math.BigInteger;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.time.temporal.TemporalAccessor;
 import java.util.Calendar;
@@ -395,51 +396,74 @@ public class ArgConverters {
 
                 String formatted;
 
-                switch (type) {
-                    case 'f', 'F' -> {
-                        formatted = abs
-                                .setScale(precision, RoundingMode.HALF_UP)
-                                .toPlainString();
-                        if (type == 'F') formatted = formatted.toUpperCase();
-                    }
+                // N-mode: locale-aware formatting
+                if (type == 'n' || type == 'N') {
+                    Locale locale = contextLanguage(ctx);
+                    if (locale == null) locale = Locale.ROOT;
 
-                    case 'e', 'E' -> {
-                        BigDecimal scaled = abs.round(new MathContext(precision, RoundingMode.HALF_UP));
-                        formatted = scaled.toEngineeringString();
+                    // Use java.text.NumberFormat for locale-aware formatting
+                    NumberFormat nf = NumberFormat.getNumberInstance(locale);
+                    nf.setGroupingUsed(true);
+                    nf.setMinimumFractionDigits(type == 'N' ? nf.getMinimumFractionDigits() : 0);
+                    nf.setMaximumFractionDigits(precision);
 
-                        if (!formatted.contains("E") && !formatted.contains("e")) {
-                            formatted += "E+0";
+                    formatted = nf.format(abs);
+
+                } else {
+                    switch (type) {
+                        case 'f', 'F' -> {
+                            formatted = abs
+                                    .setScale(precision, RoundingMode.HALF_UP)
+                                    .toPlainString();
+                            if (type == 'F') formatted = formatted.toUpperCase();
                         }
 
-                        if (type == 'E') formatted = formatted.toUpperCase();
+                        case 'e', 'E' -> {
+                            BigDecimal scaled = abs.round(new MathContext(precision, RoundingMode.HALF_UP));
+                            formatted = scaled.toEngineeringString();
+
+                            if (!formatted.contains("E") && !formatted.contains("e")) {
+                                formatted += "E+0";
+                            }
+
+                            if (type == 'E') formatted = formatted.toUpperCase();
+                        }
+
+                        case '%' -> {
+                            BigDecimal pct = abs.multiply(BigDecimal.valueOf(100));
+                            formatted = pct
+                                    .setScale(precision, RoundingMode.HALF_UP)
+                                    .toPlainString() + "%";
+                        }
+
+                        default -> formatted = abs.toPlainString();
                     }
 
-                    case '%' -> {
-                        BigDecimal pct = abs.multiply(BigDecimal.valueOf(100));
-                        formatted = pct
-                                .setScale(precision, RoundingMode.HALF_UP)
-                                .toPlainString() + "%";
+                    // grouping integer part for non-locale formats
+                    if (format.getIntPartGrouping() != null && !formatted.contains("E") && !formatted.contains("e")) {
+                        String[] parts = formatted.split("\\.", 2);
+                        String intPart = Utils.formatIntGrouped(
+                                parts[0],
+                                3,
+                                format.getIntPartGrouping().toString()
+                        );
+                        formatted = parts.length == 2 ? intPart + "." + parts[1] : intPart;
                     }
-
-                    default -> formatted = abs.toPlainString();
-                }
-
-                // grouping integer part
-                if (format.getIntPartGrouping() != null && !formatted.contains("E") && !formatted.contains("e")) {
-                    String[] parts = formatted.split("\\.", 2);
-                    String intPart = Utils.formatIntGrouped(
-                            parts[0],
-                            3,
-                            format.getIntPartGrouping().toString()
-                    );
-                    formatted = parts.length == 2 ? intPart + "." + parts[1] : intPart;
                 }
 
                 // '#' — remove trailing .0
                 if (format.isSpecial()) {
-                    int dot = formatted.indexOf('.');
-                    if (dot >= 0 && Utils.fractionalPartIsZero(formatted, dot)) {
-                        formatted = formatted.substring(0, dot);
+                    char decimalSep = '.';
+                    if (type == 'n' || type == 'N') {
+                        Locale locale = contextLanguage(ctx);
+                        if (locale == null) locale = Locale.ROOT;
+                        var symbols = DecimalFormatSymbols.getInstance(locale);
+                        decimalSep = symbols.getDecimalSeparator();
+                    }
+
+                    int sepIndex = formatted.indexOf(decimalSep);
+                    if (sepIndex >= 0 && Utils.fractionalPartIsZero(formatted, sepIndex)) {
+                        formatted = formatted.substring(0, sepIndex);
                         if (type == '%') formatted += "%";
                     }
                 }
@@ -451,6 +475,7 @@ public class ArgConverters {
                         formatted
                 );
             };
+
 
 
     public static <T> String format(ArgumentConverter<T, String> conv, FormatPattern format, T value, boolean repr) {
