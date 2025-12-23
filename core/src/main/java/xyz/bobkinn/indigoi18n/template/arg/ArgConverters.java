@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.time.temporal.TemporalAccessor;
 import java.util.Calendar;
@@ -187,13 +188,12 @@ public class ArgConverters {
     @SuppressWarnings("MalformedFormatString")
     public static final ArgumentConverter<Number, String> NUMBER_CONVERTER = (ctx, arg, format) -> {
         double value = arg.doubleValue();
-
-        boolean isNaN = Double.isNaN(value);
-        boolean isInf = Double.isInfinite(value);
-
         char type = format.getType();
         Integer precision = format.getPrecision();
         if (precision == null) precision = 6;
+
+        boolean isNaN = Double.isNaN(value);
+        boolean isInf = Double.isInfinite(value);
 
         int sigNum = isNaN ? 1 : (value > 0 ? 1 : (value < 0 ? -1 : 0));
         Character signChar = format.getSign().charFor(sigNum);
@@ -215,54 +215,67 @@ public class ArgConverters {
         double abs = Math.abs(value);
         String formatted;
 
-        switch (type) {
-            case 'e', 'E' -> {
-                formatted = String.format(Locale.ROOT, "%." + precision + "e", abs);
-                if (type == 'E') formatted = formatted.toUpperCase();
+        if (type == 'n') {
+            Locale locale = contextLanguage(ctx);
+            if (locale == null) locale = Locale.ROOT;
+
+            var nf = NumberFormat.getNumberInstance(locale);
+
+            nf.setGroupingUsed(true);
+            if (nf instanceof DecimalFormat df) df.setMinimumFractionDigits(precision);
+
+            formatted = nf.format(abs);
+        } else {
+            // old behavior
+            switch (type) {
+                case 'e', 'E' -> {
+                    formatted = String.format(Locale.ROOT, "%." + precision + "e", abs);
+                    if (type == 'E') formatted = formatted.toUpperCase();
+                }
+                case 'f', 'F' -> {
+                    formatted = String.format(Locale.ROOT, "%." + precision + "f", abs);
+                    if (type == 'F') formatted = formatted.toUpperCase();
+                }
+                case '%' -> {
+                    double pct = abs * 100.0;
+                    formatted = String.format(Locale.ROOT, "%." + precision + "f%%", pct);
+                }
+                default -> formatted = Double.toString(abs);
             }
 
-            case 'f', 'F' -> {
-                formatted = String.format(Locale.ROOT, "%." + precision + "f", abs);
-                if (type == 'F') formatted = formatted.toUpperCase();
+            // Apply integer-part grouping if requested
+            boolean isE = formatted.indexOf('e') > 0 || formatted.indexOf('E') > 0;
+            if (format.getIntPartGrouping() != null && !isE) {
+                String[] parts = formatted.split("\\."); // split integer and fraction
+                String intPart = parts[0];
+                String fracPart = parts.length > 1 ? parts[1] : null;
+                String separator = format.getIntPartGrouping().toString();
+                intPart = Utils.formatIntGrouped(intPart, 3, separator); // base is 10 so group by 3
+                formatted = fracPart != null ? intPart + "." + fracPart : intPart;
             }
-            case '%' -> {
-                double pct = abs * 100.0;
-                formatted = String.format(Locale.ROOT, "%." + precision + "f%%", pct);
-            }
-            default -> formatted = Double.toString(abs);
-        }
 
-        // Apply integer-part grouping if requested
-        boolean isE = formatted.indexOf('e') > 0 || formatted.indexOf('E') > 0;
-        if (format.getIntPartGrouping() != null && !isE) {
-            String[] parts = formatted.split("\\."); // split integer and fraction
-            String intPart = parts[0];
-            String fracPart = parts.length > 1 ? parts[1] : null;
-            String separator = format.getIntPartGrouping().toString();
-            intPart = Utils.formatIntGrouped(intPart, 3, separator); // base is 10 so group by 3
-            formatted = fracPart != null ? intPart + "." + fracPart : intPart;
-        }
-        if (format.isSpecial()) {
-            var dotIdx = formatted.indexOf('.');
-            var fracZero = Utils.fractionalPartIsZero(formatted, dotIdx);
-            if (dotIdx > 0 && fracZero) {
-                var esIdx = formatted.indexOf('e');
-                var ebIdx = formatted.indexOf('E');
-                var eIdx = Math.max(esIdx, ebIdx);
-                if (eIdx > 0) {
-                    var ePart = formatted.substring(eIdx);
-                    var wholePart = formatted.substring(0, dotIdx);
-                    formatted = wholePart+ePart;
-                } else formatted = formatted.substring(0, dotIdx);
+            if (format.isSpecial()) {
+                var dotIdx = formatted.indexOf('.');
+                var fracZero = Utils.fractionalPartIsZero(formatted, dotIdx);
+                if (dotIdx > 0 && fracZero) {
+                    var esIdx = formatted.indexOf('e');
+                    var ebIdx = formatted.indexOf('E');
+                    var eIdx = Math.max(esIdx, ebIdx);
+                    if (eIdx > 0) {
+                        var ePart = formatted.substring(eIdx);
+                        var wholePart = formatted.substring(0, dotIdx);
+                        formatted = wholePart + ePart;
+                    } else formatted = formatted.substring(0, dotIdx);
 
-                if (type == '%') formatted += "%";
+                    if (type == '%') formatted += "%";
+                }
             }
         }
 
         String signStr = signChar == null ? "" : String.valueOf(signChar);
-
         return alignNumber(alignmentOrDefault(format, arg), format.getWidth(), signStr, formatted);
     };
+
 
     private static @Nullable Locale contextLanguage(@NotNull Context ctx) {
         var lang = ctx.resolveOptional(LangKeyContext.class)

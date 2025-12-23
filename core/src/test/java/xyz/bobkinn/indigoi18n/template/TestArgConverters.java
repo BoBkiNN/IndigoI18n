@@ -68,13 +68,43 @@ public class TestArgConverters {
         Assertions.assertEquals(expected, formatInt(format, value));
     }
 
-    @Test
-    void testNSign() {
-        var ctx = Indigo.INSTANCE.newContext("ru_ru", "test");
-        var f = FormatPattern.parse(".=+10n");
-        var r = ArgConverters.INT_CONVERTER.format(ctx, 12_500, f);
-        Assertions.assertEquals("+...12 500", r); // no-break space here
+    @SuppressWarnings("SameParameterValue")
+    private static String formatLangInt(String lang, String format, Number number) {
+        var ctx = Indigo.INSTANCE.newContext(lang, "test");
+        var f = FormatPattern.parse(format);
+        return ArgConverters.INT_CONVERTER.format(ctx, number, f);
     }
+
+    @Test
+    void testNIntSign() {
+        Assertions.assertEquals("+...12 500",
+                formatLangInt("ru_ru", ".=+10n", 12_500)); // no-break space here
+        Assertions.assertEquals("+...12.500",
+                formatLangInt("de_de", ".=+10n", 12_500)); // german uses dot
+    }
+
+    @SuppressWarnings("SameParameterValue")
+    private static String formatLangNumber(String lang, String format, Number number) {
+        var ctx = Indigo.INSTANCE.newContext(lang, "test");
+        var f = FormatPattern.parse(format);
+        return ArgConverters.NUMBER_CONVERTER.format(ctx, number, f);
+    }
+
+    @Test
+    void testNDoubleSign() {
+        // ru_RU — space as thousands separator, comma as decimal separator
+        Assertions.assertEquals("+..12 500,75",
+                formatLangNumber("ru_ru", ".=+12.2n", 12_500.75));
+
+        // de_DE — dot as thousands separator, comma as decimal separator
+        Assertions.assertEquals("+..12.500,75",
+                formatLangNumber("de_de", ".=+12.2n", 12_500.75));
+
+        // check negative number formatting
+        Assertions.assertEquals("-..12 500,75",
+                formatLangNumber("ru_ru", ".=+12.2n", -12_500.75));
+    }
+
 
     private String formatStr(String spec, String text, boolean repr) {
         return ArgConverters.format(ArgConverters.STRING_CONVERTER, spec, text, repr);
