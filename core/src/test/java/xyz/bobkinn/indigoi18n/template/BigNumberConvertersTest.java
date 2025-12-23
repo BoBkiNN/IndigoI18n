@@ -1,8 +1,10 @@
 package xyz.bobkinn.indigoi18n.template;
 
 import org.junit.jupiter.api.Test;
+import xyz.bobkinn.indigoi18n.Indigo;
 import xyz.bobkinn.indigoi18n.template.arg.ArgConverters;
 import xyz.bobkinn.indigoi18n.template.arg.ArgumentConverter;
+import xyz.bobkinn.indigoi18n.template.format.FormatPattern;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -106,5 +108,36 @@ class BigNumberConvertersTest {
                 fmt(ArgConverters.BIG_DECIMAL_CONVERTER, "+.2f", new BigDecimal("1.5")));
         assertEquals("-1.50",
                 fmt(ArgConverters.BIG_DECIMAL_CONVERTER, "+.2f", new BigDecimal("-1.5")));
+    }
+
+    // n
+
+    @SuppressWarnings("SameParameterValue")
+    private static String formatLangBigInt(String lang, String format, BigInteger number) {
+        var ctx = Indigo.INSTANCE.newContext(lang, "test");
+        var f = FormatPattern.parse(format);
+        return ArgConverters.BIG_INT_CONVERTER.format(ctx, number, f);
+    }
+
+    @Test
+    void testNModePositive() {
+        // ru_RU — space as thousands separator
+        assertEquals("+.12 500 000",
+                formatLangBigInt("ru_ru", ".=+12n", new BigInteger("12500000")));
+
+        // de_DE — dot as thousands separator
+        assertEquals("+.12.500.000",
+                formatLangBigInt("de_de", ".=+12n", new BigInteger("12500000")));
+    }
+
+    @Test
+    void testNModeNegative() {
+        // ru_RU negative number
+        assertEquals("-.12 500 000",
+                formatLangBigInt("ru_ru", ".=+12n", new BigInteger("-12500000")));
+
+        // de_DE negative number
+        assertEquals("-.12.500.000",
+                formatLangBigInt("de_de", ".=+12n", new BigInteger("-12500000")));
     }
 }

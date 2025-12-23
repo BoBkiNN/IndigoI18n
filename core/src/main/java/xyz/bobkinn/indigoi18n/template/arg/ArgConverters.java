@@ -312,6 +312,28 @@ public class ArgConverters {
                 BigInteger abs = arg.abs();
                 char type = format.getType();
 
+                // Handle locale-aware 'n' mode
+                if (type == 'n') {
+                    Locale locale = contextLanguage(ctx);
+                    if (locale == null) locale = Locale.ROOT;
+
+                    NumberFormat nf = NumberFormat.getIntegerInstance(locale);
+                    nf.setGroupingUsed(true);
+
+                    String formatted = nf.format(abs);
+                    Character signChar = format.getSign().charFor(sign);
+
+                    String prefix = signChar != null ? String.valueOf(signChar) : null;
+
+                    return alignNumber(
+                            alignmentOrDefault(format, arg),
+                            format.getWidth(),
+                            prefix,
+                            formatted
+                    );
+                }
+
+                // Existing logic for other types (b, o, x, etc.)
                 int radix = switch (type) {
                     case 'b' -> 2;
                     case 'o' -> 8;
@@ -356,6 +378,7 @@ public class ArgConverters {
                         digits
                 );
             };
+
 
     public static final ArgumentConverter<BigDecimal, String> BIG_DECIMAL_CONVERTER =
             (ctx, arg, format) -> {
