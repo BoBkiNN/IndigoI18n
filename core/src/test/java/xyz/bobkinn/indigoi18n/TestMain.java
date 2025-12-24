@@ -6,12 +6,14 @@ import java.util.List;
 
 public class TestMain {
     public static void main(String[] args) {
-        var t = "%{:==10n}";
+        var t = "%{:==+10.2n}";
         Indigo.INSTANCE.texts.put("test", "ru", Translation.create(t));
 
         // Warm-up + correctness check
         var r = Indigo.parse("ru", "test", List.of(1234.46));
-        assert r.equals("1 234,46");
+        if (!r.equals("+=1 234,46")) {
+            throw new IllegalStateException("Assertion failed");
+        }
 
         int iterations = 5_000_000;
 
