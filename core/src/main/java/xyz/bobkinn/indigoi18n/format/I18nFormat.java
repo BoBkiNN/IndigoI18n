@@ -33,7 +33,7 @@ public abstract class I18nFormat<T> {
      * @param key key passed to parse
      * @return value that will be returned by parse
      */
-    public T onNullTranslation(Context ctx, String key) {
+    public T onNullTranslation(@SuppressWarnings("unused") Context ctx, String key) {
         return produce(key);
     }
 
