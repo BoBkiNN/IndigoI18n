@@ -23,6 +23,7 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+    // jvmArgs("-XX:StartFlightRecording=filename=recording.jfr,dumponexit=true,settings=profile")
 }
 
 java {
