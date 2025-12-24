@@ -3,7 +3,6 @@ package xyz.bobkinn.indigoi18n.template.arg;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.bobkinn.indigoi18n.context.Context;
-import xyz.bobkinn.indigoi18n.context.impl.LangKeyContext;
 import xyz.bobkinn.indigoi18n.template.Utils;
 import xyz.bobkinn.indigoi18n.template.format.FormatPattern;
 
@@ -188,14 +187,8 @@ public class ArgConverters {
      */
     public static final DecimalArgumentConverter NUMBER_CONVERTER = new DecimalArgumentConverter();
 
-
-    // TODO also cache Locale per context
     private static @Nullable Locale contextLanguage(@NotNull Context ctx) {
-        var lang = ctx.resolveOptional(LangKeyContext.class)
-                .map(LangKeyContext::getLang).orElse(null);
-        var i18n = ctx.resolveI18n();
-        if (i18n != null) return i18n.resolveLocale(lang);
-        else return null;
+        return ctx.resolveLocale();
     }
 
     public static final ArgumentConverter<TemporalAccessor, String> TEMPORAL_CONVERTER =

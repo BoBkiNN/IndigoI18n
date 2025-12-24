@@ -9,10 +9,7 @@ import xyz.bobkinn.indigoi18n.context.impl.LangKeyContext;
 import xyz.bobkinn.indigoi18n.context.impl.SourceContext;
 import xyz.bobkinn.indigoi18n.data.TranslationInfo;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Supplier;
 
 @RequiredArgsConstructor
@@ -31,8 +28,8 @@ public class Context implements ContextEntry {
     /**
      * @return new sub-context with new LangKeyContext set
      */
-    public Context sub(String lang, String key) {
-        return sub().with(new LangKeyContext(lang, key));
+    public Context sub(String lang, String key, Locale locale) {
+        return sub().with(new LangKeyContext(lang, key, locale));
     }
 
     /**
@@ -133,6 +130,24 @@ public class Context implements ContextEntry {
     public <T extends ContextEntry> Context with(T entry) {
         set(entry.getClass(), entry);
         return this;
+    }
+
+    /**
+     * Resolves locale by stored language. Sets new LangKeyContext into current context
+     * @return resolved locale or null if no locale resolved or i18n not provided in this context
+     */
+    public @Nullable Locale resolveLocale() {
+        var lk = resolve(LangKeyContext.class);
+        if (lk == null) return null;
+        if (lk.getResolvedLocale() != null) return lk.getResolvedLocale();
+
+        var i18n = resolveI18n();
+        if (i18n == null) return null;
+        var locale = i18n.resolveLocale(lk.getLang());
+        if (locale == null) return null;
+        var nlk = lk.withLocale(locale);
+        set(nlk);
+        return locale;
     }
 
 }

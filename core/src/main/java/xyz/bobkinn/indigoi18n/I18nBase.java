@@ -25,7 +25,7 @@ public interface I18nBase {
         if (info != null) {
             ctx.set(new SourceContext(info.source()));
         }
-        ctx.set(new LangKeyContext(lang, key));
+        ctx.set(new LangKeyContext(lang, key, resolveLocale(lang)));
         return ctx;
     }
 
