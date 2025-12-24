@@ -9,6 +9,7 @@ import xyz.bobkinn.indigoi18n.data.TranslationInfo;
 import xyz.bobkinn.indigoi18n.format.I18nFormat;
 
 import java.util.List;
+import java.util.Locale;
 
 
 public interface I18nBase {
@@ -54,4 +55,19 @@ public interface I18nBase {
      * Locale resolver used in this I18n instance
      */
     @NotNull LocaleResolver getLocaleResolver();
+
+    /**
+     * Resets locale cache
+     */
+    @SuppressWarnings("unused")
+    void resetLocaleCache();
+
+    /**
+     * Resolves language by id using LocaleResolver and caches it for future accesses.
+     * @param langId language id
+     * @return null if no language resolved
+     * @see #resolveLocale(String)
+     * @see #getLocaleResolver()
+     */
+    @Nullable Locale resolveLocale(String langId);
 }

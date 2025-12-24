@@ -193,10 +193,8 @@ public class ArgConverters {
         var lang = ctx.resolveOptional(LangKeyContext.class)
                 .map(LangKeyContext::getLang).orElse(null);
         var i18n = ctx.resolveI18n();
-        if (i18n != null) {
-            var lr = i18n.getLocaleResolver();
-            return lr.getLocale(lang);
-        } else return null;
+        if (i18n != null) return i18n.resolveLocale(lang);
+        else return null;
     }
 
     public static final ArgumentConverter<TemporalAccessor, String> TEMPORAL_CONVERTER =

@@ -2,6 +2,7 @@ package xyz.bobkinn.indigoi18n;
 
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import xyz.bobkinn.indigoi18n.context.Context;
 import xyz.bobkinn.indigoi18n.data.TranslationInfo;
 import xyz.bobkinn.indigoi18n.format.I18nFormat;
@@ -9,10 +10,8 @@ import xyz.bobkinn.indigoi18n.resolver.DefaultTranslationResolver;
 import xyz.bobkinn.indigoi18n.resolver.TranslationResolver;
 import xyz.bobkinn.indigoi18n.source.TranslationSource;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
@@ -32,6 +31,8 @@ public class IndigoI18n implements I18nBase {
 
     @Getter
     private final LocaleResolver localeResolver;
+
+    private final Map<String, Locale> localeCache = new ConcurrentHashMap<>();
 
     public IndigoI18n() {
         texts = new Translations();
@@ -76,6 +77,17 @@ public class IndigoI18n implements I18nBase {
     @SuppressWarnings("unused")
     public void setResolver(TranslationResolver resolver) {
         this.resolver = Objects.requireNonNull(resolver);
+    }
+
+    @Override
+    public @Nullable Locale resolveLocale(String langId) {
+        if (localeResolver == null) return null;
+        return localeCache.computeIfAbsent(langId, localeResolver::getLocale);
+    }
+
+    @Override
+    public void resetLocaleCache() {
+        localeCache.clear();
     }
 
     @Override
