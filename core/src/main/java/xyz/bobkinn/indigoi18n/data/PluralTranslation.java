@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import net.xyzsd.plurals.PluralCategory;
 import net.xyzsd.plurals.PluralRule;
 import net.xyzsd.plurals.PluralRuleType;
+import org.jetbrains.annotations.NotNull;
 import xyz.bobkinn.indigoi18n.context.Context;
 import xyz.bobkinn.indigoi18n.context.impl.CountContext;
 
@@ -14,6 +15,11 @@ import java.util.Map;
 @Getter
 public class PluralTranslation extends Translation {
     private final Map<PluralCategory, String> plurals;
+
+    public PluralTranslation(Map<PluralCategory, String> plurals, Context contextOverride) {
+        super(contextOverride);
+        this.plurals = plurals;
+    }
 
     public String get(PluralCategory category) {
         var v = plurals.get(category);
@@ -27,7 +33,7 @@ public class PluralTranslation extends Translation {
     }
 
     @Override
-    public String get(Context ctx) {
+    public @NotNull String resolve(Context ctx) {
         var count = ctx.resolveOptional(CountContext.class)
                 .map(CountContext::getCount).orElse(null);
         if (count == null) {

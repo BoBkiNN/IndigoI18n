@@ -4,6 +4,7 @@ import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.bobkinn.indigoi18n.context.Context;
+import xyz.bobkinn.indigoi18n.data.Translation;
 import xyz.bobkinn.indigoi18n.data.TranslationInfo;
 import xyz.bobkinn.indigoi18n.format.I18nFormat;
 import xyz.bobkinn.indigoi18n.resolver.DefaultTranslationResolver;
@@ -97,7 +98,7 @@ public class IndigoI18n implements I18nBase {
     }
 
     @Override
-    public String get(Context context, String key, String language) {
+    public Translation get(Context context, String key, String language) {
         return resolver.get(context, texts, key, language);
     }
 

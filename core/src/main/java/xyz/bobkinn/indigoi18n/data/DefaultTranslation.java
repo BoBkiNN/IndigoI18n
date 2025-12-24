@@ -2,6 +2,7 @@ package xyz.bobkinn.indigoi18n.data;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import xyz.bobkinn.indigoi18n.context.Context;
 
 @RequiredArgsConstructor
@@ -9,8 +10,13 @@ import xyz.bobkinn.indigoi18n.context.Context;
 public class DefaultTranslation extends Translation {
     private final String text;
 
+    public DefaultTranslation(String text, Context contextOverride) {
+        super(contextOverride);
+        this.text = text;
+    }
+
     @Override
-    public String get(Context ctx) {
+    public @NotNull String resolve(Context ctx) {
         return text;
     }
 

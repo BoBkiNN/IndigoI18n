@@ -3,6 +3,7 @@ package xyz.bobkinn.indigoi18n.resolver;
 import xyz.bobkinn.indigoi18n.IndigoI18n;
 import xyz.bobkinn.indigoi18n.Translations;
 import xyz.bobkinn.indigoi18n.context.Context;
+import xyz.bobkinn.indigoi18n.data.Translation;
 
 /**
  * Translation resolver is used to perform lookup in texts map.
@@ -12,24 +13,25 @@ import xyz.bobkinn.indigoi18n.context.Context;
 public interface TranslationResolver {
 
     /**
-     * Lookups text in passed language by passed key
-     * @return text or any other value (including null) if text not found
+     * Lookups translation in passed language by passed key
+     * @return translation or any other value (including null) if text not found
      */
-    String get(Context ctx, Translations texts, String key, String lang);
+    Translation get(Context ctx, Translations texts, String key, String lang);
 
     /**
-     * @return string or null if text not found
+     * @return null if translation not found
      * @see #get(Context, Translations, String, String)
      */
-    String getOrNull(Context ctx, Translations texts, String key, String lang);
+    Translation getOrNull(Context ctx, Translations texts, String key, String lang);
 
     /**
-     * @return string or passed key if text with this key not found
+     * @return translation or passed key inside {@link xyz.bobkinn.indigoi18n.data.DefaultTranslation}
+     * if text with this key not found
      */
     @SuppressWarnings("unused")
-    default String getOrKey(Context ctx, Translations texts, String key, String lang) {
+    default Translation getOrKey(Context ctx, Translations texts, String key, String lang) {
         var v = getOrNull(ctx, texts, key, lang);
-        if (v == null) return key;
+        if (v == null) return Translation.create(key);
         return null;
     }
 }

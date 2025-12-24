@@ -10,17 +10,17 @@ import xyz.bobkinn.indigoi18n.data.Translation;
 public class DefaultTranslationResolver implements TranslationResolver {
 
     @Override
-    public String get(Context ctx, Translations texts, String key, String lang) {
-        return texts.getOr(key, lang, Translation.create(key)).get(ctx);
+    public Translation get(Context ctx, Translations texts, String key, String lang) {
+        return texts.getOr(key, lang, Translation.create(key));
     }
 
     @Override
-    public String getOrNull(Context ctx, Translations texts, String key, String lang) {
-        return texts.getOr(key, lang, null).get(ctx);
+    public Translation getOrNull(Context ctx, Translations texts, String key, String lang) {
+        return texts.getOr(key, lang, null);
     }
 
     @Override
-    public String getOrKey(Context ctx, Translations texts, String key, String lang) {
-        return texts.getOr(key, lang, Translation.create(key)).get(ctx);
+    public Translation getOrKey(Context ctx, Translations texts, String key, String lang) {
+        return texts.getOr(key, lang, Translation.create(key));
     }
 }

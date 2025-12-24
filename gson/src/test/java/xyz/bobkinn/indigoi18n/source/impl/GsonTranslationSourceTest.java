@@ -34,7 +34,7 @@ class GsonTranslationSourceTest {
             var ctx = new StringI18n().newContext(language, key);
             ctx.set(new CountContext(count));
             var t = (PluralTranslation) data.get(key);
-            return t.get(ctx);
+            return t.resolve(ctx);
         }
     }
 

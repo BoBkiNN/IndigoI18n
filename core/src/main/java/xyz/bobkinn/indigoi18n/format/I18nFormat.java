@@ -27,12 +27,23 @@ public abstract class I18nFormat<T> {
     public abstract T produce(String text);
 
     /**
+     * Called only when translation resolver returned null.<br>
+     * Default implementation produces object with key text
+     * @param ctx translation context
+     * @param key key passed to parse
+     * @return value that will be returned by parse
+     */
+    public T onNullTranslation(Context ctx, String key) {
+        return produce(key);
+    }
+
+    /**
      * Replaces arguments inside input original object
      */
     public abstract T replaceArguments(Context ctx, T input, List<Object> args);
 
     /**
-     * Produces new object and replaces arguments
+     * Uses text to produce object with arguments replaced.
      * @param text original text
      * @param args arguments
      */

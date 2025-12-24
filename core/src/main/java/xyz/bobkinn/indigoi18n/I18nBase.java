@@ -5,6 +5,7 @@ import org.jetbrains.annotations.Nullable;
 import xyz.bobkinn.indigoi18n.context.Context;
 import xyz.bobkinn.indigoi18n.context.impl.LangKeyContext;
 import xyz.bobkinn.indigoi18n.context.impl.SourceContext;
+import xyz.bobkinn.indigoi18n.data.Translation;
 import xyz.bobkinn.indigoi18n.data.TranslationInfo;
 import xyz.bobkinn.indigoi18n.format.I18nFormat;
 
@@ -13,7 +14,7 @@ import java.util.Locale;
 
 
 public interface I18nBase {
-    String get(Context context, String key, String language);
+    Translation get(Context context, String key, String language);
 
     <T> I18nFormat<T> getFormat(Class<T> cls);
 
@@ -48,7 +49,14 @@ public interface I18nBase {
         }
         // compute source context if available
         if (info != null) targetCtx.compute(SourceContext.class, () -> new SourceContext(info.source()));
-        return getFormat(cls).format(targetCtx, get(targetCtx, key, lang), args);
+        var format = getFormat(cls);
+        if (format == null) throw new IllegalArgumentException("Unknown format for output "+cls);
+        var tr = get(targetCtx, key, lang);
+        if (tr == null) return format.onNullTranslation(targetCtx, key);
+
+        var ovr = tr.getContextOverride();
+        if (ovr != null) targetCtx.merge(ovr, true);
+        return format.format(targetCtx, tr.resolve(targetCtx), args);
     }
 
     /**
