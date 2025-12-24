@@ -34,7 +34,35 @@ public interface I18nBase {
         return newContext(null, lang, key);
     }
 
+    /**
+     * Computes context, gets {@link Translation}, merges context overrides, resolves text from translation,
+     * performs formatting using {@link I18nFormat}
+     * @param cls output (format) type
+     * @param ctx context to pass
+     * @param lang language id
+     * @param key translation key
+     * @param args formatting arguments
+     * @param <T> output type
+     */
     default <T> T parse(Class<T> cls, @Nullable Context ctx, String lang, String key, List<Object> args) {
+        var targetCtx = computeContext(ctx, lang, key);
+        var format = getFormat(cls);
+        if (format == null) throw new IllegalArgumentException("Unknown format for output "+cls);
+        var tr = get(targetCtx, key, lang);
+        if (tr == null) return format.onNullTranslation(targetCtx, key);
+
+        var ovr = tr.getContextOverride();
+        if (ovr != null) targetCtx.merge(ovr, true);
+        return format.format(targetCtx, tr.resolve(targetCtx), args);
+    }
+
+    /**
+     * Collects possible translation information and builds context.<br>
+     * If context is null, new context is created.<br>
+     * If context is not {@link Context#isComplete() complete} fresh context is created and merged with passed one (no overrides)<br>
+     * If source information is found, {@link SourceContext} added to resulting context.
+     */
+    private Context computeContext(@Nullable Context ctx, String lang, String key) {
         var info = infoFor(lang, key);
         Context targetCtx;
         if (ctx == null) {
@@ -49,14 +77,7 @@ public interface I18nBase {
         }
         // compute source context if available
         if (info != null) targetCtx.compute(SourceContext.class, () -> new SourceContext(info.source()));
-        var format = getFormat(cls);
-        if (format == null) throw new IllegalArgumentException("Unknown format for output "+cls);
-        var tr = get(targetCtx, key, lang);
-        if (tr == null) return format.onNullTranslation(targetCtx, key);
-
-        var ovr = tr.getContextOverride();
-        if (ovr != null) targetCtx.merge(ovr, true);
-        return format.format(targetCtx, tr.resolve(targetCtx), args);
+        return targetCtx;
     }
 
     /**

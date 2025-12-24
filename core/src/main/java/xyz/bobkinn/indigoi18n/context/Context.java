@@ -44,6 +44,9 @@ public class Context implements ContextEntry {
         return resolveOptional(I18nContext.class).map(I18nContext::getI18n).orElse(null);
     }
 
+    /**
+     * @return true if {@link I18nContext} found in context tree.
+     */
     public boolean isComplete() {
         return resolveI18n() != null;
     }
