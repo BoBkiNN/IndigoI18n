@@ -189,6 +189,7 @@ public class ArgConverters {
     public static final DecimalArgumentConverter NUMBER_CONVERTER = new DecimalArgumentConverter();
 
 
+    // TODO also cache Locale per context
     private static @Nullable Locale contextLanguage(@NotNull Context ctx) {
         var lang = ctx.resolveOptional(LangKeyContext.class)
                 .map(LangKeyContext::getLang).orElse(null);
