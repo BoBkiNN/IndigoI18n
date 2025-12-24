@@ -5,5 +5,4 @@ TODO:
 - kotlin bukkit extension methods
 - `Map<String, Map<String, String>>` source
 - dynamic resolver (not uses texts stored in Translations)
-- n type for localized numbers
 - fix generated methods do not keep varargs
