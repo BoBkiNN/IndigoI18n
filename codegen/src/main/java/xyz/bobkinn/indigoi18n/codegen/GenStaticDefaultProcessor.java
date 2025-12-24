@@ -103,7 +103,8 @@ public class GenStaticDefaultProcessor extends AbstractProcessor {
         } else {
             builder.addStatement("return $L", call);
         }
-
+        // varargs
+        if (method.isVarArgs()) builder.varargs(true);
         return builder.build();
     }
 
