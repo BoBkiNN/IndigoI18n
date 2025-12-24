@@ -12,7 +12,7 @@ public class FormatPattern {
     private final String source;
     private final Alignment alignment;
     private final Sign sign;
-    private final boolean special;
+    private final boolean alternate;
     private final Integer width;
     private final Integer precision;
     private final Character intPartGrouping;

@@ -167,7 +167,7 @@ public class ArgConverters {
                 uf = uf.toUpperCase();
             }
             String outSign = "";
-            if (format.isSpecial()) {
+            if (format.isAlternate()) {
                 if (radix == 16) outSign = (type == 'X') ? "0X" : "0x";
                 else if (radix == 2) outSign = "0b";
                 else if (radix == 8) outSign = "0o";
@@ -262,7 +262,7 @@ public class ArgConverters {
                     }
 
                     String prefix = "";
-                    if (format.isSpecial()) {
+                    if (format.isAlternate()) {
                         prefix = switch (radix) {
                             case 16 -> type == 'X' ? "0X" : "0x";
                             case 2 -> "0b";
@@ -386,7 +386,7 @@ public class ArgConverters {
                     formatted = fracPart != null ? intPart + "." + fracPart : intPart;
                 }
 
-                if (format.isSpecial()) {
+                if (format.isAlternate()) {
                     var dotIdx = formatted.indexOf('.');
                     var fracZero = Utils.fractionalPartIsZero(formatted, dotIdx);
                     if (dotIdx > 0 && fracZero) {
@@ -494,7 +494,7 @@ public class ArgConverters {
             }
 
             // '#' — remove trailing .0
-            if (format.isSpecial()) {
+            if (format.isAlternate()) {
                 char decimalSep = '.';
                 if (type == 'n' || type == 'N') {
                     Locale locale = contextLanguage(ctx);
