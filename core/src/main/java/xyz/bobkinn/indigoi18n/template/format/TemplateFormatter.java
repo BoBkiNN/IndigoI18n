@@ -123,11 +123,11 @@ public abstract class TemplateFormatter<O> {
                     .map(LangKeyContext::getLang)
                     .orElseThrow(() -> new IllegalStateException("No language in current context tree"));
         }
-        var sub = ctx.sub(targetLang, key, i18n.resolveLocale(targetLang));
-        sub.set(new InlineContext(cd-1));
         /* Set lang & key in this context. We still can find original language in key by using parent context.
         With this we ensure that all deeper translations share target language
         unless override set at deeper InlineTranslation */
+        var sub = ctx.sub(targetLang, key, i18n.resolveLocale(targetLang));
+        sub.set(new InlineContext(cd-1));
         return i18n.parse(cls, sub, targetLang, key, params);
     }
 }
