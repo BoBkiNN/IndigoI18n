@@ -2,13 +2,12 @@ package xyz.bobkinn.indigoi18n.template;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import xyz.bobkinn.indigoi18n.data.ParsedEntry;
 import xyz.bobkinn.indigoi18n.template.arg.TemplateArgument;
 import xyz.bobkinn.indigoi18n.template.format.FormatPattern;
 
-import java.util.ArrayList;
+public class TemplateParser implements ITemplateParser {
 
-public class TemplateParser {
+    public static final TemplateParser INSTANCE = new TemplateParser();
 
     /**
      * @return new TemplateArgument with source containing '%{' and '}' around
@@ -104,7 +103,7 @@ public class TemplateParser {
         return seqArgIdx;
     }
 
-    public static void parse(String text, TemplateVisitor visitor) {
+    public void parse(String text, TemplateVisitor visitor) {
         var reader = new TemplateReader(text);
         int seqArgIdx = 0;
         var plain = new StringBuilder();
@@ -170,33 +169,4 @@ public class TemplateParser {
         flush.run();
     }
 
-
-    public static ParsedEntry parse(String text) {
-        var ls = new ArrayList<>();
-        var visitor = new TemplateVisitor() {
-            @Override
-            public void visitPlain(String text) {
-                ls.add(text);
-            }
-
-            @Override
-            public void visitArgument(TemplateArgument argument) {
-                ls.add(argument);
-            }
-
-            @Override
-            public void visitInline(InlineTranslation inline) {
-                ls.add(inline);
-            }
-        };
-        try {
-            parse(text, visitor);
-        } catch (Exception e) {
-            throw new TemplateParseException("Failed to parse text '%s'".formatted(text), e);
-        }
-        if (ls.isEmpty()) {
-            return ParsedEntry.empty();
-        }
-        return new ParsedEntry(ls);
-    }
 }

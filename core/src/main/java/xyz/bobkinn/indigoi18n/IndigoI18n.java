@@ -9,6 +9,8 @@ import xyz.bobkinn.indigoi18n.format.I18nFormat;
 import xyz.bobkinn.indigoi18n.resolver.DefaultTranslationResolver;
 import xyz.bobkinn.indigoi18n.resolver.TranslationResolver;
 import xyz.bobkinn.indigoi18n.source.TranslationSource;
+import xyz.bobkinn.indigoi18n.template.ITemplateParser;
+import xyz.bobkinn.indigoi18n.template.TemplateParser;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -34,12 +36,16 @@ public class IndigoI18n implements I18nBase {
 
     private final Map<String, Locale> localeCache = new ConcurrentHashMap<>();
 
-    public IndigoI18n() {
-        texts = new Translations();
+    public IndigoI18n(ITemplateParser templateParser, LocaleResolver localeResolver) {
+        texts = new Translations(templateParser);
         resolver = new DefaultTranslationResolver();
         formats = new HashMap<>();
-        localeResolver = LocaleResolver.DEFAULT;
+        this.localeResolver = localeResolver;
         addDefaultFormats();
+    }
+
+    public IndigoI18n() {
+        this(TemplateParser.INSTANCE, LocaleResolver.DEFAULT);
     }
 
     public <T> void addFormat(Class<T> cls, I18nFormat<T> format) {

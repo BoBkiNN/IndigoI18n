@@ -84,7 +84,7 @@ public class TestTemplateParser {
             "' %s %s ', 5"
     })
     void testEntrySize(String template, int expectedSize) {
-        assertEquals(expectedSize, TemplateParser.parse(template).parts().size());
+        assertEquals(expectedSize, TemplateParser.INSTANCE.parse(template).parts().size());
     }
 
     @ParameterizedTest
@@ -93,7 +93,7 @@ public class TestTemplateParser {
             "'%%{s:.3e}', '%{s:.3e}'",
     })
     void testEscaping(String template, String text) {
-        assertEquals(text, TemplateParser.parse(template).parts().get(0));
+        assertEquals(text, TemplateParser.INSTANCE.parse(template).parts().get(0));
     }
 
     static Stream<Arguments> provideInlineArgs() {
@@ -117,7 +117,7 @@ public class TestTemplateParser {
 
     @Test
     void testInlines() {
-        var entry = TemplateParser.parse("%s%{t:key}lol");
+        var entry = TemplateParser.INSTANCE.parse("%s%{t:key}lol");
         assertInstanceOf(TemplateArgument.class, entry.part(0));
         assertEquals(new InlineTranslation("key"), entry.part(1));
         assertEquals("lol", entry.part(2));
@@ -126,7 +126,7 @@ public class TestTemplateParser {
 
     @Test
     void testSource() {
-        var entry = TemplateParser.parse("abc %s%{s!r:.3} %5");
+        var entry = TemplateParser.INSTANCE.parse("abc %s%{s!r:.3} %5");
         assertEquals("%s", entry.argumentAt(1).getSource());
         assertEquals("%{s!r:.3}", entry.argumentAt(2).getSource());
         assertEquals("%5", entry.argumentAt(4).getSource());

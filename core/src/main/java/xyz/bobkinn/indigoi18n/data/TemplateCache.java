@@ -1,15 +1,23 @@
 package xyz.bobkinn.indigoi18n.data;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
+import xyz.bobkinn.indigoi18n.template.ITemplateParser;
 import xyz.bobkinn.indigoi18n.template.TemplateErrorHandler;
 import xyz.bobkinn.indigoi18n.template.TemplateParseException;
-import xyz.bobkinn.indigoi18n.template.TemplateParser;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+@RequiredArgsConstructor
 public class TemplateCache {
+    /**
+     * Template parser used to parse translation text
+     */
+    @Getter
+    private final ITemplateParser templateParser;
     /**
      * Map of text to its parsed entry.
      */
@@ -21,7 +29,7 @@ public class TemplateCache {
     public ParsedEntry createCache(String text, TranslationInfo info) {
         ParsedEntry entry;
         try {
-            entry = TemplateParser.parse(text);
+            entry = templateParser.parse(text);
         } catch (TemplateParseException e) {
             if (templateErrorHandler != null) {
                 templateErrorHandler.handleParseException(e, text, info);

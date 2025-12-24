@@ -14,7 +14,7 @@ public class TestStringTemplateFormatter {
     private final StringTemplateFormatter strF = new StringTemplateFormatter();
 
     private String formatStr(String text, Object... args) {
-        var entry = TemplateParser.parse(text);
+        var entry = TemplateParser.INSTANCE.parse(text);
         return strF.format(null, entry, Arrays.asList(args));
     }
 

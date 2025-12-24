@@ -10,6 +10,7 @@ import xyz.bobkinn.indigoi18n.data.TranslationInfo;
 import xyz.bobkinn.indigoi18n.source.SourceTextAdder;
 import xyz.bobkinn.indigoi18n.source.TranslationLoadError;
 import xyz.bobkinn.indigoi18n.source.TranslationSource;
+import xyz.bobkinn.indigoi18n.template.ITemplateParser;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -26,7 +27,11 @@ public class Translations {
     private final Map<TranslationSource, Map<String, Set<String>>> keysBySource = new ConcurrentHashMap<>();
 
     @Getter
-    private final TemplateCache cache = new TemplateCache();
+    private final TemplateCache cache;
+
+    public Translations(ITemplateParser parser) {
+        cache = new TemplateCache(parser);
+    }
 
     public List<TranslationSource> sources() {
         return List.copyOf(keysBySource.keySet());
