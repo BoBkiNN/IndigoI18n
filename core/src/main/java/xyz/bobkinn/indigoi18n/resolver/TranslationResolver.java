@@ -3,6 +3,7 @@ package xyz.bobkinn.indigoi18n.resolver;
 import xyz.bobkinn.indigoi18n.IndigoI18n;
 import xyz.bobkinn.indigoi18n.Translations;
 import xyz.bobkinn.indigoi18n.context.Context;
+import xyz.bobkinn.indigoi18n.data.BasicTranslation;
 import xyz.bobkinn.indigoi18n.data.Translation;
 
 /**
@@ -25,7 +26,7 @@ public interface TranslationResolver {
     Translation getOrNull(Context ctx, Translations texts, String key, String lang);
 
     /**
-     * @return translation or passed key inside {@link xyz.bobkinn.indigoi18n.data.DefaultTranslation}
+     * @return translation or passed key inside {@link BasicTranslation}
      * if text with this key not found
      */
     @SuppressWarnings("unused")

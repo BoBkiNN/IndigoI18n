@@ -7,10 +7,10 @@ import xyz.bobkinn.indigoi18n.context.Context;
 
 @RequiredArgsConstructor
 @Getter
-public class DefaultTranslation extends Translation {
+public class BasicTranslation extends Translation {
     private final String text;
 
-    public DefaultTranslation(String text, Context contextOverride) {
+    public BasicTranslation(String text, Context contextOverride) {
         super(contextOverride);
         this.text = text;
     }

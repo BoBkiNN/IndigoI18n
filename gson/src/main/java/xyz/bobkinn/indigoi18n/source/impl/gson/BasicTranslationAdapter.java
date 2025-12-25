@@ -3,7 +3,7 @@ package xyz.bobkinn.indigoi18n.source.impl.gson;
 import com.google.gson.*;
 import lombok.RequiredArgsConstructor;
 import xyz.bobkinn.indigoi18n.context.Context;
-import xyz.bobkinn.indigoi18n.data.DefaultTranslation;
+import xyz.bobkinn.indigoi18n.data.BasicTranslation;
 
 import java.lang.reflect.Type;
 
@@ -11,11 +11,11 @@ import java.lang.reflect.Type;
  * Used to ignore key case
  */
 @RequiredArgsConstructor
-public class DefaultTranslationAdapter implements JsonDeserializer<DefaultTranslation> {
+public class BasicTranslationAdapter implements JsonDeserializer<BasicTranslation> {
     private final ContextParser contextParser;
 
     @Override
-    public DefaultTranslation deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+    public BasicTranslation deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
             throws JsonParseException {
         JsonObject obj = json.getAsJsonObject();
 
@@ -30,6 +30,6 @@ public class DefaultTranslationAdapter implements JsonDeserializer<DefaultTransl
             ctx = contextParser.parse(obj.getAsJsonObject(ContextParser.FIELD_NAME));
         } else ctx = null;
 
-        return new DefaultTranslation(text, ctx);
+        return new BasicTranslation(text, ctx);
     }
 }

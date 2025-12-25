@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import xyz.bobkinn.indigoi18n.data.DefaultTranslation;
+import xyz.bobkinn.indigoi18n.data.BasicTranslation;
 import xyz.bobkinn.indigoi18n.data.PluralTranslation;
 import xyz.bobkinn.indigoi18n.data.Translation;
 import xyz.bobkinn.indigoi18n.source.ISourceTextAdder;
@@ -39,14 +39,14 @@ public class GsonTranslationSource implements TranslationSource, SingleLangSourc
     public static ContextParser DEFAULT_CONTEXT_PARSER = new ContextParser();
 
     public static final Map<String, Class<? extends Translation>> TRANSLATION_TYPES = Map.of(
-            "default", DefaultTranslation.class,
+            "basic", BasicTranslation.class,
             "plural", PluralTranslation.class
     ) ;
 
     private static final Function<ContextParser, Gson> DEFAULT_GSON_SUPPLIER = (p) -> new GsonBuilder()
             .registerTypeAdapter(Translation.class, DiscriminatorAdapter.mapping(TRANSLATION_TYPES))
             .registerTypeAdapter(PluralTranslation.class, new PluralTranslationAdapter(p))
-            .registerTypeAdapter(DefaultTranslation.class, new DefaultTranslationAdapter(p))
+            .registerTypeAdapter(BasicTranslation.class, new BasicTranslationAdapter(p))
             .create();
 
     @Contract("_, _, _ -> new")

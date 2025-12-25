@@ -33,6 +33,6 @@ public abstract class Translation {
 
     @Contract("_ -> new")
     public static @NotNull Translation create(String value) {
-        return new DefaultTranslation(value);
+        return new BasicTranslation(value);
     }
 }

@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import xyz.bobkinn.indigoi18n.StringI18n;
 import xyz.bobkinn.indigoi18n.context.impl.CountContext;
-import xyz.bobkinn.indigoi18n.data.DefaultTranslation;
+import xyz.bobkinn.indigoi18n.data.BasicTranslation;
 import xyz.bobkinn.indigoi18n.data.PluralTranslation;
 import xyz.bobkinn.indigoi18n.data.Translation;
 import xyz.bobkinn.indigoi18n.source.ISourceTextAdder;
@@ -27,8 +27,8 @@ class GsonTranslationSourceTest {
             data.put(key, value);
         }
 
-        public String plain(String key) {
-            return ((DefaultTranslation) data.get(key)).getText();
+        public String basic(String key) {
+            return ((BasicTranslation) data.get(key)).getText();
         }
 
         public String plural(String key, String language, int count) {
@@ -42,22 +42,12 @@ class GsonTranslationSourceTest {
     }
 
     @Test
-    void testLoadFromFile() throws URISyntaxException {
-        // Load file from test resources
-        var resource = getClass().getClassLoader().getResource("en.json");
-        assertNotNull(resource, "Test resource not found");
-
-        File file = new File(resource.toURI());
-
-        // Create source from file
-        GsonTranslationSource source = GsonTranslationSource.fromFile(file.toURI(), "en", file);
-
-        TestAdder adder = new TestAdder();
-        source.load(adder);
+    void testLoadFromFile() {
+        TestAdder adder = loadFromResource("en.json", "en");
 
         assertEquals(3, adder.data.size());
-        assertEquals("Hello", adder.plain("hello"));
-        assertEquals("Goodbye", adder.plain("bye"));
+        assertEquals("Hello", adder.basic("hello"));
+        assertEquals("Goodbye", adder.basic("bye"));
         assertEquals("1", adder.plural("pl", "ru", 1));
         assertEquals("25", adder.plural("pl", "ru", 25));
         assertEquals("3", adder.plural("pl", "ru", 3));
@@ -75,8 +65,8 @@ class GsonTranslationSourceTest {
         source.load(adder);
 
         assertEquals(2, adder.data.size());
-        assertEquals("value1", adder.plain("key1"));
-        assertEquals("value2", adder.plain("key2"));
+        assertEquals("value1", adder.basic("key1"));
+        assertEquals("value2", adder.basic("key2"));
     }
 
     @SuppressWarnings("SameParameterValue")
