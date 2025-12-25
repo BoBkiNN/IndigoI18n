@@ -22,7 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Uses default resolver and do not include any translations
  * @see StringI18n
  */
-public class IndigoI18n implements I18nBase {
+public class IndigoI18n implements I18nEngine {
     @Getter
     protected final Translations texts;
     /**

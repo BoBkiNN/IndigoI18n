@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Locale;
 
 
-public interface I18nBase {
+public interface I18nEngine {
     Translation get(Context context, String key, String language);
 
     <T> I18nFormat<T> getFormat(Class<T> cls);

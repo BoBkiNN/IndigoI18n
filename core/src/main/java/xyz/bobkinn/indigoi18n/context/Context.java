@@ -3,7 +3,7 @@ package xyz.bobkinn.indigoi18n.context;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import xyz.bobkinn.indigoi18n.I18nBase;
+import xyz.bobkinn.indigoi18n.I18nEngine;
 import xyz.bobkinn.indigoi18n.context.impl.I18nContext;
 import xyz.bobkinn.indigoi18n.context.impl.LangKeyContext;
 import xyz.bobkinn.indigoi18n.context.impl.SourceContext;
@@ -36,11 +36,11 @@ public class Context implements ContextEntry {
      * Sets I18n into context if not already.<br>
      * Does nothing if already exists in current context (not tree).
      */
-    public void setI18n(I18nBase i18n) {
+    public void setI18n(I18nEngine i18n) {
         data.computeIfAbsent(I18nContext.class, k -> new I18nContext(i18n));
     }
 
-    public I18nBase resolveI18n() {
+    public I18nEngine resolveI18n() {
         return resolveOptional(I18nContext.class).map(I18nContext::getI18n).orElse(null);
     }
 
@@ -58,7 +58,7 @@ public class Context implements ContextEntry {
         }
     }
 
-    public I18nBase getI18n() {
+    public I18nEngine getI18n() {
         return Objects.requireNonNull(resolveI18n(), "No I18n instance in current context tree");
     }
 

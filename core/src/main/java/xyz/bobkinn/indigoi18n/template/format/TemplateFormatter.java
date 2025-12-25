@@ -2,6 +2,7 @@ package xyz.bobkinn.indigoi18n.template.format;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import xyz.bobkinn.indigoi18n.I18nEngine;
 import xyz.bobkinn.indigoi18n.context.Context;
 import xyz.bobkinn.indigoi18n.context.impl.InlineContext;
 import xyz.bobkinn.indigoi18n.context.impl.LangKeyContext;
@@ -93,7 +94,7 @@ public abstract class TemplateFormatter<O> {
     }
 
     /**
-     * Uses {@link xyz.bobkinn.indigoi18n.I18nBase#parse(Class, Context, String, String, List) parse method}
+     * Uses {@link I18nEngine#parse(Class, Context, String, String, List) parse method}
      * to parse and return text specified by key and translation inside {@link InlineTranslation}.<br>
      * Each inlining decreases remaining depth in passed sub-context.<br>
      * When no inlining were previously done, remaining depth is equals to maxDepth from {@link InlineTranslation}.<br>
