@@ -1,4 +1,4 @@
-package xyz.bobkinn.indigoi18n.source.impl;
+package xyz.bobkinn.indigoi18n.source.impl.gson;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
