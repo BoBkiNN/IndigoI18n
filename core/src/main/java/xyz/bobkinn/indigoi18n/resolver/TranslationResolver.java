@@ -1,5 +1,6 @@
 package xyz.bobkinn.indigoi18n.resolver;
 
+import org.jetbrains.annotations.Nullable;
 import xyz.bobkinn.indigoi18n.IndigoI18n;
 import xyz.bobkinn.indigoi18n.Translations;
 import xyz.bobkinn.indigoi18n.context.Context;
@@ -23,7 +24,7 @@ public interface TranslationResolver {
      * @return null if translation not found
      * @see #get(Context, Translations, String, String)
      */
-    Translation getOrNull(Context ctx, Translations texts, String key, String lang);
+    @Nullable Translation getOrNull(Context ctx, Translations texts, String key, String lang);
 
     /**
      * @return translation or passed key inside {@link BasicTranslation}

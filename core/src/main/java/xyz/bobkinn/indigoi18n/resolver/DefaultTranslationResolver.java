@@ -1,5 +1,6 @@
 package xyz.bobkinn.indigoi18n.resolver;
 
+import org.jetbrains.annotations.Nullable;
 import xyz.bobkinn.indigoi18n.Translations;
 import xyz.bobkinn.indigoi18n.context.Context;
 import xyz.bobkinn.indigoi18n.data.Translation;
@@ -15,7 +16,7 @@ public class DefaultTranslationResolver implements TranslationResolver {
     }
 
     @Override
-    public Translation getOrNull(Context ctx, Translations texts, String key, String lang) {
+    public @Nullable Translation getOrNull(Context ctx, Translations texts, String key, String lang) {
         return texts.getOr(key, lang, null);
     }
 

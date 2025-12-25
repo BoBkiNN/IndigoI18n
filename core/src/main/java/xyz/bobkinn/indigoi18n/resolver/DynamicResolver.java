@@ -25,7 +25,7 @@ public interface DynamicResolver extends TranslationResolver {
     }
 
     @Override
-    default Translation getOrNull(Context ctx, Translations texts, String key, String lang) {
+    default @Nullable Translation getOrNull(Context ctx, Translations texts, String key, String lang) {
         return get(ctx, key, lang);
     }
 }
