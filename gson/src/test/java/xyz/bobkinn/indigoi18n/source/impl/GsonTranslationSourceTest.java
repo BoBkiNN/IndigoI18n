@@ -1,6 +1,7 @@
 package xyz.bobkinn.indigoi18n.source.impl;
 
 import com.google.gson.JsonObject;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import xyz.bobkinn.indigoi18n.StringI18n;
 import xyz.bobkinn.indigoi18n.context.impl.CountContext;
@@ -34,6 +35,8 @@ class GsonTranslationSourceTest {
             var ctx = new StringI18n().newContext(language, key);
             ctx.set(new CountContext(count));
             var t = (PluralTranslation) data.get(key);
+            var ovr = t.getContextOverride();
+            if (ovr != null) ctx.merge(ovr, true);
             return t.resolve(ctx);
         }
     }
@@ -74,5 +77,34 @@ class GsonTranslationSourceTest {
         assertEquals(2, adder.data.size());
         assertEquals("value1", adder.plain("key1"));
         assertEquals("value2", adder.plain("key2"));
+    }
+
+    @SuppressWarnings("SameParameterValue")
+    private @NotNull TestAdder loadFromResource(String name, String langName) {
+        var resource = getClass().getClassLoader().getResource(name);
+        assertNotNull(resource, "Test resource not found");
+
+        File file;
+        try {
+            file = new File(resource.toURI());
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+
+        // Create source from file
+        GsonTranslationSource source = GsonTranslationSource.fromFile(file.toURI(), langName, file);
+
+        TestAdder adder = new TestAdder();
+        source.load(adder);
+        return adder;
+    }
+
+    @Test
+    void testContextOverride() {
+        var r = loadFromResource("ovr.json", "en");
+        assertEquals("1", r.plural("always_1", "ru", 1));
+        assertEquals("1", r.plural("always_1", "ru", 25));
+        assertEquals("1", r.plural("always_1", "ru", 3));
+        assertEquals("1", r.plural("always_1", "ru", 5));
     }
 }

@@ -3,6 +3,7 @@ package xyz.bobkinn.indigoi18n.source.impl;
 import com.google.gson.*;
 import lombok.RequiredArgsConstructor;
 import net.xyzsd.plurals.PluralCategory;
+import xyz.bobkinn.indigoi18n.context.Context;
 import xyz.bobkinn.indigoi18n.data.PluralTranslation;
 
 import java.lang.reflect.Type;
@@ -16,9 +17,10 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class PluralTranslationAdapter implements JsonDeserializer<PluralTranslation> {
     private final String typeFieldName;
+    private final ContextParser contextParser;
 
-    public PluralTranslationAdapter() {
-        this(DiscriminatorAdapter.DEFAULT_FIELD_NAME);
+    public PluralTranslationAdapter(ContextParser parser) {
+        this(DiscriminatorAdapter.DEFAULT_FIELD_NAME, parser);
     }
 
     @Override
@@ -31,6 +33,7 @@ public class PluralTranslationAdapter implements JsonDeserializer<PluralTranslat
         for (Map.Entry<String, JsonElement> e : obj.entrySet()) {
             String key = e.getKey();
             if (Objects.equals(key, typeFieldName)) continue;
+            if (Objects.equals(key, ContextParser.FIELD_NAME)) continue;
 
             PluralCategory category;
             try {
@@ -44,6 +47,11 @@ public class PluralTranslationAdapter implements JsonDeserializer<PluralTranslat
             plurals.put(category, e.getValue().getAsString());
         }
 
-        return new PluralTranslation(plurals);
+        Context ctx;
+        if (obj.has(ContextParser.FIELD_NAME)) {
+            ctx = contextParser.parse(obj.getAsJsonObject(ContextParser.FIELD_NAME));
+        } else ctx = null;
+
+        return new PluralTranslation(plurals, ctx);
     }
 }

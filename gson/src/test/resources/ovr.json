@@ -1,0 +1,11 @@
+{
+  "always_1": {
+    "type": "plural",
+    "one": "1",
+    "other": "25",
+    "few": "3",
+    "ctx": {
+      "count": 1
+    }
+  }
+}

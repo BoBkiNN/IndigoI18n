@@ -26,29 +26,32 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 @RequiredArgsConstructor
 public class GsonTranslationSource implements TranslationSource, SingleLangSource {
     private final @Nullable URI location;
     private final Function<Gson, JsonElement> jsonSupplier;
-    private final Supplier<Gson> gsonSupplier;
+    private final Function<ContextParser, Gson> gsonSupplier;
     @Getter
     private final String language;
+    private final ContextParser contextParser;
+
+    public static ContextParser DEFAULT_CONTEXT_PARSER = new ContextParser();
 
     public static final Map<String, Class<? extends Translation>> TRANSLATION_TYPES = Map.of(
             "default", DefaultTranslation.class,
             "plural", PluralTranslation.class
     ) ;
 
-    private static final Supplier<Gson> DEFAULT_GSON_SUPPLIER = () -> new GsonBuilder()
+    private static final Function<ContextParser, Gson> DEFAULT_GSON_SUPPLIER = (p) -> new GsonBuilder()
             .registerTypeAdapter(Translation.class, DiscriminatorAdapter.mapping(TRANSLATION_TYPES))
-            .registerTypeAdapter(PluralTranslation.class, new PluralTranslationAdapter())
+            .registerTypeAdapter(PluralTranslation.class, new PluralTranslationAdapter(p))
+            .registerTypeAdapter(DefaultTranslation.class, new DefaultTranslationAdapter(p))
             .create();
 
     @Contract("_, _, _ -> new")
     public static @NotNull GsonTranslationSource fromElement(@Nullable URI location, String language, JsonElement element) {
-        return new GsonTranslationSource(location, (g) -> element, DEFAULT_GSON_SUPPLIER, language);
+        return new GsonTranslationSource(location, (g) -> element, DEFAULT_GSON_SUPPLIER, language, DEFAULT_CONTEXT_PARSER);
     }
 
     @Contract("_, _, _ -> new")
@@ -59,7 +62,7 @@ public class GsonTranslationSource implements TranslationSource, SingleLangSourc
             } catch (IOException e) {
                 throw new TranslationLoadError("IO exception when reading json object", e);
             }
-        }, DEFAULT_GSON_SUPPLIER, language);
+        }, DEFAULT_GSON_SUPPLIER, language, DEFAULT_CONTEXT_PARSER);
     }
 
     public static @Nullable Translation parseTranslation(Gson gson, JsonElement value) {
@@ -75,7 +78,7 @@ public class GsonTranslationSource implements TranslationSource, SingleLangSourc
 
     @Override
     public void load(ISourceTextAdder to) {
-        var gson = Objects.requireNonNull(gsonSupplier.get(),
+        var gson = Objects.requireNonNull(gsonSupplier.apply(contextParser),
                 "Supplied Gson instance is null");
         var json = jsonSupplier.apply(gson);
         if (json == null) return;
