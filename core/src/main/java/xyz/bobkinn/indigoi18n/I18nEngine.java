@@ -14,10 +14,22 @@ import java.util.Locale;
 
 
 public interface I18nEngine {
+
+    /**
+     * Resolves translation by key and language
+     */
     Translation get(Context context, String key, String language);
 
+    /**
+     * Returns format that can be used to output and format {@link T}
+     * @param <T> type of output object
+     */
     <T> I18nFormat<T> getFormat(Class<T> cls);
 
+    /**
+     * Returns info about translation
+     * @return {@link TranslationInfo} containing source
+     */
     TranslationInfo infoFor(String lang, String key);
 
     default Context newContext(@Nullable TranslationInfo info, String lang, String key) {
