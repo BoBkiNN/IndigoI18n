@@ -28,14 +28,16 @@ import java.util.Objects;
 public class ComponentTemplateFormatter extends TemplateFormatter<Component> {
     private static final @NotNull TextComponent NULL_COMPONENT = Component.text("null");
     public static final ArgumentConverter<TextComponent, Component> TEXT_COMPONENT_CONVERTER
-            = ArgConverters.STRING_CONVERTER.map(TextComponent::content, Component::text);
+            = (ctx, argument, format) -> {
+                var nc = ArgConverters.STRING_CONVERTER.format(ctx, argument.content(), format);
+                return argument.content(nc);
+            };
 
     private final TemplateFormatter<String> stringTemplateFormatter;
 
     @Override
     protected void registerDefaultConverters() {
         // currently we will support only TextComponent formatting, not sure what to do with other types
-        // TODO fix that styles and children are lost
         addConverter(TextComponent.class, TEXT_COMPONENT_CONVERTER);
         // pass Component as is so it do not handled with string template formatter
         // TODO this probably should be moved to formatArgument logic so subclasses wont need to specify it every time
