@@ -6,12 +6,15 @@ import net.kyori.adventure.text.TextComponent;
 import org.jetbrains.annotations.NotNull;
 import xyz.bobkinn.indigoi18n.context.Context;
 import xyz.bobkinn.indigoi18n.data.ParsedEntry;
+import xyz.bobkinn.indigoi18n.template.InlineTranslation;
+import xyz.bobkinn.indigoi18n.template.TemplateVisitor;
 import xyz.bobkinn.indigoi18n.template.arg.ArgConverters;
 import xyz.bobkinn.indigoi18n.template.arg.ArgumentConverter;
 import xyz.bobkinn.indigoi18n.template.arg.TemplateArgument;
 import xyz.bobkinn.indigoi18n.template.format.FormatPattern;
 import xyz.bobkinn.indigoi18n.template.format.TemplateFormatter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -19,7 +22,7 @@ import java.util.Objects;
 //  instead of '<red>Arg</red>-text'.
 //  Leaked style is spread unless new style is specified. Not sure of correct rules yet
 /**
- * This template formatter will produce component from entire string and then create empty component
+ * This template formatter produces component from entire string and then create empty component
  * with original styles and converted children.
  * This made to not lost any style information while parsing template
  */
@@ -44,8 +47,6 @@ public class ComponentTemplateFormatter extends TemplateFormatter<Component> {
         //  With handling childless text we know exact text length to perform aligning and etc.
         //  Other display properties are unknown.
     }
-
-    // TODO write tests for this one
 
     @Override
     public Component createText(String value) {
@@ -95,11 +96,38 @@ public class ComponentTemplateFormatter extends TemplateFormatter<Component> {
         return createText(res);
     }
 
-    // TODO we can probably move correctly logic from ComponentI18nFormat here if we pass original T here.
-    //  This is required to merge styles
+    /**
+     * Creates new empty component with children set to resulting parts
+     */
     @Override
     public Component format(Context ctx, ParsedEntry entry, List<Object> params) {
-        throw new UnsupportedOperationException("format() for ComponentTemplateFormatter unavailable");
+        List<Component> extra = new ArrayList<>(entry.parts().size());
+        entry.visit(new TemplateVisitor() {
+            @Override
+            public void visitPlain(String text) {
+                extra.add(Component.text(text));
+            }
+
+            @Override
+            public void visitArgument(TemplateArgument arg) {
+                var idx = arg.getIndex();
+                if (idx >= params.size()) {
+                    // unknown argument
+                    extra.add(Component.text("%"+(idx+1)));
+                    return;
+                }
+                var p = params.get(idx);
+                var res = formatArgument(ctx, arg, p);
+                extra.add(res);
+            }
+
+            @Override
+            public void visitInline(InlineTranslation inline) {
+                var il = formatInline(Component.class, inline, ctx, params);
+                extra.add(il);
+            }
+        });
+        return Component.empty().children(extra);
     }
 
 }
