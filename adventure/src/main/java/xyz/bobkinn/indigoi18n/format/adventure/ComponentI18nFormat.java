@@ -41,13 +41,14 @@ public abstract class ComponentI18nFormat extends I18nFormat<Component> {
         }
         // format parts into component
         var res = templateFormatter.format(ctx, parsed, args);
+        // process original children too
         List<Component> extra = new ArrayList<>(comp.children().size());
         for (var c : comp.children()) {
             if (c instanceof TextComponent text){
                 extra.add(processText(ctx, text, args));
             } else extra.add(c);
         }
-        // apply root style and children
+        // apply root style and add children
         return res.mergeStyle(comp).append(extra);
     }
 
