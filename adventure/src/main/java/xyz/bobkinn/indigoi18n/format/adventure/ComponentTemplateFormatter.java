@@ -35,6 +35,7 @@ public class ComponentTemplateFormatter extends TemplateFormatter<Component> {
     @Override
     protected void registerDefaultConverters() {
         // currently we will support only TextComponent formatting, not sure what to do with other types
+        // TODO fix that styles and children are lost
         addConverter(TextComponent.class, TEXT_COMPONENT_CONVERTER);
         // pass Component as is so it do not handled with string template formatter
         // TODO this probably should be moved to formatArgument logic so subclasses wont need to specify it every time
