@@ -135,7 +135,7 @@ public class Context implements ContextEntry {
         return this;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "UnusedReturnValue"})
     public <T extends ContextEntry> T remove(Class<T> cls) {
         return (T) data.remove(cls);
     }

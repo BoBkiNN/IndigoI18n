@@ -23,13 +23,9 @@ public class StringI18nFormat extends I18nFormat<String> {
 
     @Override
     public String replaceArguments(Context ctx, String input, List<Object> args) {
-        var info = ctx.collectInfo();
-        if (info == null) {
-            throw new IllegalStateException("No translation info were collected in context "+ctx);
-        }
-        var parsed = cache.getOrCreate(input, info);
+        var parsed = cache.getOrCreate(ctx, input);
         if (parsed == null) {
-            return info.key();
+            return ctx.key();
         }
         return templateFormatter.format(ctx, parsed, args);
     }

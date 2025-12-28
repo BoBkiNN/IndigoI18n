@@ -5,7 +5,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import xyz.bobkinn.indigoi18n.context.Context;
 import xyz.bobkinn.indigoi18n.data.TemplateCache;
-import xyz.bobkinn.indigoi18n.data.TranslationInfo;
 import xyz.bobkinn.indigoi18n.format.I18nFormat;
 import xyz.bobkinn.indigoi18n.template.TemplateParseOptions;
 
@@ -29,23 +28,23 @@ public abstract class ComponentI18nFormat extends I18nFormat<Component> {
         return deserialize(text);
     }
 
-    private Component processText(Context ctx, TranslationInfo info, TextComponent comp, List<Object> args){
+    private Component processText(Context ctx, TextComponent comp, List<Object> args){
         var full = comp.content();
         var parseOptions = ctx.getOptional(SharedSeqArgContext.class)
                 .map(SharedSeqArgContext::getSeqIdx)
                 .map(TemplateParseOptions::new)
                 .orElseGet(TemplateParseOptions::new);
-        var parsed = cache.getOrCreate(full, info, parseOptions);
+        var parsed = cache.getOrCreate(ctx, full, parseOptions);
         if (parsed == null) {
             // TODO think about customizable error formatting instead falling everywhere to just key
-            return Component.text(info.key());
+            return Component.text(ctx.key());
         }
         // format parts into component
         var res = templateFormatter.format(ctx, parsed, args);
         List<Component> extra = new ArrayList<>(comp.children().size());
         for (var c : comp.children()) {
             if (c instanceof TextComponent text){
-                extra.add(processText(ctx, info, text, args));
+                extra.add(processText(ctx, text, args));
             } else extra.add(c);
         }
         // apply root style and children
@@ -58,19 +57,15 @@ public abstract class ComponentI18nFormat extends I18nFormat<Component> {
 
     @Override
     public Component replaceArguments(Context ctx, Component input, List<Object> args) {
-        var info = ctx.collectInfo();
-        if (info == null) {
-            throw new IllegalStateException("No translation info were collected in context "+ctx);
-        }
         if (input instanceof TextComponent text) {
-            var ret = processText(ctx, info, text, args);
+            var ret = processText(ctx, text, args);
             resetSharedSeqIdx(ctx);
             return ret;
         } else {
             List<Component> extra = new ArrayList<>();
             for (var c : input.children()) {
                 if (c instanceof TextComponent text){
-                    extra.add(processText(ctx, info, text, args));
+                    extra.add(processText(ctx, text, args));
                 } else extra.add(c);
             }
             resetSharedSeqIdx(ctx);

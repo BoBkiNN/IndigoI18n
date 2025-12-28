@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
+import xyz.bobkinn.indigoi18n.context.Context;
 import xyz.bobkinn.indigoi18n.template.ITemplateParser;
 import xyz.bobkinn.indigoi18n.template.TemplateErrorHandler;
 import xyz.bobkinn.indigoi18n.template.TemplateParseException;
@@ -27,17 +28,18 @@ public class TemplateCache {
     @Setter
     private TemplateErrorHandler templateErrorHandler = new TemplateErrorHandler.JULTemplateErrorHandler();
 
+    @SuppressWarnings("UnusedReturnValue")
     public ParsedEntry createCache(String text, TranslationInfo info) {
-        return createCache(text, info, new TemplateParseOptions());
+        return createCache(info.asContext(), text, new TemplateParseOptions());
     }
 
-    public ParsedEntry createCache(String text, TranslationInfo info, TemplateParseOptions parseOptions) {
+    public ParsedEntry createCache(Context ctx, String text, TemplateParseOptions parseOptions) {
         ParsedEntry entry;
         try {
             entry = templateParser.parse(text, parseOptions);
         } catch (TemplateParseException e) {
             if (templateErrorHandler != null) {
-                templateErrorHandler.handleParseException(e, text, info);
+                templateErrorHandler.handleParseException(e, text, ctx);
                 return null;
             } else throw e;
         }
@@ -56,16 +58,16 @@ public class TemplateCache {
     /**
      * @return null if failed to parse
      */
-    public @Nullable ParsedEntry getOrCreate(String text, TranslationInfo info, TemplateParseOptions parseOptions) {
+    public @Nullable ParsedEntry getOrCreate(Context ctx, String text, TemplateParseOptions parseOptions) {
         var v = get(text);
         if (v != null) return v;
-        return createCache(text, info, parseOptions);
+        return createCache(ctx, text, parseOptions);
     }
 
     /**
      * @return null if failed to parse
      */
-    public @Nullable ParsedEntry getOrCreate(String text, TranslationInfo info) {
-        return getOrCreate(text, info, new TemplateParseOptions());
+    public @Nullable ParsedEntry getOrCreate(Context ctx, String text) {
+        return getOrCreate(ctx, text, new TemplateParseOptions());
     }
 }
