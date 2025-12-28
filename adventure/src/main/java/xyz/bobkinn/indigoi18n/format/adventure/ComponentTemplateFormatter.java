@@ -18,9 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-// TODO optional style leaking. When enabled, inserting '&cArg' into '%s-text' will produce '<red>Arg-text'
-//  instead of '<red>Arg</red>-text'.
-//  Leaked style is spread unless new style is specified. Not sure of correct rules yet
+
 /**
  * This template formatter produces component from entire string and then create empty component
  * with original styles and converted children.
