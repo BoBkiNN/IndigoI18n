@@ -9,6 +9,7 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/adventure" />
             <option value="$PROJECT_DIR$/codegen" />
             <option value="$PROJECT_DIR$/core" />
             <option value="$PROJECT_DIR$/gson" />

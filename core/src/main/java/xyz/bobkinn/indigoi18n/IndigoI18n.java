@@ -30,6 +30,7 @@ public class IndigoI18n implements I18nEngine {
      */
     @Getter
     private @NotNull TranslationResolver resolver;
+    // TODO use FormatType instead of just classes to allow flavors, like MiniMessage or Legacy deserializers
     private final Map<Class<?>, I18nFormat<?>> formats;
 
     @Getter

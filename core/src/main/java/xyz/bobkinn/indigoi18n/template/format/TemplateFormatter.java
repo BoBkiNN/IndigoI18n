@@ -104,7 +104,7 @@ public abstract class TemplateFormatter<O> {
      * @param cls output class
      * @param params list of arguments
      */
-    protected O formatInline(@SuppressWarnings("SameParameterValue") Class<O> cls,
+    public O formatInline(@SuppressWarnings("SameParameterValue") Class<O> cls,
                              @NotNull InlineTranslation inline,
                              @NotNull Context ctx, List<Object> params) {
         int cd = ctx.getOptional(InlineContext.class)
@@ -131,4 +131,79 @@ public abstract class TemplateFormatter<O> {
         sub.set(new InlineContext(cd-1));
         return i18n.parse(cls, sub, targetLang, key, params);
     }
+
+    // TODO use this instead of getConverter to simply converts map in StringTemplateFormatter
+    /**
+     * Resolves converter by type distance, closer class match returns closer converter
+     */
+    @SuppressWarnings("unchecked")
+    public <T> ArgumentConverter<T, O> resolveConverter(@Nullable T value) {
+        // null handling stays exactly as you want
+        if (value == null) {
+            return (ArgumentConverter<T, O>) converters.get(null);
+        }
+
+        Class<?> valueClass = value.getClass();
+
+        ArgumentConverter<?, O> best = null;
+        int bestDistance = Integer.MAX_VALUE;
+
+        for (var e : converters.entrySet()) {
+            Class<?> key = e.getKey();
+            if (key == null) continue;
+
+            if (!key.isAssignableFrom(valueClass)) continue;
+
+            int distance = typeDistance(valueClass, key);
+            if (distance < bestDistance) {
+                bestDistance = distance;
+                best = e.getValue();
+            }
+        }
+
+        return (ArgumentConverter<T, O>) best;
+    }
+
+    private static int typeDistance(@NotNull Class<?> from, Class<?> to) {
+        if (from == to) return 0;
+
+        int best = Integer.MAX_VALUE;
+
+        // walk superclass chain
+        int depth = 0;
+        for (Class<?> c = from; c != null; c = c.getSuperclass()) {
+            if (c == to) {
+                best = depth;
+                break;
+            }
+            depth++;
+        }
+
+        // check interfaces (penalized)
+        int ifaceDistance = interfaceDistance(from, to, 0);
+        if (ifaceDistance >= 0) {
+            // add penalty so class inheritance always wins at same depth
+            ifaceDistance += 100;
+            best = Math.min(best, ifaceDistance);
+        }
+
+        return best;
+    }
+
+    private static int interfaceDistance(Class<?> from, Class<?> target, int depth) {
+        for (Class<?> iFace : from.getInterfaces()) {
+            if (iFace == target) return depth + 1;
+
+            int d = interfaceDistance(iFace, target, depth + 1);
+            if (d >= 0) return d;
+        }
+
+        Class<?> superClass = from.getSuperclass();
+        if (superClass != null) {
+            return interfaceDistance(superClass, target, depth + 1);
+        }
+
+        return -1;
+    }
+
 }
