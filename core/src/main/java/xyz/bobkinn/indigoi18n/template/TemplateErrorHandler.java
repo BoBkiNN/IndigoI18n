@@ -1,7 +1,6 @@
 package xyz.bobkinn.indigoi18n.template;
 
 import xyz.bobkinn.indigoi18n.context.Context;
-import xyz.bobkinn.indigoi18n.data.TranslationInfo;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
