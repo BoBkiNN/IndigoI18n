@@ -103,9 +103,9 @@ public class TemplateParser implements ITemplateParser {
         return seqArgIdx;
     }
 
-    public void parse(String text, TemplateVisitor visitor) {
+    public void parse(String text, TemplateVisitor visitor, TemplateParseOptions options) {
         var reader = new TemplateReader(text);
-        int seqArgIdx = 0;
+        int seqArgIdx = options.initialSeqArgIdx();
         var plain = new StringBuilder();
 
         Runnable flush = () -> {

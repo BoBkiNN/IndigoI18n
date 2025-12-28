@@ -135,6 +135,11 @@ public class Context implements ContextEntry {
         return this;
     }
 
+    @SuppressWarnings("unchecked")
+    public <T extends ContextEntry> T remove(Class<T> cls) {
+        return (T) data.remove(cls);
+    }
+
     /**
      * Resolves locale by stored language. Sets new LangKeyContext into current context
      * @return resolved locale or null if no locale resolved or i18n not provided in this context

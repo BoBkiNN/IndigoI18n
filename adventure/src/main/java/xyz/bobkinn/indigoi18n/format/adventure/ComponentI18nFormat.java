@@ -7,6 +7,7 @@ import xyz.bobkinn.indigoi18n.context.Context;
 import xyz.bobkinn.indigoi18n.data.TemplateCache;
 import xyz.bobkinn.indigoi18n.data.TranslationInfo;
 import xyz.bobkinn.indigoi18n.format.I18nFormat;
+import xyz.bobkinn.indigoi18n.template.TemplateParseOptions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +31,11 @@ public abstract class ComponentI18nFormat extends I18nFormat<Component> {
 
     private Component processText(Context ctx, TranslationInfo info, TextComponent comp, List<Object> args){
         var full = comp.content();
-        var parsed = cache.getOrCreate(full, info);
+        var parseOptions = ctx.getOptional(SharedSeqArgContext.class)
+                .map(SharedSeqArgContext::getSeqIdx)
+                .map(TemplateParseOptions::new)
+                .orElseGet(TemplateParseOptions::new);
+        var parsed = cache.getOrCreate(full, info, parseOptions);
         if (parsed == null) {
             // TODO think about customizable error formatting instead falling everywhere to just key
             return Component.text(info.key());
@@ -47,6 +52,10 @@ public abstract class ComponentI18nFormat extends I18nFormat<Component> {
         return res.mergeStyle(comp).append(extra);
     }
 
+    private void resetSharedSeqIdx(Context ctx) {
+        ctx.remove(SharedSeqArgContext.class);
+    }
+
     @Override
     public Component replaceArguments(Context ctx, Component input, List<Object> args) {
         var info = ctx.collectInfo();
@@ -54,7 +63,9 @@ public abstract class ComponentI18nFormat extends I18nFormat<Component> {
             throw new IllegalStateException("No translation info were collected in context "+ctx);
         }
         if (input instanceof TextComponent text) {
-            return processText(ctx, info, text, args);
+            var ret = processText(ctx, info, text, args);
+            resetSharedSeqIdx(ctx);
+            return ret;
         } else {
             List<Component> extra = new ArrayList<>();
             for (var c : input.children()) {
@@ -62,6 +73,7 @@ public abstract class ComponentI18nFormat extends I18nFormat<Component> {
                     extra.add(processText(ctx, info, text, args));
                 } else extra.add(c);
             }
+            resetSharedSeqIdx(ctx);
             return input.children(extra);
         }
     }

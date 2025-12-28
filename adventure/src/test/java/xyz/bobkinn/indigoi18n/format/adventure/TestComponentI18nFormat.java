@@ -27,6 +27,7 @@ class TestComponentI18nFormat {
         }
     };
 
+    @SuppressWarnings("SameParameterValue")
     private Context ctxWithInfo(String key) {
         var ctx = new Context();
         ctx.set(new LangKeyContext("en", key, Locale.ENGLISH));

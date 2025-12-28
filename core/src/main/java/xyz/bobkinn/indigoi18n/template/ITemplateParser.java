@@ -8,18 +8,20 @@ import java.util.ArrayList;
 public interface ITemplateParser {
     /**
      * Parses text into different parts which can be consumed by visitor for future processing
-     * @param text template text to parse
+     *
+     * @param text    template text to parse
      * @param visitor visitor that must be called to later build resulting {@link ParsedEntry}
+     * @param options options to parse with
      */
-    void parse(String text, TemplateVisitor visitor);
+    void parse(String text, TemplateVisitor visitor, TemplateParseOptions options);
 
     /**
-     * Calls {@link #parse(String, TemplateVisitor)} to collect produced parts into resulting ParsedEntry
+     * Calls {@link #parse(String, TemplateVisitor, TemplateParseOptions)} to collect produced parts into resulting ParsedEntry
      * @param text template text to parse
      * @return new {@link ParsedEntry} containing collected parts
      * @throws TemplateParseException when parsing exception occurs
      */
-    default ParsedEntry parse(String text) throws TemplateParseException {
+    default ParsedEntry parse(String text, TemplateParseOptions options) throws TemplateParseException {
         var ls = new ArrayList<>();
         var visitor = new TemplateVisitor() {
             @Override
@@ -38,7 +40,7 @@ public interface ITemplateParser {
             }
         };
         try {
-            parse(text, visitor);
+            parse(text, visitor, options);
         } catch (Exception e) {
             throw new TemplateParseException("Failed to parse text '%s'".formatted(text), e);
         }
@@ -46,5 +48,9 @@ public interface ITemplateParser {
             return ParsedEntry.empty();
         }
         return new ParsedEntry(ls);
+    }
+
+    default ParsedEntry parse(String text) throws TemplateParseException {
+        return parse(text, new TemplateParseOptions());
     }
 }

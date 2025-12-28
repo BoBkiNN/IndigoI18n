@@ -7,6 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import xyz.bobkinn.indigoi18n.template.ITemplateParser;
 import xyz.bobkinn.indigoi18n.template.TemplateErrorHandler;
 import xyz.bobkinn.indigoi18n.template.TemplateParseException;
+import xyz.bobkinn.indigoi18n.template.TemplateParseOptions;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -27,9 +28,13 @@ public class TemplateCache {
     private TemplateErrorHandler templateErrorHandler = new TemplateErrorHandler.JULTemplateErrorHandler();
 
     public ParsedEntry createCache(String text, TranslationInfo info) {
+        return createCache(text, info, new TemplateParseOptions());
+    }
+
+    public ParsedEntry createCache(String text, TranslationInfo info, TemplateParseOptions parseOptions) {
         ParsedEntry entry;
         try {
-            entry = templateParser.parse(text);
+            entry = templateParser.parse(text, parseOptions);
         } catch (TemplateParseException e) {
             if (templateErrorHandler != null) {
                 templateErrorHandler.handleParseException(e, text, info);
@@ -51,9 +56,16 @@ public class TemplateCache {
     /**
      * @return null if failed to parse
      */
-    public @Nullable ParsedEntry getOrCreate(String text, TranslationInfo info) {
+    public @Nullable ParsedEntry getOrCreate(String text, TranslationInfo info, TemplateParseOptions parseOptions) {
         var v = get(text);
         if (v != null) return v;
-        return createCache(text, info);
+        return createCache(text, info, parseOptions);
+    }
+
+    /**
+     * @return null if failed to parse
+     */
+    public @Nullable ParsedEntry getOrCreate(String text, TranslationInfo info) {
+        return getOrCreate(text, info, new TemplateParseOptions());
     }
 }

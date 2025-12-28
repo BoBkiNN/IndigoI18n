@@ -101,6 +101,10 @@ public class ComponentTemplateFormatter extends TemplateFormatter<Component> {
      */
     @Override
     public Component format(Context ctx, ParsedEntry entry, List<Object> params) {
+        // query shared seq arg or create new.
+        var sq = ctx.getOptional(SharedSeqArgContext.class)
+                .orElseGet(SharedSeqArgContext::new);
+        final int[] ic = {0};
         List<Component> extra = new ArrayList<>(entry.parts().size());
         entry.visit(new TemplateVisitor() {
             @Override
@@ -110,6 +114,10 @@ public class ComponentTemplateFormatter extends TemplateFormatter<Component> {
 
             @Override
             public void visitArgument(TemplateArgument arg) {
+                if (!arg.isHasExplicitIndex()) {
+                    // increase implicit index count
+                    ic[0]++;
+                }
                 var idx = arg.getIndex();
                 if (idx >= params.size()) {
                     // unknown argument
@@ -127,6 +135,8 @@ public class ComponentTemplateFormatter extends TemplateFormatter<Component> {
                 extra.add(il);
             }
         });
+        // set increased value
+        ctx.set(sq.inc(ic[0]));
         return Component.empty().children(extra);
     }
 
