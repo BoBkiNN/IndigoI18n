@@ -132,9 +132,8 @@ public abstract class TemplateFormatter<O> {
         return i18n.parse(cls, sub, targetLang, key, params);
     }
 
-    // TODO use this instead of getConverter to simply converts map in StringTemplateFormatter
     /**
-     * Resolves converter by type distance, closer class match returns closer converter
+     * Resolves converter by type distance, closer class match returns closest converter
      */
     @SuppressWarnings("unchecked")
     public <T> ArgumentConverter<T, O> resolveConverter(@Nullable T value) {

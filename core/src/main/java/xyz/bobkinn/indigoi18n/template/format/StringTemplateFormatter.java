@@ -9,11 +9,8 @@ import xyz.bobkinn.indigoi18n.template.arg.TemplateArgument;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.time.*;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.Objects;
+import java.time.temporal.Temporal;
+import java.util.*;
 
 public class StringTemplateFormatter extends TemplateFormatter<String> {
 
@@ -26,24 +23,16 @@ public class StringTemplateFormatter extends TemplateFormatter<String> {
         addConverter(Integer.class, ArgConverters.INT_CONVERTER);
         addConverter(Long.class, ArgConverters.INT_CONVERTER);
 
-        addConverter(Double.class, ArgConverters.NUMBER_CONVERTER);
-        addConverter(Float.class, ArgConverters.NUMBER_CONVERTER);
+        addConverter(Number.class, ArgConverters.NUMBER_CONVERTER);
 
         addConverter(BigInteger.class, ArgConverters.BIG_INT_CONVERTER);
         addConverter(BigDecimal.class, ArgConverters.BIG_DECIMAL_CONVERTER);
 
         // java.time
-        addConverter(LocalDateTime.class, ArgConverters.TEMPORAL_CONVERTER);
-        addConverter(LocalDate.class, ArgConverters.TEMPORAL_CONVERTER);
-        addConverter(LocalTime.class, ArgConverters.TEMPORAL_CONVERTER);
-
-        addConverter(ZonedDateTime.class, ArgConverters.TEMPORAL_CONVERTER);
-        addConverter(OffsetDateTime.class, ArgConverters.TEMPORAL_CONVERTER);
-        addConverter(OffsetTime.class, ArgConverters.TEMPORAL_CONVERTER);
-        addConverter(Instant.class, ArgConverters.TEMPORAL_CONVERTER);
+        addConverter(Temporal.class, ArgConverters.TEMPORAL_CONVERTER);
 
         // legacy
-        addConverter(GregorianCalendar.class, ArgConverters.CALENDAR_CONVERTER);
+        addConverter(Calendar.class, ArgConverters.CALENDAR_CONVERTER);
         addConverter(Date.class, ArgConverters.DATE_CONVERTER);
     }
 
@@ -82,7 +71,7 @@ public class StringTemplateFormatter extends TemplateFormatter<String> {
             builder.append(res);
             return;
         }
-        var conv = getConverter(value);
+        var conv = resolveConverter(value);
         if (conv == null) {
             var res = ArgConverters.STRING_CONVERTER.format(ctx, String.valueOf(value), format);
             builder.append(res);

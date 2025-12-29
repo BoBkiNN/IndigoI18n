@@ -86,7 +86,7 @@ public class ComponentTemplateFormatter extends TemplateFormatter<Component> {
         var cv = resolveConverter(value);
         if (cv != null) return cv;
         // if we don't have converter to Component, fall back to string template formatter
-        var sc = stringTemplateFormatter.getConverter(value);
+        var sc = stringTemplateFormatter.resolveConverter(value);
         if (sc != null) return sc.mapOut(this::createText);
         return null;
     }
