@@ -4,6 +4,7 @@ import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.bobkinn.indigoi18n.context.Context;
+import xyz.bobkinn.indigoi18n.data.TemplateCache;
 import xyz.bobkinn.indigoi18n.data.Translation;
 import xyz.bobkinn.indigoi18n.data.TranslationInfo;
 import xyz.bobkinn.indigoi18n.format.I18nFormat;
@@ -15,6 +16,7 @@ import xyz.bobkinn.indigoi18n.template.TemplateParser;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 
 
 /**
@@ -39,7 +41,7 @@ public class IndigoI18n implements I18nEngine {
     private final Map<String, Locale> localeCache = new ConcurrentHashMap<>();
 
     public IndigoI18n(ITemplateParser templateParser, LocaleResolver localeResolver) {
-        texts = new Translations(templateParser);
+        texts = new Translations(new TemplateCache(templateParser));
         resolver = new DefaultTranslationResolver();
         formats = new HashMap<>();
         this.localeResolver = localeResolver;
@@ -50,8 +52,8 @@ public class IndigoI18n implements I18nEngine {
         this(TemplateParser.INSTANCE, LocaleResolver.DEFAULT);
     }
 
-    public <T> void addFormat(Class<T> cls, I18nFormat<T> format) {
-        formats.put(cls, format);
+    public <T> void addFormat(Class<T> cls, Function<TemplateCache, I18nFormat<T>> formatFactory) {
+        formats.put(cls, formatFactory.apply(texts.getCache()));
     }
 
     protected void addDefaultFormats() {

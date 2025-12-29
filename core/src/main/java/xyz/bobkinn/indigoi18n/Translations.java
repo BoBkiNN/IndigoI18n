@@ -1,6 +1,7 @@
 package xyz.bobkinn.indigoi18n;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -10,12 +11,12 @@ import xyz.bobkinn.indigoi18n.data.TranslationInfo;
 import xyz.bobkinn.indigoi18n.source.SourceTextAdder;
 import xyz.bobkinn.indigoi18n.source.TranslationLoadError;
 import xyz.bobkinn.indigoi18n.source.TranslationSource;
-import xyz.bobkinn.indigoi18n.template.ITemplateParser;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 public class Translations {
     /**
      * Map of key to map of language to text
@@ -28,10 +29,6 @@ public class Translations {
 
     @Getter
     private final TemplateCache cache;
-
-    public Translations(ITemplateParser parser) {
-        cache = new TemplateCache(parser);
-    }
 
     public List<TranslationSource> sources() {
         return List.copyOf(keysBySource.keySet());

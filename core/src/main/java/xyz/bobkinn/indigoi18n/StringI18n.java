@@ -21,6 +21,6 @@ public class StringI18n extends IndigoI18n implements StringI18nMixin {
 
     @Override
     protected void addDefaultFormats() {
-        addFormat(String.class, new StringI18nFormat(texts.getCache()));
+        addFormat(String.class, StringI18nFormat::new);
     }
 }
