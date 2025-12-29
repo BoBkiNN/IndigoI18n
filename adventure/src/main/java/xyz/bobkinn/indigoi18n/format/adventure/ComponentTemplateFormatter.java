@@ -1,5 +1,6 @@
 package xyz.bobkinn.indigoi18n.format.adventure;
 
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import org.jetbrains.annotations.NotNull;
@@ -24,6 +25,7 @@ import java.util.function.Function;
  * with original styles and converted children.
  * This made to not lost any style information while parsing template
  */
+@Getter
 public class ComponentTemplateFormatter extends TemplateFormatter<Component> {
     private static final @NotNull TextComponent NULL_COMPONENT = Component.text("null");
     public static final ArgumentConverter<TextComponent, Component> TEXT_COMPONENT_CONVERTER

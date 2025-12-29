@@ -1,0 +1,39 @@
+package xyz.bobkinn.indigoi18n.format.adventure;
+
+import lombok.Getter;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.jetbrains.annotations.NotNull;
+import xyz.bobkinn.indigoi18n.data.TemplateCache;
+import xyz.bobkinn.indigoi18n.template.format.StringTemplateFormatter;
+
+/**
+ * Default format that parses input text into Component using {@link LegacyComponentSerializer}
+ */
+@Getter
+public class LegacyComponentI18nFormat extends ComponentI18nFormat {
+    private final LegacyComponentSerializer serializer;
+
+    public LegacyComponentI18nFormat(TemplateCache cache,
+                                     ComponentTemplateFormatter templateFormatter, LegacyComponentSerializer serializer) {
+        super(cache, templateFormatter);
+        this.serializer = serializer;
+    }
+
+    /**
+     * Creates new format with {@link ComponentTemplateFormatter} that uses {@link StringTemplateFormatter}.<br>
+     * If {@code convertStringArgument} is true, {@link ComponentTemplateFormatter} will use {@code serializer} to
+     * format String arguments using it
+     * @param serializer serializer used to convert text into Component and to convert String arguments into Component
+     */
+    public LegacyComponentI18nFormat(TemplateCache cache, boolean convertStringArgument, @NotNull LegacyComponentSerializer serializer) {
+        super(cache, new ComponentTemplateFormatter(new StringTemplateFormatter(),
+                convertStringArgument ? serializer::deserialize : null));
+        this.serializer = serializer;
+    }
+
+    @Override
+    public Component deserialize(String text) {
+        return serializer.deserialize(text);
+    }
+}
