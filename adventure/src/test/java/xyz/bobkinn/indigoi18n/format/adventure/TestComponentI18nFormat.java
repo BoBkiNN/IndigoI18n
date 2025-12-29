@@ -22,7 +22,7 @@ class TestComponentI18nFormat {
 
     private final ComponentI18nFormat format = new ComponentI18nFormat(cache, componentFormatter) {
         @Override
-        public Component deserialize(String text) {
+        public Component deserializeInput(String text) {
             return Component.text(text);
         }
     };
@@ -126,7 +126,7 @@ class TestComponentI18nFormat {
         var f = new ComponentI18nFormat(cache, new ComponentTemplateFormatter(new StringTemplateFormatter(),
                 s -> Component.text(s).color(NamedTextColor.RED))) {
             @Override
-            public Component deserialize(String text) {
+            public Component deserializeInput(String text) {
                 return Component.text(text);
             }
         };

@@ -16,7 +16,7 @@ public abstract class ComponentI18nFormat extends I18nFormat<Component> {
 
     private final ComponentTemplateFormatter templateFormatter;
 
-    public abstract Component deserialize(String text);
+    public abstract Component deserializeInput(String text);
 
     public ComponentI18nFormat(TemplateCache cache, ComponentTemplateFormatter templateFormatter) {
         super(cache);
@@ -25,7 +25,7 @@ public abstract class ComponentI18nFormat extends I18nFormat<Component> {
 
     @Override
     public Component produce(String text) {
-        return deserialize(text);
+        return deserializeInput(text);
     }
 
     private Component processText(Context ctx, TextComponent comp, List<Object> args){

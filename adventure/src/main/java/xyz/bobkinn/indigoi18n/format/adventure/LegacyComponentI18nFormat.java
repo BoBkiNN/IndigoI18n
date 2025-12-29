@@ -33,7 +33,7 @@ public class LegacyComponentI18nFormat extends ComponentI18nFormat {
     }
 
     @Override
-    public Component deserialize(String text) {
+    public Component deserializeInput(String text) {
         return serializer.deserialize(text);
     }
 }
