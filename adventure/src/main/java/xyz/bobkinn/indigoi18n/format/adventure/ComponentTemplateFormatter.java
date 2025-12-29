@@ -55,7 +55,8 @@ public class ComponentTemplateFormatter extends TemplateFormatter<Component> {
         // currently we will support only TextComponent formatting, not sure what to do with other types
         addConverter(TextComponent.class, TEXT_COMPONENT_CONVERTER);
         // pass Component as is so it do not handled with string template formatter
-        // TODO this probably should be moved to formatArgument logic so subclasses wont need to specify it every time
+        // Maybe this probably should be moved to formatArgument logic so subclasses won't need to specify it every time,
+        //  but I think it's ok
         addConverter(Component.class, ArgumentConverter.noOp());
         // String -> legacyToAdventure for compatibility so passing arg like '&cArg' displays color too.
         //  With handling childless text we know exact text length to perform aligning etc.
