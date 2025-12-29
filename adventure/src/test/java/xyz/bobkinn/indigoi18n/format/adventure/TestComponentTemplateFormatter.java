@@ -13,7 +13,7 @@ class TestComponentTemplateFormatter {
 
     private final StringTemplateFormatter stringFormatter = new StringTemplateFormatter();
     private final ComponentTemplateFormatter componentFormatter =
-            new ComponentTemplateFormatter(stringFormatter);
+            new ComponentTemplateFormatter(stringFormatter, Component::text);
 
     private Component formatArg(String pattern, Object value) {
         var entry = TemplateParser.INSTANCE.parse("%{" + pattern + "}");

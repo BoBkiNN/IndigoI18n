@@ -18,7 +18,7 @@ class TestComponentI18nFormat {
 
     private final TemplateCache cache = new TemplateCache(TemplateParser.INSTANCE);
     private final ComponentTemplateFormatter componentFormatter =
-            new ComponentTemplateFormatter(new StringTemplateFormatter());
+            new ComponentTemplateFormatter(new StringTemplateFormatter(), Component::text);
 
     private final ComponentI18nFormat format = new ComponentI18nFormat(cache, componentFormatter) {
         @Override
@@ -119,6 +119,22 @@ class TestComponentI18nFormat {
                         .color(NamedTextColor.RED),
                 result
         );
+    }
+
+    @Test
+    void testLegacyConv() {
+        var f = new ComponentI18nFormat(cache, new ComponentTemplateFormatter(new StringTemplateFormatter(),
+                s -> Component.text(s).color(NamedTextColor.RED))) {
+            @Override
+            public Component deserialize(String text) {
+                return Component.text(text);
+            }
+        };
+        var ctx = ctxWithInfo("test2");
+        var r = f.format(ctx, "%s", List.of("red"));
+        Assertions.assertEquals(Component.empty()
+                .append(Component.text("red")
+                        .color(NamedTextColor.RED)), r);
     }
 
 }

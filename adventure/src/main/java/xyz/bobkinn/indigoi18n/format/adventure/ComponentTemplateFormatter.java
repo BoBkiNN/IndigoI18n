@@ -1,6 +1,5 @@
 package xyz.bobkinn.indigoi18n.format.adventure;
 
-import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import org.jetbrains.annotations.NotNull;
@@ -17,6 +16,7 @@ import xyz.bobkinn.indigoi18n.template.format.TemplateFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 
 
 /**
@@ -24,16 +24,29 @@ import java.util.Objects;
  * with original styles and converted children.
  * This made to not lost any style information while parsing template
  */
-@RequiredArgsConstructor
 public class ComponentTemplateFormatter extends TemplateFormatter<Component> {
     private static final @NotNull TextComponent NULL_COMPONENT = Component.text("null");
     public static final ArgumentConverter<TextComponent, Component> TEXT_COMPONENT_CONVERTER
             = (ctx, argument, format) -> {
-                var nc = ArgConverters.STRING_CONVERTER.format(ctx, argument.content(), format);
-                return argument.content(nc);
-            };
+        var nc = ArgConverters.STRING_CONVERTER.format(ctx, argument.content(), format);
+        return argument.content(nc);
+    };
 
     private final TemplateFormatter<String> stringTemplateFormatter;
+
+    private final Function<String, Component> legacyConverter;
+
+    /**
+     *
+     * @param stringTemplateFormatter string template converter used to handle and replace text component contents
+     * @param legacyConverter if not null, legacy converter is used to convert String argument into Component
+     */
+    public ComponentTemplateFormatter(TemplateFormatter<String> stringTemplateFormatter,
+                                      Function<String, Component> legacyConverter) {
+        this.stringTemplateFormatter = stringTemplateFormatter;
+        this.legacyConverter = legacyConverter;
+        registerDefaultConverters();
+    }
 
     @Override
     protected void registerDefaultConverters() {
@@ -42,11 +55,18 @@ public class ComponentTemplateFormatter extends TemplateFormatter<Component> {
         // pass Component as is so it do not handled with string template formatter
         // TODO this probably should be moved to formatArgument logic so subclasses wont need to specify it every time
         addConverter(Component.class, ArgumentConverter.noOp());
-        // TODO String -> legacyToAdventure for compatibility so passing arg like '&cArg' displays color too.
-        //  must be configurable to disable it or change conversion function.
-        //  But unsure how to apply format if we convert it, maybe handling only TextComponent without children?
-        //  With handling childless text we know exact text length to perform aligning and etc.
-        //  Other display properties are unknown.
+        // String -> legacyToAdventure for compatibility so passing arg like '&cArg' displays color too.
+        //  With handling childless text we know exact text length to perform aligning etc.
+        if (legacyConverter != null) {
+            addConverter(String.class, (ctx, argument, format) -> {
+                var c = legacyConverter.apply(argument);
+                if (c == null) return null;
+                if (c.children().isEmpty() && c instanceof TextComponent tc) {
+                    return TEXT_COMPONENT_CONVERTER.format(ctx, tc, format);
+                }
+                return c;
+            });
+        }
     }
 
     @Override
@@ -72,14 +92,14 @@ public class ComponentTemplateFormatter extends TemplateFormatter<Component> {
     public Component formatArgument(Context ctx, TemplateArgument arg, Object value) {
         // TODO we should do something about repeating this part. Guess representations are common
         var format = arg.getPattern();
-        Objects.requireNonNull(format, "no format set for argument "+arg);
+        Objects.requireNonNull(format, "no format set for argument " + arg);
         if (arg.isRepr('r')) {
             var rawRepr = stringTemplateFormatter.createRawRepr(value);
             var res = ArgConverters.STRING_CONVERTER.format(ctx, rawRepr, format);
             return createText(res);
         }
         if (arg.isRepr('h', 'H')) {
-            return createText(String.format("%"+arg.getRepr(), value));
+            return createText(String.format("%" + arg.getRepr(), value));
         }
         if (arg.isRepr('s') && (value == null || value.getClass() != String.class)) {
             // !s converts any object (except string) to string and then formats using string converter
@@ -122,7 +142,7 @@ public class ComponentTemplateFormatter extends TemplateFormatter<Component> {
                 var idx = arg.getIndex();
                 if (idx >= params.size()) {
                     // unknown argument
-                    extra.add(Component.text("%"+(idx+1)));
+                    extra.add(Component.text("%" + (idx + 1)));
                     return;
                 }
                 var p = params.get(idx);
