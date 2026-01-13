@@ -204,6 +204,10 @@ class TestComponentI18nFormat {
                         .append(Component.text("red"))), r);
     }
 
+    /**
+     * here we're using legacy serializer for legacy argument converters so plain strings are processed,
+     *  but original context is MM
+     */
     @Test
     void testMmFormatComplex() {
         var ls = LegacyComponentSerializer.builder()
