@@ -7,6 +7,7 @@ import xyz.bobkinn.indigoi18n.context.Context;
 import xyz.bobkinn.indigoi18n.data.TemplateCache;
 import xyz.bobkinn.indigoi18n.data.Translation;
 import xyz.bobkinn.indigoi18n.data.TranslationInfo;
+import xyz.bobkinn.indigoi18n.format.FormatType;
 import xyz.bobkinn.indigoi18n.format.I18nFormat;
 import xyz.bobkinn.indigoi18n.resolver.DefaultTranslationResolver;
 import xyz.bobkinn.indigoi18n.resolver.TranslationResolver;
@@ -32,8 +33,7 @@ public class IndigoI18n implements I18nEngine {
      */
     @Getter
     private @NotNull TranslationResolver resolver;
-    // TODO use FormatType instead of just classes to allow flavors, like MiniMessage or Legacy deserializers
-    private final Map<Class<?>, I18nFormat<?>> formats;
+    private final Map<FormatType<?>, I18nFormat<?>> formats;
 
     @Getter
     private final LocaleResolver localeResolver;
@@ -52,8 +52,8 @@ public class IndigoI18n implements I18nEngine {
         this(TemplateParser.INSTANCE, LocaleResolver.DEFAULT);
     }
 
-    public <T> void addFormat(Class<T> cls, Function<TemplateCache, I18nFormat<T>> formatFactory) {
-        formats.put(cls, formatFactory.apply(texts.getCache()));
+    public <T> void addFormat(FormatType<T> t, Function<TemplateCache, I18nFormat<T>> formatFactory) {
+        formats.put(t, formatFactory.apply(texts.getCache()));
     }
 
     protected void addDefaultFormats() {
@@ -61,9 +61,9 @@ public class IndigoI18n implements I18nEngine {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> I18nFormat<T> getFormat(Class<T> cls) {
-        var f = (I18nFormat<T>) formats.get(cls);
-        return Objects.requireNonNull(f, "Unknown format for "+cls.getSimpleName());
+    public <T> I18nFormat<T> getFormat(FormatType<T> ft) {
+        var f = (I18nFormat<T>) formats.get(ft);
+        return Objects.requireNonNull(f, "No format for type "+ft);
     }
 
     public void load(TranslationSource source) {

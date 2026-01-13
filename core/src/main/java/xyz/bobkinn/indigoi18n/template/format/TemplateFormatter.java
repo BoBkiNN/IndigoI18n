@@ -4,9 +4,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.bobkinn.indigoi18n.I18nEngine;
 import xyz.bobkinn.indigoi18n.context.Context;
+import xyz.bobkinn.indigoi18n.context.impl.FormatTypeContext;
 import xyz.bobkinn.indigoi18n.context.impl.InlineContext;
 import xyz.bobkinn.indigoi18n.context.impl.LangKeyContext;
 import xyz.bobkinn.indigoi18n.data.ParsedEntry;
+import xyz.bobkinn.indigoi18n.format.FormatType;
 import xyz.bobkinn.indigoi18n.template.InlineTranslation;
 import xyz.bobkinn.indigoi18n.template.arg.ArgumentConverter;
 import xyz.bobkinn.indigoi18n.template.Utils;
@@ -94,17 +96,17 @@ public abstract class TemplateFormatter<O> {
     }
 
     /**
-     * Uses {@link I18nEngine#parse(Class, Context, String, String, List) parse method}
+     * Uses {@link I18nEngine#parse(FormatType, Context, String, String, List) parse method}
      * to parse and return text specified by key and translation inside {@link InlineTranslation}.<br>
      * Each inlining decreases remaining depth in passed sub-context.<br>
      * When no inlining were previously done, remaining depth is equals to maxDepth from {@link InlineTranslation}.<br>
      * If remaining depth <= 0, exception is thrown.<br>
      * If context tree does not contain {@link LangKeyContext} when language override not declared,
      * exception is thrown.
-     * @param cls output class
+     * @param ft output type
      * @param params list of arguments
      */
-    public O formatInline(@SuppressWarnings("SameParameterValue") Class<O> cls,
+    public O formatInline(@SuppressWarnings("SameParameterValue") FormatType<O> ft,
                              @NotNull InlineTranslation inline,
                              @NotNull Context ctx, List<Object> params) {
         int cd = ctx.getOptional(InlineContext.class)
@@ -129,7 +131,7 @@ public abstract class TemplateFormatter<O> {
         unless override set at deeper InlineTranslation */
         var sub = ctx.sub(targetLang, key, i18n.resolveLocale(targetLang));
         sub.set(new InlineContext(cd-1));
-        return i18n.parse(cls, sub, targetLang, key, params);
+        return i18n.parse(ft, sub, targetLang, key, params);
     }
 
     /**
@@ -205,4 +207,21 @@ public abstract class TemplateFormatter<O> {
         return -1;
     }
 
+    /**
+     * Resolves format type from context using {@link FormatTypeContext} and casts it to {@code FormatType<O>}
+     * @return null if no format type in context or context is null
+     * @throws IllegalStateException if incompatible type found
+     */
+    public @Nullable FormatType<O> resolveFormatType(Context ctx) {
+        if (ctx == null) return null;
+        var ftc = ctx.resolve(FormatTypeContext.class);
+        if (ftc == null) return null;
+        try {
+            //noinspection unchecked
+            return (FormatType<O>) ftc.getFormatType();
+        } catch (ClassCastException e) {
+            throw new IllegalStateException("Incompatible format type %s found in context %s"
+                    .formatted(ftc.getFormatType(), ctx), e);
+        }
+    }
 }

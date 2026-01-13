@@ -141,6 +141,7 @@ public class ComponentTemplateFormatter extends TemplateFormatter<Component> {
         var sq = ctx.getOptional(SharedSeqArgContext.class)
                 .orElseGet(SharedSeqArgContext::new);
         final int[] ic = {0};
+        var ft = resolveFormatType(ctx);
         List<Component> extra = new ArrayList<>(entry.parts().size());
         entry.visit(new TemplateVisitor() {
             @Override
@@ -167,7 +168,9 @@ public class ComponentTemplateFormatter extends TemplateFormatter<Component> {
 
             @Override
             public void visitInline(InlineTranslation inline) {
-                var il = formatInline(Component.class, inline, ctx, params);
+                // fallback to plain formatter
+                var tft = ft != null ? ft : AdventureFormats.PLAIN;
+                var il = formatInline(tft, inline, ctx, params);
                 extra.add(il);
             }
         });

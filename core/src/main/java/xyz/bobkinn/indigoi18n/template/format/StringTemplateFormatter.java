@@ -2,6 +2,7 @@ package xyz.bobkinn.indigoi18n.template.format;
 
 import xyz.bobkinn.indigoi18n.context.Context;
 import xyz.bobkinn.indigoi18n.data.ParsedEntry;
+import xyz.bobkinn.indigoi18n.format.FormatType;
 import xyz.bobkinn.indigoi18n.template.InlineTranslation;
 import xyz.bobkinn.indigoi18n.template.TemplateVisitor;
 import xyz.bobkinn.indigoi18n.template.arg.ArgConverters;
@@ -83,6 +84,9 @@ public class StringTemplateFormatter extends TemplateFormatter<String> {
 
     @Override
     public String format(Context ctx, ParsedEntry entry, List<Object> params) {
+        var ft = resolveFormatType(ctx);
+        // fallback to string format type
+        var tft = ft != null ? ft : FormatType.STRING_FORMAT_TYPE;
         var result = new StringBuilder();
         entry.visit(new TemplateVisitor() {
             @Override
@@ -105,7 +109,7 @@ public class StringTemplateFormatter extends TemplateFormatter<String> {
             @Override
             public void visitInline(InlineTranslation inline) {
                 try {
-                    formatInline(inline, ctx, result, params);
+                    formatInline(tft, inline, ctx, result, params);
                 } catch (Exception e) {
                     var key = ctx.key();
                     result.append("<").append(key).append(">");
@@ -115,8 +119,8 @@ public class StringTemplateFormatter extends TemplateFormatter<String> {
         return result.toString();
     }
 
-    private void formatInline(InlineTranslation inline, Context ctx, StringBuilder result, List<Object> params) {
-        var res = formatInline(String.class, inline, ctx, params);
+    private void formatInline(FormatType<String> ft, InlineTranslation inline, Context ctx, StringBuilder result, List<Object> params) {
+        var res = formatInline(ft, inline, ctx, params);
         result.append(res);
     }
 }

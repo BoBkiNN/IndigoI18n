@@ -3,10 +3,12 @@ package xyz.bobkinn.indigoi18n;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.bobkinn.indigoi18n.context.Context;
+import xyz.bobkinn.indigoi18n.context.impl.FormatTypeContext;
 import xyz.bobkinn.indigoi18n.context.impl.LangKeyContext;
 import xyz.bobkinn.indigoi18n.context.impl.SourceContext;
 import xyz.bobkinn.indigoi18n.data.Translation;
 import xyz.bobkinn.indigoi18n.data.TranslationInfo;
+import xyz.bobkinn.indigoi18n.format.FormatType;
 import xyz.bobkinn.indigoi18n.format.I18nFormat;
 
 import java.util.List;
@@ -24,7 +26,7 @@ public interface I18nEngine {
      * Returns format that can be used to output and format {@link T}
      * @param <T> type of output object
      */
-    <T> I18nFormat<T> getFormat(Class<T> cls);
+    <T> I18nFormat<T> getFormat(FormatType<T> ft);
 
     /**
      * Returns info about translation
@@ -49,17 +51,19 @@ public interface I18nEngine {
     /**
      * Computes context, gets {@link Translation}, merges context overrides, resolves text from translation,
      * performs formatting using {@link I18nFormat}
-     * @param cls output (format) type
+     * @param ft output (format) type
      * @param ctx context to pass
      * @param lang language id
      * @param key translation key
      * @param args formatting arguments
      * @param <T> output type
      */
-    default <T> T parse(Class<T> cls, @Nullable Context ctx, String lang, String key, List<Object> args) {
+    default <T> T parse(FormatType<T> ft, @Nullable Context ctx, String lang, String key, List<Object> args) {
         var targetCtx = computeContext(ctx, lang, key);
-        var format = getFormat(cls);
-        if (format == null) throw new IllegalArgumentException("Unknown format for output "+cls);
+        var format = getFormat(ft);
+        if (format == null) throw new IllegalArgumentException("Unknown format for output "+ft);
+        // set current format type
+        targetCtx.set(new FormatTypeContext(ft));
         var tr = get(targetCtx, key, lang);
         if (tr == null) return format.onNullTranslation(targetCtx, key);
 

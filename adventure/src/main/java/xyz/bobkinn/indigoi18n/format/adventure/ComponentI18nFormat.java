@@ -73,4 +73,16 @@ public abstract class ComponentI18nFormat extends I18nFormat<Component> {
             return input.children(extra);
         }
     }
+
+    public static class PlainComponentI18nFormat extends ComponentI18nFormat {
+
+        public PlainComponentI18nFormat(TemplateCache cache, ComponentTemplateFormatter templateFormatter) {
+            super(cache, templateFormatter);
+        }
+
+        @Override
+        public Component deserializeInput(String text) {
+            return Component.text(text);
+        }
+    }
 }
