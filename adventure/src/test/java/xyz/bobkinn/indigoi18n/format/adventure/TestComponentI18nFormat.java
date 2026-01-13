@@ -3,13 +3,14 @@ package xyz.bobkinn.indigoi18n.format.adventure;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import xyz.bobkinn.indigoi18n.context.Context;
 import xyz.bobkinn.indigoi18n.context.impl.LangKeyContext;
 import xyz.bobkinn.indigoi18n.data.TemplateCache;
 import xyz.bobkinn.indigoi18n.template.TemplateParser;
-import xyz.bobkinn.indigoi18n.template.format.StringTemplateFormatter;
 
 import java.util.List;
 import java.util.Locale;
@@ -18,7 +19,7 @@ class TestComponentI18nFormat {
 
     private final TemplateCache cache = new TemplateCache(TemplateParser.INSTANCE);
     private final ComponentTemplateFormatter componentFormatter =
-            new ComponentTemplateFormatter(new StringTemplateFormatter(), Component::text);
+            ComponentTemplateFormatter.defaultString(Component::text);
 
     private final ComponentI18nFormat format = new ComponentI18nFormat(cache, componentFormatter) {
         @Override
@@ -123,8 +124,8 @@ class TestComponentI18nFormat {
 
     @Test
     void testLegacyConv() {
-        var f = new ComponentI18nFormat(cache, new ComponentTemplateFormatter(new StringTemplateFormatter(),
-                s -> Component.text(s).color(NamedTextColor.RED))) {
+        var f = new ComponentI18nFormat(cache, ComponentTemplateFormatter.defaultString(s
+                -> Component.text(s).color(NamedTextColor.RED))) {
             @Override
             public Component deserializeInput(String text) {
                 return Component.text(text);
@@ -135,6 +136,86 @@ class TestComponentI18nFormat {
         Assertions.assertEquals(Component.empty()
                 .append(Component.text("red")
                         .color(NamedTextColor.RED)), r);
+    }
+
+    @Test
+    void testLegacyFormat() {
+        var s = LegacyComponentSerializer.builder()
+                .extractUrls().hexColors().character('&').build();
+        var f = new LegacyComponentI18nFormat(cache, false, s);
+        var ctx = ctxWithInfo("test3");
+        var r = f.format(ctx, "&c%s", List.of("red"));
+        // style of original is merged with root so red is entire text instead of just child
+        Assertions.assertEquals(Component.empty()
+                .append(Component.text("red"))
+                .color(NamedTextColor.RED), r);
+    }
+
+    @Test
+    void testLegacyFormatLegacyArg() {
+        var s = LegacyComponentSerializer.builder()
+                .extractUrls().hexColors().character('&').build();
+        var f = new LegacyComponentI18nFormat(cache, true, s);
+        var ctx = ctxWithInfo("test3");
+        var r = f.format(ctx, "&c%s", List.of("&6gold"));
+        // style of original is merged with root so red is entire text instead of just child, then child is golden
+        Assertions.assertEquals(Component.empty()
+                .append(Component.text("gold").color(NamedTextColor.GOLD))
+                .color(NamedTextColor.RED), r);
+    }
+
+    @Test
+    void testLegacyFormat2() {
+        var s = LegacyComponentSerializer.builder()
+                .extractUrls().hexColors().character('&').build();
+        var f = new LegacyComponentI18nFormat(cache, false, s);
+        var ctx = ctxWithInfo("test3");
+        var r = f.format(ctx, "-&c%s", List.of("red"));
+        // IDK how actual component is produced and what is part of our merging or legacy serializer
+        Assertions.assertEquals(Component.empty()
+                .append(Component.text("-"),
+                        Component.empty().color(NamedTextColor.RED)
+                                .append(Component.text("red"))), r);
+    }
+
+    @Test
+    void testMmFormat() {
+        var s = MiniMessage.miniMessage();
+        var f = new MiniMessageComponentI18nFormat(cache, s);
+        var ctx = ctxWithInfo("test3");
+        var r = f.format(ctx, "<red>%s</red>", List.of("red"));
+        // style of original is merged with root so red is entire text instead of just child
+        Assertions.assertEquals(Component.empty()
+                .append(Component.text("red"))
+                .color(NamedTextColor.RED), r);
+    }
+
+    @Test
+    void testMmFormat2() {
+        var s = MiniMessage.miniMessage();
+        var f = new MiniMessageComponentI18nFormat(cache, s);
+        var ctx = ctxWithInfo("test3");
+        var r = f.format(ctx, "-<red>%s</red>", List.of("red"));
+        // red text component is inputted into formatter so result for <red>%s</red will be red empty component,
+        // and then It's added to empty root component after -
+        Assertions.assertEquals(Component.empty().append(
+                Component.text("-"),
+                Component.empty().color(NamedTextColor.RED)
+                        .append(Component.text("red"))), r);
+    }
+
+    @Test
+    void testMmFormatComplex() {
+        var ls = LegacyComponentSerializer.builder()
+                .extractUrls().hexColors().character('&').build();
+        var s = MiniMessage.miniMessage();
+        var f = new MiniMessageComponentI18nFormat(cache, ComponentTemplateFormatter.defaultString(ls::deserialize), s);
+        var ctx = ctxWithInfo("test3");
+        var r = f.format(ctx, "<red>%s</red>", List.of("&6gold"));
+        var ex = Component.empty()
+                .color(NamedTextColor.RED)
+                .append(Component.text("gold").color(NamedTextColor.GOLD));
+        Assertions.assertEquals(ex, r);
     }
 
 }

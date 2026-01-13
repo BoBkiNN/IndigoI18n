@@ -3,6 +3,7 @@ package xyz.bobkinn.indigoi18n.format.adventure;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import xyz.bobkinn.indigoi18n.context.Context;
 import xyz.bobkinn.indigoi18n.data.ParsedEntry;
@@ -12,6 +13,7 @@ import xyz.bobkinn.indigoi18n.template.arg.ArgConverters;
 import xyz.bobkinn.indigoi18n.template.arg.ArgumentConverter;
 import xyz.bobkinn.indigoi18n.template.arg.TemplateArgument;
 import xyz.bobkinn.indigoi18n.template.format.FormatPattern;
+import xyz.bobkinn.indigoi18n.template.format.StringTemplateFormatter;
 import xyz.bobkinn.indigoi18n.template.format.TemplateFormatter;
 
 import java.util.ArrayList;
@@ -48,6 +50,16 @@ public class ComponentTemplateFormatter extends TemplateFormatter<Component> {
         this.stringTemplateFormatter = stringTemplateFormatter;
         this.legacyConverter = legacyConverter;
         registerDefaultConverters();
+    }
+
+    /**
+     * A utility method to create new instance with {@link StringTemplateFormatter}
+     * @param legacyConverter legacy converter
+     * @see #ComponentTemplateFormatter(TemplateFormatter, Function)  ComponentTemplateFormatter
+     */
+    @Contract("_ -> new")
+    public static @NotNull ComponentTemplateFormatter defaultString(Function<String, Component> legacyConverter) {
+        return new ComponentTemplateFormatter(new StringTemplateFormatter(), legacyConverter);
     }
 
     @Override

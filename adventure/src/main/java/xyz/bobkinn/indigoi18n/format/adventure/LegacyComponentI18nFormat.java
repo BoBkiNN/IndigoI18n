@@ -27,9 +27,8 @@ public class LegacyComponentI18nFormat extends ComponentI18nFormat {
      * @param serializer serializer used to convert text into Component and to convert String arguments into Component
      */
     public LegacyComponentI18nFormat(TemplateCache cache, boolean convertStringArgument, @NotNull LegacyComponentSerializer serializer) {
-        super(cache, new ComponentTemplateFormatter(new StringTemplateFormatter(),
-                convertStringArgument ? serializer::deserialize : null));
-        this.serializer = serializer;
+        this(cache, new ComponentTemplateFormatter(new StringTemplateFormatter(),
+                convertStringArgument ? serializer::deserialize : null), serializer);
     }
 
     @Override

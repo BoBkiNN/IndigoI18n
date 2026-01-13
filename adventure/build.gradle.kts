@@ -14,6 +14,7 @@ dependencies {
     api(project(":core"))
     implementation("net.kyori:adventure-api:4.25.0")
     implementation("net.kyori:adventure-text-serializer-legacy:4.25.0")
+    implementation("net.kyori:adventure-text-minimessage:4.25.0")
 
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
