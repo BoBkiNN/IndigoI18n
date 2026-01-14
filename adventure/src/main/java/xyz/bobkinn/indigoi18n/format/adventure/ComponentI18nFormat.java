@@ -74,6 +74,11 @@ public abstract class ComponentI18nFormat extends I18nFormat<Component> {
         }
     }
 
+    /**
+     * Plain component I18n format. Instead of actually deserializing input
+     * it just wraps text into {@link TextComponent}.<br> Used as fallback in some places.
+     * @see AdventureFormats#PLAIN
+     */
     public static class PlainComponentI18nFormat extends ComponentI18nFormat {
 
         public PlainComponentI18nFormat(TemplateCache cache, ComponentTemplateFormatter templateFormatter) {
