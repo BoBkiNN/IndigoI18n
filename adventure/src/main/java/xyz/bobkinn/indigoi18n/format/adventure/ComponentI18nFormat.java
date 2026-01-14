@@ -80,6 +80,10 @@ public abstract class ComponentI18nFormat extends I18nFormat<Component> {
             super(cache, templateFormatter);
         }
 
+        public PlainComponentI18nFormat(TemplateCache cache) {
+            this(cache, ComponentTemplateFormatter.defaultString(null));
+        }
+
         @Override
         public Component deserializeInput(String text) {
             return Component.text(text);
