@@ -52,20 +52,9 @@ public class StringTemplateFormatter extends TemplateFormatter<String> {
     private void formatArgument(Context ctx, StringBuilder builder, TemplateArgument arg, Object value) {
         var format = arg.getPattern();
         Objects.requireNonNull(format, "no format set for argument "+arg);
-        if (arg.isRepr('r')) {
-            var rawRepr = createRawRepr(value);
-            var res = ArgConverters.STRING_CONVERTER.format(ctx, rawRepr, format);
-            builder.append(res);
-            return;
-        }
-        if (arg.isRepr('h', 'H')) {
-            builder.append(String.format("%"+arg.getRepr(), value));
-            return;
-        }
-        if (arg.isRepr('s') && (value == null || value.getClass() != String.class)) {
-            // !s converts any object (except string) to string and then formats using string converter
-            var res = ArgConverters.STRING_CONVERTER.format(ctx, String.valueOf(value), format);
-            builder.append(res);
+        var repr = formatRepresentation(ctx, arg, value, this::createRawRepr);
+        if (repr != null) {
+            builder.append(repr);
             return;
         }
         if (value == null) {

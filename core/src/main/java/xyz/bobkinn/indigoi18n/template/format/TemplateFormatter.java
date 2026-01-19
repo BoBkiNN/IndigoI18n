@@ -10,8 +10,10 @@ import xyz.bobkinn.indigoi18n.context.impl.LangKeyContext;
 import xyz.bobkinn.indigoi18n.data.ParsedEntry;
 import xyz.bobkinn.indigoi18n.format.FormatType;
 import xyz.bobkinn.indigoi18n.template.InlineTranslation;
+import xyz.bobkinn.indigoi18n.template.arg.ArgConverters;
 import xyz.bobkinn.indigoi18n.template.arg.ArgumentConverter;
 import xyz.bobkinn.indigoi18n.template.Utils;
+import xyz.bobkinn.indigoi18n.template.arg.TemplateArgument;
 
 import java.util.HashMap;
 import java.util.List;
@@ -89,6 +91,30 @@ public abstract class TemplateFormatter<O> {
      * @param format format to possibly use to produce null text
      */
     public abstract O formatNull(Context ctx, FormatPattern format);
+
+    /**
+     * Format common representations as strings. Modes r, h, H, s are handled
+     * @param arg argument that is being represented
+     * @param value passed argument value
+     * @param rawReprCreator function to produce string from text
+     * @return null if no representation performed
+     */
+    protected String formatRepresentation(Context ctx, TemplateArgument arg, Object value,
+                                          Function<Object, String> rawReprCreator) {
+        var format = Objects.requireNonNull(arg.getPattern(), "Missing format in argument");
+        if (arg.isRepr('r')) {
+            var rawRepr = rawReprCreator.apply(value);
+            return ArgConverters.STRING_CONVERTER.format(ctx, rawRepr, format);
+        }
+        if (arg.isRepr('h', 'H')) {
+            return String.format("%"+arg.getRepr(), value);
+        }
+        if (arg.isRepr('s') && (value == null || value.getClass() != String.class)) {
+            // !s converts any object (except string) to string and then formats using string converter
+            return ArgConverters.STRING_CONVERTER.format(ctx, String.valueOf(value), format);
+        }
+        return null;
+    }
 
     public abstract O format(Context ctx, ParsedEntry entry, List<Object> params);
 

@@ -108,22 +108,10 @@ public class ComponentTemplateFormatter extends TemplateFormatter<Component> {
     }
 
     public Component formatArgument(Context ctx, TemplateArgument arg, Object value) {
-        // TODO we should do something about repeating this part. Guess representations are common
         var format = arg.getPattern();
         Objects.requireNonNull(format, "no format set for argument " + arg);
-        if (arg.isRepr('r')) {
-            var rawRepr = stringTemplateFormatter.createRawRepr(value);
-            var res = ArgConverters.STRING_CONVERTER.format(ctx, rawRepr, format);
-            return createText(res);
-        }
-        if (arg.isRepr('h', 'H')) {
-            return createText(String.format("%" + arg.getRepr(), value));
-        }
-        if (arg.isRepr('s') && (value == null || value.getClass() != String.class)) {
-            // !s converts any object (except string) to string and then formats using string converter
-            var res = ArgConverters.STRING_CONVERTER.format(ctx, String.valueOf(value), format);
-            return createText(res);
-        }
+        var repr = formatRepresentation(ctx, arg, value, stringTemplateFormatter::createRawRepr);
+        if (repr != null) return createText(repr);
         if (value == null) {
             return formatNull(ctx, format);
         }
