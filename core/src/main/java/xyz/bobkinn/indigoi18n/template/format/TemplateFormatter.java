@@ -116,6 +116,13 @@ public abstract class TemplateFormatter<O> {
         return null;
     }
 
+    /**
+     * Produces output from parsed entries and list of passed arguments
+     * @param ctx context
+     * @param entry parsed input
+     * @param params list of passed arguments
+     * @return output object
+     */
     public abstract O format(Context ctx, ParsedEntry entry, List<Object> params);
 
 
