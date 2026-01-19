@@ -133,6 +133,16 @@ public class ComponentTemplateFormatter extends TemplateFormatter<Component> {
     }
 
     /**
+     * Called when index of visited argument is greater than size of {@code params} list.
+     * Default implementation returns text in format %(idx+1), for example, idx 0: %1; idx 1: %2.
+     */
+    @SuppressWarnings("unused")
+    protected Component onUnknownArgument(Context ctx, ParsedEntry entry, List<Object> params,
+                                          @NotNull TemplateArgument arg) {
+        return Component.text("%" + (arg.getIndex() + 1));
+    }
+
+    /**
      * Creates new empty component with children set to resulting parts
      */
     @Override
@@ -158,7 +168,7 @@ public class ComponentTemplateFormatter extends TemplateFormatter<Component> {
                 var idx = arg.getIndex();
                 if (idx >= params.size()) {
                     // unknown argument
-                    extra.add(Component.text("%" + (idx + 1)));
+                    extra.add(onUnknownArgument(ctx, entry, params, arg));
                     return;
                 }
                 var p = params.get(idx);
