@@ -1,5 +1,6 @@
 plugins {
     `java-library`
+    `maven-publish`
 }
 
 group = "xyz.bobkinn.indigoi18n"
@@ -20,4 +21,20 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("mavenLocal") {
+            from(components["java"])
+
+            groupId = "io.github.bobkinn"
+            artifactId = "indigo-i18n-spigot"
+
+            pom {
+                name.set(rootProject.name)
+                description.set("IndigoI18n localization library spigot CommandSender compatibility")
+            }
+        }
+    }
 }

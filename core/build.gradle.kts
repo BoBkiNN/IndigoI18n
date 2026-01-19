@@ -37,7 +37,6 @@ publishing {
 
             groupId = "io.github.bobkinn"
             artifactId = "indigo-i18n-core"
-            version = "0.1.0"
 
             pom {
                 name.set(rootProject.name)
