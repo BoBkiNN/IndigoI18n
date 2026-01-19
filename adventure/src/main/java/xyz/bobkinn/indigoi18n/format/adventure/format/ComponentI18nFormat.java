@@ -1,4 +1,4 @@
-package xyz.bobkinn.indigoi18n.format.adventure;
+package xyz.bobkinn.indigoi18n.format.adventure.format;
 
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
@@ -7,6 +7,9 @@ import org.jetbrains.annotations.NotNull;
 import xyz.bobkinn.indigoi18n.context.Context;
 import xyz.bobkinn.indigoi18n.data.TemplateCache;
 import xyz.bobkinn.indigoi18n.format.I18nFormat;
+import xyz.bobkinn.indigoi18n.format.adventure.AdventureFormats;
+import xyz.bobkinn.indigoi18n.format.adventure.ComponentTemplateFormatter;
+import xyz.bobkinn.indigoi18n.format.adventure.SharedSeqArgContext;
 import xyz.bobkinn.indigoi18n.template.TemplateParseOptions;
 
 import java.util.ArrayList;

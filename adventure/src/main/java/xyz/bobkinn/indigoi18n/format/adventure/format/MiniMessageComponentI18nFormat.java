@@ -1,10 +1,11 @@
-package xyz.bobkinn.indigoi18n.format.adventure;
+package xyz.bobkinn.indigoi18n.format.adventure.format;
 
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.jetbrains.annotations.NotNull;
 import xyz.bobkinn.indigoi18n.data.TemplateCache;
+import xyz.bobkinn.indigoi18n.format.adventure.ComponentTemplateFormatter;
 import xyz.bobkinn.indigoi18n.template.format.StringTemplateFormatter;
 
 /**

@@ -4,6 +4,9 @@ import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import xyz.bobkinn.indigoi18n.StringI18n;
+import xyz.bobkinn.indigoi18n.format.adventure.format.ComponentI18nFormat;
+import xyz.bobkinn.indigoi18n.format.adventure.format.LegacyComponentI18nFormat;
+import xyz.bobkinn.indigoi18n.format.adventure.format.MiniMessageComponentI18nFormat;
 import xyz.bobkinn.indigoi18n.format.adventure.mixin.LegacyAdventureI18nMixin;
 import xyz.bobkinn.indigoi18n.format.adventure.mixin.MiniMessageAdventureI18nMixin;
 
@@ -14,7 +17,7 @@ import xyz.bobkinn.indigoi18n.format.adventure.mixin.MiniMessageAdventureI18nMix
  * default template formatters.<br>
  * Its MiniMessage i18n format also uses default template formatter.<br>
  * Also it supports {@link AdventureFormats#PLAIN} format using
- * {@link xyz.bobkinn.indigoi18n.format.adventure.ComponentI18nFormat.PlainComponentI18nFormat}
+ * {@link ComponentI18nFormat.PlainComponentI18nFormat}
  */
 @SuppressWarnings("unused")
 @RequiredArgsConstructor

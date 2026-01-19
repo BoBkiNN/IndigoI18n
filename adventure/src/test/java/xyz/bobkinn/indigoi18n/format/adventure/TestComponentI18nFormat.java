@@ -10,6 +10,9 @@ import org.junit.jupiter.api.Test;
 import xyz.bobkinn.indigoi18n.context.Context;
 import xyz.bobkinn.indigoi18n.context.impl.LangKeyContext;
 import xyz.bobkinn.indigoi18n.data.TemplateCache;
+import xyz.bobkinn.indigoi18n.format.adventure.format.ComponentI18nFormat;
+import xyz.bobkinn.indigoi18n.format.adventure.format.LegacyComponentI18nFormat;
+import xyz.bobkinn.indigoi18n.format.adventure.format.MiniMessageComponentI18nFormat;
 import xyz.bobkinn.indigoi18n.template.TemplateParser;
 
 import java.util.List;
