@@ -14,9 +14,6 @@ repositories {
 dependencies {
     api(project(":core"))
     implementation("org.spigotmc:spigot-api:${property("spigot-version")}")
-
-    testImplementation(platform("org.junit:junit-bom:5.10.0"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
 }
 
 tasks.test {

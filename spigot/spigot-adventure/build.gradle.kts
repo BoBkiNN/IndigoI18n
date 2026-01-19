@@ -20,9 +20,6 @@ dependencies {
     implementation("net.kyori:adventure-api:${property("adventure-version")}")
     implementation("net.kyori:adventure-text-serializer-legacy:${property("adventure-version")}")
     implementation("net.kyori:adventure-text-minimessage:${property("adventure-version")}")
-
-    testImplementation(platform("org.junit:junit-bom:5.10.0"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
 }
 
 tasks.test {
