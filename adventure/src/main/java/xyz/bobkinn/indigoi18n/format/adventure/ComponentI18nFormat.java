@@ -29,6 +29,17 @@ public abstract class ComponentI18nFormat extends I18nFormat<Component> {
         return deserializeInput(text);
     }
 
+    /**
+     * Called when {@link TemplateCache#getOrCreate(Context, String, TemplateParseOptions)} returned null.<br>
+     * Default implementation returns translation key text.
+     * @param input text component that holds string failing to be parsed
+     * @see TemplateCache#getOrCreate(Context, String, TemplateParseOptions)
+     */
+    @SuppressWarnings("unused")
+    protected Component onParsingFailed(@NotNull Context ctx, TextComponent input) {
+        return Component.text(ctx.key());
+    }
+
     public Component processText(@NotNull Context ctx, @NotNull TextComponent comp, List<Object> args){
         var full = comp.content();
         var parseOptions = ctx.getOptional(SharedSeqArgContext.class)
@@ -37,8 +48,7 @@ public abstract class ComponentI18nFormat extends I18nFormat<Component> {
                 .orElseGet(TemplateParseOptions::new);
         var parsed = cache.getOrCreate(ctx, full, parseOptions);
         if (parsed == null) {
-            // TODO think about customizable error formatting instead falling everywhere to just key
-            return Component.text(ctx.key());
+            return onParsingFailed(ctx, comp);
         }
         // format parts into component
         var res = templateFormatter.format(ctx, parsed, args);
