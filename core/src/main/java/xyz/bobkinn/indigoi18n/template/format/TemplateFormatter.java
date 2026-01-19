@@ -84,6 +84,10 @@ public abstract class TemplateFormatter<O> {
         return Utils.quote(value);
     }
 
+    /**
+     * Method used to create plain text from string value
+     * @return new text object
+     */
     public abstract O createText(String value);
 
     /**
