@@ -3,6 +3,7 @@ package xyz.bobkinn.indigoi18n.format.adventure;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import org.jetbrains.annotations.NotNull;
 import xyz.bobkinn.indigoi18n.context.Context;
 import xyz.bobkinn.indigoi18n.data.TemplateCache;
 import xyz.bobkinn.indigoi18n.format.I18nFormat;
@@ -28,7 +29,7 @@ public abstract class ComponentI18nFormat extends I18nFormat<Component> {
         return deserializeInput(text);
     }
 
-    private Component processText(Context ctx, TextComponent comp, List<Object> args){
+    public Component processText(@NotNull Context ctx, @NotNull TextComponent comp, List<Object> args){
         var full = comp.content();
         var parseOptions = ctx.getOptional(SharedSeqArgContext.class)
                 .map(SharedSeqArgContext::getSeqIdx)
