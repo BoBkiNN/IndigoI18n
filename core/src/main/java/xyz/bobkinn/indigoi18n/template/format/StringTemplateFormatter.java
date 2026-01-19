@@ -82,6 +82,29 @@ public class StringTemplateFormatter extends TemplateFormatter<String> {
         builder.append(content);
     }
 
+    /**
+     * Called when index of passed argument is greater than size of {@code params}.
+     * Default implementation appends % and argument index + 1 to string builder.
+     */
+    @SuppressWarnings("unused")
+    protected void onUnknownArgument(StringBuilder result, Context ctx, ParsedEntry entry,
+                                     List<Object> params, TemplateArgument arg) {
+        result.append("%").append(arg.getIndex()+1);
+    }
+
+    /**
+     * Called when inlining of {@link InlineTranslation}
+     * by {@link #formatInline(FormatType, InlineTranslation, Context, List)} failed.<br>
+     * Default implementations appends {@code <inline.key>} text to string builder.
+     * @param exception exception produced by formatInline method.
+     */
+    @SuppressWarnings("unused")
+    protected void onFailedInline(StringBuilder result, Context ctx, ParsedEntry entry,
+                                     List<Object> params, InlineTranslation inline, Exception exception) {
+        var key = inline.getKey();
+        result.append("<").append(key).append(">");
+    }
+
     @Override
     public String format(Context ctx, ParsedEntry entry, List<Object> params) {
         var ft = resolveFormatType(ctx);
@@ -99,7 +122,7 @@ public class StringTemplateFormatter extends TemplateFormatter<String> {
                 var idx = arg.getIndex();
                 if (idx >= params.size()) {
                     // unknown argument
-                    result.append("%").append(idx+1);
+                    onUnknownArgument(result, ctx, entry, params, arg);
                     return;
                 }
                 var p = params.get(idx);
@@ -111,8 +134,7 @@ public class StringTemplateFormatter extends TemplateFormatter<String> {
                 try {
                     formatInline(tft, inline, ctx, result, params);
                 } catch (Exception e) {
-                    var key = ctx.key();
-                    result.append("<").append(key).append(">");
+                    onFailedInline(result, ctx, entry, params, inline, e);
                 }
             }
         });

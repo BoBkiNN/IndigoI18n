@@ -5,8 +5,10 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import xyz.bobkinn.indigoi18n.context.Context;
 import xyz.bobkinn.indigoi18n.data.ParsedEntry;
+import xyz.bobkinn.indigoi18n.format.FormatType;
 import xyz.bobkinn.indigoi18n.template.InlineTranslation;
 import xyz.bobkinn.indigoi18n.template.TemplateVisitor;
 import xyz.bobkinn.indigoi18n.template.arg.ArgConverters;
@@ -143,6 +145,20 @@ public class ComponentTemplateFormatter extends TemplateFormatter<Component> {
     }
 
     /**
+     * Called when inlining of {@link InlineTranslation}
+     * by {@link #formatInline(FormatType, InlineTranslation, Context, List)} failed.<br>
+     * Default implementations returns text {@code <inline.key>} where {@code inline.key} is key inline is pointing to.<br>
+     * If null value is returned, no components appended to result.
+     * @param exception exception produced by formatInline method.
+     */
+    @SuppressWarnings("unused")
+    protected @Nullable Component onFailedInline(Context ctx, ParsedEntry entry,
+                                                 List<Object> params, InlineTranslation inline, Exception exception) {
+        var key = inline.getKey();
+        return Component.text("<"+key+">");
+    }
+
+    /**
      * Creates new empty component with children set to resulting parts
      */
     @Override
@@ -180,8 +196,13 @@ public class ComponentTemplateFormatter extends TemplateFormatter<Component> {
             public void visitInline(InlineTranslation inline) {
                 // fallback to plain formatter
                 var tft = ft != null ? ft : AdventureFormats.PLAIN;
-                var il = formatInline(tft, inline, ctx, params);
-                extra.add(il);
+                try {
+                    var il = formatInline(tft, inline, ctx, params);
+                    extra.add(il);
+                } catch (Exception e) {
+                    var ec = onFailedInline(ctx, entry, params, inline, e);
+                    if (ec != null) extra.add(ec);
+                }
             }
         });
         // set increased value
