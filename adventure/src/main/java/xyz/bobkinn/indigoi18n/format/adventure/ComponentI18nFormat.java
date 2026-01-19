@@ -40,6 +40,9 @@ public abstract class ComponentI18nFormat extends I18nFormat<Component> {
         return Component.text(ctx.key());
     }
 
+    /**
+     * Method used by default {@link #replaceArguments(Context, Component, List)} implementation
+     */
     public Component processText(@NotNull Context ctx, @NotNull TextComponent comp, List<Object> args){
         var full = comp.content();
         var parseOptions = ctx.getOptional(SharedSeqArgContext.class)
