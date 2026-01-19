@@ -1,6 +1,7 @@
 plugins {
     `java-library`
     id("io.freefair.lombok")
+    `maven-publish`
 }
 
 group = "xyz.bobkinn.indigoi18n"
@@ -19,4 +20,24 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+}
+
+java {
+    withSourcesJar()
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("mavenLocal") {
+            from(components["java"])
+
+            groupId = "io.github.bobkinn"
+            artifactId = "indigo-i18n-adventure"
+
+            pom {
+                name.set(rootProject.name)
+                description.set("IndigoI18n localization library Adventure MiniMessage and Legacy formats")
+            }
+        }
+    }
 }
