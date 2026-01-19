@@ -1,6 +1,8 @@
 package xyz.bobkinn.indigoi18n;
 
 import org.junit.jupiter.api.Test;
+import xyz.bobkinn.indigoi18n.context.Context;
+import xyz.bobkinn.indigoi18n.context.impl.InlineContext;
 import xyz.bobkinn.indigoi18n.source.TranslationSource;
 import xyz.bobkinn.indigoi18n.source.impl.PropertiesSource;
 
@@ -25,6 +27,7 @@ public class TestFormat {
         props.put("it3", "[%{t:it3}"); // inline self with depth 1
         props.put("it4", "[%{t:it4:0}"); // inline self with no depth
         props.put("it5", "[%{t:it5:5}"); // inline self with depth 5
+        props.put("it6", "%{t:target}");
     }
 
     @Test
@@ -50,5 +53,7 @@ public class TestFormat {
         assertEquals("[[<it3>", i18n.parse("en", "it3"));
         assertEquals("[<it4>", i18n.parse("en", "it4"));
         assertEquals("[[[[[[<it5>", i18n.parse("en", "it5"));
+        var wc = new Context().with(new InlineContext(0)); // remain no depth
+        assertEquals("<target>", i18n.parse(wc, "en", "it6"));
     }
 }
