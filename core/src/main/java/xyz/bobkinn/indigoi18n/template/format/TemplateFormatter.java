@@ -84,6 +84,12 @@ public abstract class TemplateFormatter<O> {
 
     public abstract O createText(String value);
 
+    /**
+     * Method used to create output for null arguments.
+     * @param format format to possibly use to produce null text
+     */
+    public abstract O formatNull(Context ctx, FormatPattern format);
+
     public abstract O format(Context ctx, ParsedEntry entry, List<Object> params);
 
 

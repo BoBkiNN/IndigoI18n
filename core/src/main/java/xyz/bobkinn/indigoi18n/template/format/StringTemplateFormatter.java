@@ -42,7 +42,8 @@ public class StringTemplateFormatter extends TemplateFormatter<String> {
         return value;
     }
 
-    private String formatNull(Context ctx, FormatPattern format) {
+    @Override
+    public String formatNull(Context ctx, FormatPattern format) {
         var nConv = getConverter(null);
         if (nConv != null) return nConv.format(ctx, null, format);
         return "null";

@@ -91,7 +91,8 @@ public class ComponentTemplateFormatter extends TemplateFormatter<Component> {
         return Component.text(value);
     }
 
-    private Component formatNull(Context ctx, FormatPattern format) {
+    @Override
+    public Component formatNull(Context ctx, FormatPattern format) {
         var nConv = getConverter(null);
         if (nConv != null) return nConv.format(ctx, null, format);
         return NULL_COMPONENT;
