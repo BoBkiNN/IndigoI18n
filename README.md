@@ -1,6 +1,5 @@
 
 TODO:
-- bukkit support
 - kotlin bukkit extension methods
 - abstraction for visitor to allow custom template parts
 - (adventure) optional style leaking.<br>
