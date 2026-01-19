@@ -7,3 +7,5 @@ TODO:
   instead of '<red>Arg</red>-text'.<br>
   Leaked style is spread unless new style is specified.<br>
   Not sure of correct rules yet
+- readme
+- wiki
