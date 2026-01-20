@@ -1,4 +1,4 @@
-package xyz.bobkinn.indigoi18n.spigot;
+package xyz.bobkinn.indigoi18n.paper;
 
 import lombok.Data;
 import org.bukkit.command.CommandSender;

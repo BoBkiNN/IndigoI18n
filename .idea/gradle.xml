@@ -13,8 +13,8 @@
             <option value="$PROJECT_DIR$/codegen" />
             <option value="$PROJECT_DIR$/core" />
             <option value="$PROJECT_DIR$/gson" />
-            <option value="$PROJECT_DIR$/spigot" />
-            <option value="$PROJECT_DIR$/spigot/spigot-adventure" />
+            <option value="$PROJECT_DIR$/paper" />
+            <option value="$PROJECT_DIR$/paper/paper-adventure" />
           </set>
         </option>
       </GradleProjectSettings>

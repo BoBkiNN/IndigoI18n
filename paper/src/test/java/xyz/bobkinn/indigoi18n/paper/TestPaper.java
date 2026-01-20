@@ -1,4 +1,4 @@
-package xyz.bobkinn.indigoi18n.spigot;
+package xyz.bobkinn.indigoi18n.paper;
 
 import be.seeseemelk.mockbukkit.MockBukkit;
 import be.seeseemelk.mockbukkit.ServerMock;
@@ -14,9 +14,9 @@ import xyz.bobkinn.indigoi18n.data.BasicTranslation;
 import xyz.bobkinn.indigoi18n.format.FormatType;
 import xyz.bobkinn.indigoi18n.format.impl.StringI18nFormat;
 
-public class TestSpigot {
+public class TestPaper {
 
-    static class TestSpigotI18n extends StringI18n implements StringSpigotI18nMixin {
+    static class TestPaperI18N extends StringI18n implements StringPaperI18nMixin {
 
     }
 
@@ -53,7 +53,7 @@ public class TestSpigot {
 
     @Test
     void testViewer() {
-        var i18n = new TestSpigotI18n();
+        var i18n = new TestPaperI18N();
         var f = (StringI18nFormat) i18n.getFormat(FormatType.STRING_FORMAT_TYPE);
         // add marker handling
         f.getTemplateFormatter().addConverter(ViewerName.class, (ctx, argument, format) -> {

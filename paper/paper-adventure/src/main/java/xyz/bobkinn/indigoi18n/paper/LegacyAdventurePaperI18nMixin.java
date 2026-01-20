@@ -1,4 +1,4 @@
-package xyz.bobkinn.indigoi18n.spigot;
+package xyz.bobkinn.indigoi18n.paper;
 
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
@@ -8,7 +8,7 @@ import xyz.bobkinn.indigoi18n.format.adventure.mixin.LegacyAdventureI18nMixin;
 import java.util.List;
 
 @SuppressWarnings("unused")
-public interface LegacyAdventureSpigotI18nMixin extends LegacyAdventureI18nMixin, CommandSenderLanguageMixin {
+public interface LegacyAdventurePaperI18nMixin extends LegacyAdventureI18nMixin, CommandSenderLanguageMixin {
     default Component parseA(Context ctx, CommandSender viewer, String key, List<Object> args) {
         return parseA(injectCtx(ctx, viewer), getLanguage(viewer), key, args);
     }

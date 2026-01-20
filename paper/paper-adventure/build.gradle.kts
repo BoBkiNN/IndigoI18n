@@ -15,10 +15,10 @@ repositories {
 }
 
 dependencies {
-    api(project(":spigot"))
+    api(project(":paper"))
     api(project(":adventure"))
 
-    implementation("com.destroystokyo.paper:paper-api:${property("spigot-version")}")
+    implementation("io.papermc.paper:paper-api:${property("paper-version")}")
 
     implementation("net.kyori:adventure-api:${property("adventure-version")}")
     implementation("net.kyori:adventure-text-serializer-legacy:${property("adventure-version")}")
@@ -39,11 +39,11 @@ publishing {
             from(components["java"])
 
             groupId = "io.github.bobkinn"
-            artifactId = "indigo-i18n-spigot-adventure"
+            artifactId = "indigo-i18n-paper-adventure"
 
             pom {
                 name.set(rootProject.name)
-                description.set("IndigoI18n localization library spigot CommandSender compatibility with adventure overloads")
+                description.set("IndigoI18n localization library paper CommandSender compatibility with adventure overloads")
             }
         }
     }

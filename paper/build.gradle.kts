@@ -17,9 +17,9 @@ repositories {
 
 dependencies {
     api(project(":core"))
-    implementation("com.destroystokyo.paper:paper-api:${property("spigot-version")}")
+    implementation("io.papermc.paper:paper-api:${property("paper-version")}")
 
-    testImplementation("com.github.seeseemelk:MockBukkit-v1.16:1.5.2")
+    testImplementation("com.github.seeseemelk:MockBukkit-v1.18:2.85.2")
 }
 
 tasks.test {
@@ -36,11 +36,11 @@ publishing {
             from(components["java"])
 
             groupId = "io.github.bobkinn"
-            artifactId = "indigo-i18n-spigot"
+            artifactId = "indigo-i18n-paper"
 
             pom {
                 name.set(rootProject.name)
-                description.set("IndigoI18n localization library spigot CommandSender compatibility")
+                description.set("IndigoI18n localization library paper CommandSender compatibility and new argument converters")
             }
         }
     }

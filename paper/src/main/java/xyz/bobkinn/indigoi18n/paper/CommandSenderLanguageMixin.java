@@ -1,4 +1,4 @@
-package xyz.bobkinn.indigoi18n.spigot;
+package xyz.bobkinn.indigoi18n.paper;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
@@ -32,7 +32,8 @@ public interface CommandSenderLanguageMixin {
     default String getLanguage(CommandSender sender) {
         if (sender == null) return getDefaultLanguage();
         if (sender instanceof ConsoleCommandSender) return getConsoleLanguage();
-        if (sender instanceof Player p) return p.getLocale();
+        if (sender instanceof Player p) //noinspection deprecation
+            return p.getLocale();
         return getDefaultLanguage();
     }
 

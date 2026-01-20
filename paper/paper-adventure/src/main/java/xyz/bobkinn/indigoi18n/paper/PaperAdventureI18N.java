@@ -1,4 +1,4 @@
-package xyz.bobkinn.indigoi18n.spigot;
+package xyz.bobkinn.indigoi18n.paper;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -17,13 +17,13 @@ import xyz.bobkinn.indigoi18n.template.format.FormatPattern;
  * @see AdventureI18n
  */
 @SuppressWarnings("unused")
-public class SpigotAdventureI18n extends AdventureI18n implements MiniMessageAdventureSpigotI18nMixin,
-        LegacyAdventureSpigotI18nMixin, StringSpigotI18nMixin {
-    public SpigotAdventureI18n() {
+public class PaperAdventureI18N extends AdventureI18n implements MiniMessageAdventurePaperI18nMixin,
+        LegacyAdventurePaperI18nMixin, StringPaperI18nMixin {
+    public PaperAdventureI18N() {
         super();
     }
 
-    public SpigotAdventureI18n(LegacyComponentSerializer serializer, MiniMessage miniMessage) {
+    public PaperAdventureI18N(LegacyComponentSerializer serializer, MiniMessage miniMessage) {
         super(serializer, miniMessage);
     }
 
@@ -52,10 +52,10 @@ public class SpigotAdventureI18n extends AdventureI18n implements MiniMessageAdv
     protected void addDefaultFormats() {
         super.addDefaultFormats(); // keep formats
         // register custom converters once formats added
-        addSpigotConverters();
+        addPaperConverters();
     }
 
-    protected void addSpigotConverters() {
+    protected void addPaperConverters() {
         // TODO rename addConverter to putConverter because its map so we are not adding but setting
         // add entity converter
         addConverter(Entity.class, this::convertEntity);
