@@ -56,8 +56,7 @@ public class PaperAdventureI18N extends AdventureI18n implements MiniMessageAdve
     }
 
     protected void addPaperConverters() {
-        // TODO rename addConverter to putConverter because its map so we are not adding but setting
         // add entity converter
-        addConverter(Entity.class, this::convertEntity);
+        putConverter(Entity.class, this::convertEntity);
     }
 }

@@ -51,8 +51,8 @@ public class AdventureI18n extends StringI18n implements LegacyAdventureI18nMixi
     /**
      * Adds converter to template formatter of every {@link ComponentI18nFormat format} in this I18n instance
      */
-    public <T> void addConverter(Class<T> cls, ArgumentConverter<T, Component> conv) {
-        visitTemplateFormatters(f -> f.addConverter(cls, conv));
+    public <T> void putConverter(Class<T> cls, ArgumentConverter<T, Component> conv) {
+        visitTemplateFormatters(f -> f.putConverter(cls, conv));
     }
 
     /**

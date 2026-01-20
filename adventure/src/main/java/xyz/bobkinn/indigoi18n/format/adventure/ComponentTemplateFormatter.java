@@ -67,15 +67,15 @@ public class ComponentTemplateFormatter extends TemplateFormatter<Component> {
     @Override
     protected void registerDefaultConverters() {
         // currently we will support only TextComponent formatting, not sure what to do with other types
-        addConverter(TextComponent.class, TEXT_COMPONENT_CONVERTER);
+        putConverter(TextComponent.class, TEXT_COMPONENT_CONVERTER);
         // pass Component as is so it do not handled with string template formatter
         // Maybe this probably should be moved to formatArgument logic so subclasses won't need to specify it every time,
         //  but I think it's ok
-        addConverter(Component.class, ArgumentConverter.noOp());
+        putConverter(Component.class, ArgumentConverter.noOp());
         // String -> legacyToAdventure for compatibility so passing arg like '&cArg' displays color too.
         //  With handling childless text we know exact text length to perform aligning etc.
         if (legacyConverter != null) {
-            addConverter(String.class, (ctx, argument, format) -> {
+            putConverter(String.class, (ctx, argument, format) -> {
                 var c = legacyConverter.apply(argument);
                 if (c == null) return null;
                 if (c.children().isEmpty() && c instanceof TextComponent tc) {

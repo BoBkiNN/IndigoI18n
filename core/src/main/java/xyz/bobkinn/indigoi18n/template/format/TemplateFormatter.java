@@ -58,7 +58,7 @@ public abstract class TemplateFormatter<O> {
         return (ArgumentConverter<T, O>) converters.get(key);
     }
 
-    public <T> void addConverter(@Nullable Class<? extends T> cls, ArgumentConverter<T, O> converter) {
+    public <T> void putConverter(@Nullable Class<? extends T> cls, ArgumentConverter<T, O> converter) {
         converters.put(cls, Objects.requireNonNull(converter, "converter"));
     }
 

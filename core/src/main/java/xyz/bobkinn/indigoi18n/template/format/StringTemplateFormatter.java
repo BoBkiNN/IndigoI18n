@@ -17,24 +17,24 @@ public class StringTemplateFormatter extends TemplateFormatter<String> {
 
     @Override
     protected void registerDefaultConverters() {
-        addConverter(String.class, ArgConverters.STRING_CONVERTER);
+        putConverter(String.class, ArgConverters.STRING_CONVERTER);
 
-        addConverter(Byte.class, ArgConverters.INT_CONVERTER);
-        addConverter(Short.class, ArgConverters.INT_CONVERTER);
-        addConverter(Integer.class, ArgConverters.INT_CONVERTER);
-        addConverter(Long.class, ArgConverters.INT_CONVERTER);
+        putConverter(Byte.class, ArgConverters.INT_CONVERTER);
+        putConverter(Short.class, ArgConverters.INT_CONVERTER);
+        putConverter(Integer.class, ArgConverters.INT_CONVERTER);
+        putConverter(Long.class, ArgConverters.INT_CONVERTER);
 
-        addConverter(Number.class, ArgConverters.NUMBER_CONVERTER);
+        putConverter(Number.class, ArgConverters.NUMBER_CONVERTER);
 
-        addConverter(BigInteger.class, ArgConverters.BIG_INT_CONVERTER);
-        addConverter(BigDecimal.class, ArgConverters.BIG_DECIMAL_CONVERTER);
+        putConverter(BigInteger.class, ArgConverters.BIG_INT_CONVERTER);
+        putConverter(BigDecimal.class, ArgConverters.BIG_DECIMAL_CONVERTER);
 
         // java.time
-        addConverter(Temporal.class, ArgConverters.TEMPORAL_CONVERTER);
+        putConverter(Temporal.class, ArgConverters.TEMPORAL_CONVERTER);
 
         // legacy
-        addConverter(Calendar.class, ArgConverters.CALENDAR_CONVERTER);
-        addConverter(Date.class, ArgConverters.DATE_CONVERTER);
+        putConverter(Calendar.class, ArgConverters.CALENDAR_CONVERTER);
+        putConverter(Date.class, ArgConverters.DATE_CONVERTER);
     }
 
     @Override
