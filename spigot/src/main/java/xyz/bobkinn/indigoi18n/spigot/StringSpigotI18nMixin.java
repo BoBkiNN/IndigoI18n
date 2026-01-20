@@ -10,18 +10,18 @@ import java.util.List;
 @SuppressWarnings("unused")
 public interface StringSpigotI18nMixin extends StringI18nMixin, CommandSenderLanguageMixin {
     default String parse(Context ctx, CommandSender viewer, String key, List<Object> args) {
-        return parse(ctx, getLanguage(viewer), key, args);
+        return parse(injectCtx(ctx, viewer), getLanguage(viewer), key, args);
     }
 
     default String parse(Context ctx, CommandSender viewer, String key, Object... args) {
-        return parse(ctx, getLanguage(viewer), key, Arrays.asList(args));
+        return parse(injectCtx(ctx, viewer), getLanguage(viewer), key, Arrays.asList(args));
     }
 
     default String parse(CommandSender viewer, String key, List<Object> args) {
-        return parse(getLanguage(viewer), key, args);
+        return parse(viewerCtx(viewer), getLanguage(viewer), key, args);
     }
 
     default String parse(CommandSender viewer, String key, Object... args) {
-        return parse(getLanguage(viewer), key, args);
+        return parse(viewerCtx(viewer), getLanguage(viewer), key, args);
     }
 }

@@ -10,18 +10,18 @@ import java.util.List;
 @SuppressWarnings("unused")
 public interface LegacyAdventureSpigotI18nMixin extends LegacyAdventureI18nMixin, CommandSenderLanguageMixin {
     default Component parseA(Context ctx, CommandSender viewer, String key, List<Object> args) {
-        return parseA(ctx, getLanguage(viewer), key, args);
+        return parseA(injectCtx(ctx, viewer), getLanguage(viewer), key, args);
     }
 
     default Component parseA(Context ctx, CommandSender viewer, String key, Object... args) {
-        return parseA(ctx, getLanguage(viewer), key, args);
+        return parseA(injectCtx(ctx, viewer), getLanguage(viewer), key, args);
     }
 
     default Component parseA(CommandSender viewer, String key, List<Object> args) {
-        return parseA(getLanguage(viewer), key, args);
+        return parseA(viewerCtx(viewer), getLanguage(viewer), key, args);
     }
 
     default Component parseA(CommandSender viewer, String key, Object... args) {
-        return parseA(getLanguage(viewer), key, args);
+        return parseA(viewerCtx(viewer), getLanguage(viewer), key, args);
     }
 }

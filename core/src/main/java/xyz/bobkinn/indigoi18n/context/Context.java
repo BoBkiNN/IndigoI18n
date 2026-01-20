@@ -10,6 +10,7 @@ import xyz.bobkinn.indigoi18n.context.impl.SourceContext;
 import xyz.bobkinn.indigoi18n.data.TranslationInfo;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 @RequiredArgsConstructor
@@ -94,6 +95,10 @@ public class Context implements ContextEntry {
 
     public <T extends ContextEntry> Optional<T> getOptional(Class<T> cls) {
         return Optional.ofNullable(get(cls));
+    }
+
+    public <T extends ContextEntry, O> Optional<O> getOptional(Class<T> cls, Function<T, O> mapper) {
+        return getOptional(cls).map(mapper);
     }
 
     /**

@@ -1,6 +1,7 @@
 plugins {
     `java-library`
     `maven-publish`
+    id("io.freefair.lombok")
 }
 
 group = "xyz.bobkinn.indigoi18n"
@@ -14,6 +15,8 @@ repositories {
 dependencies {
     api(project(":core"))
     implementation("org.spigotmc:spigot-api:${property("spigot-version")}")
+
+    testImplementation("com.github.seeseemelk:MockBukkit-v1.16:1.5.2")
 }
 
 tasks.test {

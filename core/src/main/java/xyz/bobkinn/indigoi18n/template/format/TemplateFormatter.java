@@ -152,8 +152,7 @@ public abstract class TemplateFormatter<O> {
     public O formatInline(@SuppressWarnings("SameParameterValue") FormatType<O> ft,
                              @NotNull InlineTranslation inline,
                              @NotNull Context ctx, List<Object> params) {
-        int cd = ctx.getOptional(InlineContext.class)
-                .map(InlineContext::getRemainingDepth)
+        int cd = ctx.getOptional(InlineContext.class, InlineContext::getRemainingDepth)
                 .orElse(inline.getMaxDepth());
         var key = inline.getKey();
         if (cd <= 0) {
