@@ -46,11 +46,17 @@ public class IndigoI18n implements I18nEngine {
         resolver = new DefaultTranslationResolver();
         formats = new HashMap<>();
         this.localeResolver = localeResolver;
-        addDefaultFormats();
     }
 
     public IndigoI18n() {
         this(TemplateParser.INSTANCE, LocaleResolver.DEFAULT);
+    }
+
+    /**
+     * Adds default formats
+     */
+    public void setup() {
+        addDefaultFormats();
     }
 
     public <T> void addFormat(FormatType<T> t, Function<TemplateCache, I18nFormat<T>> formatFactory) {

@@ -54,6 +54,7 @@ public class TestPaper {
     @Test
     void testViewer() {
         var i18n = new TestPaperI18N();
+        i18n.setup();
         var f = (StringI18nFormat) i18n.getFormat(FormatType.STRING_FORMAT_TYPE);
         // add marker handling
         f.getTemplateFormatter().addConverter(ViewerName.class, (ctx, argument, format) -> {

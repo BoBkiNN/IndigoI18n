@@ -21,7 +21,7 @@ public class TestSources {
 
     @Test
     public void testSources() {
-        var i18n = new StringI18n();
+        var i18n = StringI18n.create();
         i18n.load(source);
         assertEquals("Test", i18n.parse("en", "test"));
         assertEquals("Test 2", i18n.parse("en", "test2"));
@@ -41,7 +41,7 @@ public class TestSources {
 
     @Test
     public void testUnload() {
-        var i18n = new StringI18n();
+        var i18n = StringI18n.create();
         i18n.load(source);
         assertEquals("Test 2", i18n.parse("en", "test2"));
         i18n.unload(source);

@@ -15,6 +15,7 @@ public class TestPlurals {
     @Test
     public void test() {
         var i18n = new StringI18n();
+        i18n.setup();
         i18n.texts.put("a", "ru", new PluralTranslation(Map.of(
                 PluralCategory.ONE, "одно яблоко",
                 PluralCategory.FEW, "%s яблока",

@@ -49,8 +49,8 @@ public class PaperAdventureI18N extends AdventureI18n implements MiniMessageAdve
     }
 
     @Override
-    protected void addDefaultFormats() {
-        super.addDefaultFormats(); // keep formats
+    public void setup() {
+        super.setup();
         // register custom converters once formats added
         addPaperConverters();
     }

@@ -20,7 +20,6 @@ import java.util.Locale;
  * @see net.kyori.adventure.translation.GlobalTranslator#addSource(Translator)
  * @see Translator
  */
-@SuppressWarnings("unused") // TODO add tests for this class
 @RequiredArgsConstructor
 public class AdventureTranslator implements Translator  {
     /**

@@ -15,6 +15,7 @@ public class TestTranslator {
     @Test
     void testTranslator() {
         var i18n = new AdventureI18n();
+        i18n.setup();
         var translator = new AdventureTranslator(Key.key("test:test"), i18n, AdventureFormats.LEGACY);
         GlobalTranslator.translator().addSource(translator);
         i18n.getTexts().put("test", "en", BasicTranslation.create("&cRed"));

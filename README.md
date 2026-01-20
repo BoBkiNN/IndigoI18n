@@ -8,4 +8,5 @@ TODO:
   Leaked style is spread unless new style is specified.<br>
   Not sure of correct rules yet
 - readme
-- wiki
+- wiki:
+  - troubleshooting for `No format type for String` and etc

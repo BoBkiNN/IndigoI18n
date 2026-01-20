@@ -17,7 +17,9 @@ public class StringI18n extends IndigoI18n implements StringI18nMixin {
 
     @Contract(" -> new")
     public static @NotNull StringI18n create() {
-        return new StringI18n();
+        var r = new StringI18n();
+        r.setup();
+        return r;
     }
 
     @Override

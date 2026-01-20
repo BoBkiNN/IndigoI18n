@@ -33,6 +33,7 @@ public class TestFormat {
     @Test
     public void testArgs() {
         var i18n = new StringI18n();
+        i18n.setup();
         i18n.load(source);
         assertEquals("Test %1 %2", i18n.parse("en", "test"));
         assertEquals("Test 23 %2", i18n.parse("en", "test", 23));
@@ -44,7 +45,7 @@ public class TestFormat {
 
     @Test
     public void testInline() {
-        var i18n = new StringI18n();
+        var i18n = StringI18n.create();
         i18n.load(source);
         assertEquals("inlined value is: cat", i18n.parse("en", "it"));
 
