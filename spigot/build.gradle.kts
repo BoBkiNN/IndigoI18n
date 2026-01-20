@@ -9,12 +9,15 @@ version = rootProject.version
 
 repositories {
     mavenCentral()
-    maven("https://hub.spigotmc.org/nexus/content/groups/public/")
+    maven {
+        name = "papermc"
+        url = uri("https://repo.papermc.io/repository/maven-public/")
+    }
 }
 
 dependencies {
     api(project(":core"))
-    implementation("org.spigotmc:spigot-api:${property("spigot-version")}")
+    implementation("com.destroystokyo.paper:paper-api:${property("spigot-version")}")
 
     testImplementation("com.github.seeseemelk:MockBukkit-v1.16:1.5.2")
 }

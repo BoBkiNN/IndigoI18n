@@ -8,14 +8,17 @@ version = rootProject.version
 
 repositories {
     mavenCentral()
-    maven("https://hub.spigotmc.org/nexus/content/groups/public/")
+    maven {
+        name = "papermc"
+        url = uri("https://repo.papermc.io/repository/maven-public/")
+    }
 }
 
 dependencies {
     api(project(":spigot"))
     api(project(":adventure"))
 
-    implementation("org.spigotmc:spigot-api:${property("spigot-version")}")
+    implementation("com.destroystokyo.paper:paper-api:${property("spigot-version")}")
 
     implementation("net.kyori:adventure-api:${property("adventure-version")}")
     implementation("net.kyori:adventure-text-serializer-legacy:${property("adventure-version")}")
