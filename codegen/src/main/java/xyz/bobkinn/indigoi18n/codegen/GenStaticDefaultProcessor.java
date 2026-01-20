@@ -5,6 +5,7 @@ import com.squareup.javapoet.*;
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.*;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
 import java.io.IOException;
@@ -45,6 +46,8 @@ public class GenStaticDefaultProcessor extends AbstractProcessor {
                 .addModifiers(Modifier.PUBLIC)
                 .addField(instanceField);
 
+        classBuilder.addJavadoc("Generated static defaults for {@link $T}", classElement);
+
         addInterfaceMethods(classBuilder, classElement);
 
         writeClass(packageName, classBuilder.build());
@@ -75,12 +78,16 @@ public class GenStaticDefaultProcessor extends AbstractProcessor {
 
             for (Element member : ifaceElement.getEnclosedElements()) {
                 if (member.getKind() != ElementKind.METHOD) continue;
-                classBuilder.addMethod(createDelegatingMethod((ExecutableElement) member));
+                if (member.getModifiers().contains(Modifier.PRIVATE)) continue;
+                classBuilder.addMethod(createDelegatingMethod(ifaceElement, (ExecutableElement) member));
             }
+
+            // add super interfaces methods
+            addInterfaceMethods(classBuilder, ifaceElement);
         }
     }
 
-    private MethodSpec createDelegatingMethod(ExecutableElement method) {
+    private MethodSpec createDelegatingMethod(TypeElement owner, ExecutableElement method) {
         MethodSpec.Builder builder = MethodSpec.methodBuilder(
                         method.getSimpleName().toString()
                 )
@@ -98,14 +105,32 @@ public class GenStaticDefaultProcessor extends AbstractProcessor {
         // call
         CodeBlock call = buildCall(method);
 
-        if (method.getReturnType().getKind().name().equals("VOID")) {
+        if (method.getReturnType().getKind() == TypeKind.VOID) {
             builder.addStatement("$L", call);
         } else {
             builder.addStatement("return $L", call);
         }
         // varargs
         if (method.isVarArgs()) builder.varargs(true);
+        // type params
+        for (var tp : method.getTypeParameters()) {
+            builder.addTypeVariable(TypeVariableName.get(tp));
+        }
+        builder.addJavadoc(buildMethodJd(owner, method));
         return builder.build();
+    }
+
+    private CodeBlock buildMethodJd(TypeElement owner, ExecutableElement method) {
+        var b = CodeBlock.builder()
+                .add("@see $T#$L(", owner, method.getSimpleName());
+        boolean first = true;
+        for (VariableElement param : method.getParameters()) {
+            if (!first) b.add(", ");
+            b.add("$T", param.asType());
+            first = false;
+        }
+        b.add(")");
+        return b.build();
     }
 
     private CodeBlock buildCall(ExecutableElement method) {
