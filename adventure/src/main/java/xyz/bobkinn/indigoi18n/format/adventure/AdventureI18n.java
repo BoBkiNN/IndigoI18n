@@ -1,6 +1,7 @@
 package xyz.bobkinn.indigoi18n.format.adventure;
 
 import lombok.RequiredArgsConstructor;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import xyz.bobkinn.indigoi18n.StringI18n;
@@ -9,6 +10,9 @@ import xyz.bobkinn.indigoi18n.format.adventure.format.LegacyComponentI18nFormat;
 import xyz.bobkinn.indigoi18n.format.adventure.format.MiniMessageComponentI18nFormat;
 import xyz.bobkinn.indigoi18n.format.adventure.mixin.LegacyAdventureI18nMixin;
 import xyz.bobkinn.indigoi18n.format.adventure.mixin.MiniMessageAdventureI18nMixin;
+import xyz.bobkinn.indigoi18n.template.arg.ArgumentConverter;
+
+import java.util.function.Consumer;
 
 /**
  * Default adventure i18n instance that adds {@link LegacyAdventureI18nMixin}
@@ -42,5 +46,29 @@ public class AdventureI18n extends StringI18n implements LegacyAdventureI18nMixi
         addFormat(AdventureFormats.LEGACY,
                 c -> new LegacyComponentI18nFormat(c, true, legacyComponentSerializer));
         addFormat(AdventureFormats.MINI_MESSAGE, c -> new MiniMessageComponentI18nFormat(c, miniMessage));
+    }
+
+    /**
+     * Adds converter to template formatter of every {@link ComponentI18nFormat format} in this I18n instance
+     */
+    public <T> void addConverter(Class<T> cls, ArgumentConverter<T, Component> conv) {
+        visitTemplateFormatters(f -> f.addConverter(cls, conv));
+    }
+
+    /**
+     * Visit all {@link ComponentI18nFormat} in this instance and consume their {@link ComponentTemplateFormatter}
+     * @param consumer visitor
+     */
+    public void visitTemplateFormatters(Consumer<ComponentTemplateFormatter> consumer) {
+        visitFormats(f -> consumer.accept(f.getTemplateFormatter()));
+    }
+
+    /**
+     * Invokes consumer with each format that is {@link ComponentI18nFormat}
+     */
+    public void visitFormats(Consumer<ComponentI18nFormat> formatConsumer) {
+        for (var f : getFormats().values()) {
+            if (f instanceof ComponentI18nFormat c) formatConsumer.accept(c);
+        }
     }
 }

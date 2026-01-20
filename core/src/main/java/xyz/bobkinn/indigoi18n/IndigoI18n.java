@@ -33,6 +33,7 @@ public class IndigoI18n implements I18nEngine {
      */
     @Getter
     private @NotNull TranslationResolver resolver;
+    @Getter
     private final Map<FormatType<?>, I18nFormat<?>> formats;
 
     @Getter
