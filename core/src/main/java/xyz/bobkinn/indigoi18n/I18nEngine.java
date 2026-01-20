@@ -78,7 +78,7 @@ public interface I18nEngine {
      * If context is not {@link Context#isComplete() complete} fresh context is created and merged with passed one (no overrides)<br>
      * If source information is found, {@link SourceContext} added to resulting context.
      */
-    private Context computeContext(@Nullable Context ctx, String lang, String key) {
+    default Context computeContext(@Nullable Context ctx, String lang, String key) {
         var info = infoFor(lang, key);
         Context targetCtx;
         if (ctx == null) {

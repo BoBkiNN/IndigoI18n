@@ -11,12 +11,31 @@ import java.util.Locale;
  * @see #parseLocale(String) default implementation
  */
 public interface LocaleResolver {
-    Locale getLocale(String lang);
-
-    LocaleResolver DEFAULT = LocaleResolver::parseLocale;
 
     /**
-     * Default implementation of LocaleResolver.<br>
+     * Get Locale instance from language id
+     */
+    Locale getLocale(String lang);
+
+    /**
+     * Get language id from Locale
+     */
+    String getId(Locale locale);
+
+    LocaleResolver DEFAULT = new LocaleResolver() {
+        @Override
+        public Locale getLocale(String lang) {
+            return parseLocale(lang);
+        }
+
+        @Override
+        public String getId(Locale locale) {
+            return formatLocale(locale);
+        }
+    };
+
+    /**
+     * Default implementation of {@link LocaleResolver#getLocale}<br>
      * It uses format {@code language_country_variant}
      */
     static @Nullable Locale parseLocale(final @NotNull String string) {
@@ -30,5 +49,23 @@ public interface LocaleResolver {
             return new Locale(segments[0], segments[1], segments[2]); // language + country + variant
         }
         return null;
+    }
+
+    /**
+     * Default implementation of {@link LocaleResolver#getId(Locale)}<br>
+     * It uses format {@code language_country_variant}
+     */
+    static @NotNull String formatLocale(final @NotNull Locale locale) {
+        String language = locale.getLanguage();
+        String country = locale.getCountry().toLowerCase();
+        String variant = locale.getVariant().toLowerCase();
+
+        if (!variant.isEmpty()) {
+            return language + "_" + country + "_" + variant;
+        } else if (!country.isEmpty()) {
+            return language + "_" + country;
+        } else {
+            return language;
+        }
     }
 }

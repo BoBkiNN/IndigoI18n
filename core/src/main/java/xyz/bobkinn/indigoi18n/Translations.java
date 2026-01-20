@@ -151,4 +151,12 @@ public class Translations {
         return m.remove(lang);
     }
 
+    public boolean hasAnyTexts() {
+        return !texts.isEmpty();
+    }
+
+    public boolean has(String key, String lang) {
+        return getOr(key, lang, null) != null;
+    }
+
 }

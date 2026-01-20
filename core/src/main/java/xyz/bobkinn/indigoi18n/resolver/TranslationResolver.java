@@ -21,7 +21,8 @@ public interface TranslationResolver {
     Translation get(Context ctx, Translations texts, String key, String lang);
 
     /**
-     * @return null if translation not found
+     * Used when absence of any result must be null
+     * @return null if translation not found or no any real result can be returned
      * @see #get(Context, Translations, String, String)
      */
     @Nullable Translation getOrNull(Context ctx, Translations texts, String key, String lang);
