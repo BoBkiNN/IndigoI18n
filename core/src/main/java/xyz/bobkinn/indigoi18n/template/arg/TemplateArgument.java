@@ -10,7 +10,7 @@ public class TemplateArgument {
     private final String source;
     private final int index;
     private final boolean hasExplicitIndex;
-    private final FormatPattern pattern;
+    private final FormatPattern format;
     private final Character repr;
 
     public boolean isRepr(char mode) {

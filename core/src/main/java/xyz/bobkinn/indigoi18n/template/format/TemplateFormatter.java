@@ -105,7 +105,7 @@ public abstract class TemplateFormatter<O> {
      */
     protected String formatRepresentation(Context ctx, TemplateArgument arg, Object value,
                                           Function<Object, String> rawReprCreator) {
-        var format = Objects.requireNonNull(arg.getPattern(), "Missing format in argument");
+        var format = Objects.requireNonNull(arg.getFormat(), "Missing format in argument");
         if (arg.isRepr('r')) {
             var rawRepr = rawReprCreator.apply(value);
             return ArgConverters.STRING_CONVERTER.format(ctx, rawRepr, format);

@@ -108,7 +108,7 @@ public class ComponentTemplateFormatter extends TemplateFormatter<Component> {
     }
 
     public Component formatArgument(Context ctx, TemplateArgument arg, Object value) {
-        var format = arg.getPattern();
+        var format = arg.getFormat();
         Objects.requireNonNull(format, "no format set for argument " + arg);
         var repr = formatRepresentation(ctx, arg, value, stringTemplateFormatter::createRawRepr);
         if (repr != null) return createText(repr);

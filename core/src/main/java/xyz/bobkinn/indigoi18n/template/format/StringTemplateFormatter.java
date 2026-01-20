@@ -50,7 +50,7 @@ public class StringTemplateFormatter extends TemplateFormatter<String> {
     }
 
     private void formatArgument(Context ctx, StringBuilder builder, TemplateArgument arg, Object value) {
-        var format = arg.getPattern();
+        var format = arg.getFormat();
         Objects.requireNonNull(format, "no format set for argument "+arg);
         var repr = formatRepresentation(ctx, arg, value, this::createRawRepr);
         if (repr != null) {

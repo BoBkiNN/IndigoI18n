@@ -71,8 +71,8 @@ public class TestTemplateParser {
     public void testFormatSource() {
         var tr = new TemplateReader(":_^10");
         var arg = TemplateParser.parseAdvancedArg(tr, 0);
-        assertNotNull(arg.getPattern());
-        assertEquals("_^10", arg.getPattern().getSource());
+        assertNotNull(arg.getFormat());
+        assertEquals("_^10", arg.getFormat().getSource());
     }
 
     @ParameterizedTest
