@@ -136,6 +136,7 @@ public class Context implements ContextEntry {
 
     /**
      * Resolves {@link LangKeyContext} and {@link SourceContext} and creates {@link TranslationInfo} from them.<br>
+     * Because of this, only first source will be reported
      * If {@link SourceContext} not found, resulting info will not contain source.
      * @return null when {@link LangKeyContext} not found
      */
