@@ -47,17 +47,17 @@ public interface ViewerLanguageResolver {
     }
 
     /**
-     * Get language of sender. Default implementation calls other method based on type of viewer
-     * @param sender entity whose language is used
-     * @return language of sender or default language.
+     * Get language of viewer. Default implementation calls other method based on type of viewer
+     * @param viewer entity whose language is used
+     * @return language of viewer or default language.
      * @see #getDefaultLanguage()
      * @see #getConsoleLanguage()
      * @see #getPlayerLanguage(Player)
      */
-    default String getLanguage(CommandSender sender) {
-        if (sender == null) return getDefaultLanguage();
-        if (sender instanceof ConsoleCommandSender) return getConsoleLanguage();
-        if (sender instanceof Player p) return getPlayerLanguage(p);
+    default String getLanguage(CommandSender viewer) {
+        if (viewer == null) return getDefaultLanguage();
+        if (viewer instanceof ConsoleCommandSender) return getConsoleLanguage();
+        if (viewer instanceof Player p) return getPlayerLanguage(p);
         return getDefaultLanguage();
     }
 }

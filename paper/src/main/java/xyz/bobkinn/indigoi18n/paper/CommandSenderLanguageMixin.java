@@ -16,12 +16,12 @@ public interface CommandSenderLanguageMixin {
     }
 
     /**
-     * Get language of sender using {@link #getViewerLangResolver()}
-     * @param sender entity whose language is used
-     * @return language of sender or default language.
+     * Get language of viewer using {@link #getViewerLangResolver()}
+     * @param viewer entity whose language is used
+     * @return language of viewer or default language.
      */
-    default String getLanguage(CommandSender sender) {
-        return getViewerLangResolver().getLanguage(sender);
+    default String getLanguage(CommandSender viewer) {
+        return getViewerLangResolver().getLanguage(viewer);
     }
 
     default Context injectCtx(Context ctx, CommandSender viewer) {
