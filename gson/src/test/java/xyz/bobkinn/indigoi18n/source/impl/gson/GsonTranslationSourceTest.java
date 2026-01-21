@@ -3,6 +3,7 @@ package xyz.bobkinn.indigoi18n.source.impl.gson;
 import com.google.gson.JsonObject;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
+import xyz.bobkinn.indigoi18n.Indigo;
 import xyz.bobkinn.indigoi18n.StringI18n;
 import xyz.bobkinn.indigoi18n.context.impl.CountContext;
 import xyz.bobkinn.indigoi18n.data.BasicTranslation;
@@ -11,6 +12,7 @@ import xyz.bobkinn.indigoi18n.data.Translation;
 import xyz.bobkinn.indigoi18n.source.ISourceTextAdder;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
@@ -96,5 +98,21 @@ class GsonTranslationSourceTest {
         assertEquals("1", r.plural("always_1", "ru", 25));
         assertEquals("1", r.plural("always_1", "ru", 3));
         assertEquals("1", r.plural("always_1", "ru", 5));
+    }
+
+    @Test
+    void testUsage() {
+        try {
+            // create source for language 'en' from jar resource 'en.json'
+            var source = GsonTranslationSource.fromResource("en",
+                    getClass().getClassLoader(), "en.json");
+            // load source. This opens stream and loads JSON, then parsed translations are added to IndigoI18n text map
+            Indigo.INSTANCE.load(source);
+        } catch (URISyntaxException | FileNotFoundException e) {
+            throw new RuntimeException("Failed to create source", e);
+        }
+        // now we can use texts from loaded json
+        var text = Indigo.parse("en", "hello");
+        System.out.println(text); // outputs "Hello"
     }
 }

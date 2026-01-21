@@ -35,7 +35,7 @@ public class MapSource implements TranslationSource {
                 .put(lang, translation);
     }
 
-    public void putBasic(String key, String lang, String text) {
+    public void put(String key, String lang, String text) {
         put(key, lang, Translation.create(text));
     }
 

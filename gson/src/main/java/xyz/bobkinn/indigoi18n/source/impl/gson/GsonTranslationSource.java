@@ -17,11 +17,9 @@ import xyz.bobkinn.indigoi18n.source.SingleLangSource;
 import xyz.bobkinn.indigoi18n.source.TranslationLoadError;
 import xyz.bobkinn.indigoi18n.source.TranslationSource;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Objects;
@@ -58,6 +56,31 @@ public class GsonTranslationSource implements TranslationSource, SingleLangSourc
     public static @NotNull GsonTranslationSource fromFile(@Nullable URI location, String language, File file) {
         return new GsonTranslationSource(location, (g) -> {
             try (var fr = new BufferedReader(new FileReader(file, StandardCharsets.UTF_8))) {
+                return g.fromJson(fr, JsonObject.class);
+            } catch (IOException e) {
+                throw new TranslationLoadError("IO exception when reading json object", e);
+            }
+        }, DEFAULT_GSON_SUPPLIER, language, DEFAULT_CONTEXT_PARSER);
+    }
+
+    /**
+     * Creates new source which will load json from resource input stream.
+     * Resource must exist at call time to access its URL.
+     * @param language id of language which this source is loading
+     * @param classLoader class loader used to get resource
+     * @param name resource name
+     * @throws FileNotFoundException if
+     * @throws URISyntaxException if URL cannot be converted to URI
+     */
+    @Contract("_, _, _ -> new")
+    public static @NotNull GsonTranslationSource fromResource(String language, ClassLoader classLoader, String name)
+            throws FileNotFoundException, URISyntaxException {
+        var url = classLoader.getResource(name);
+        if (url == null) throw new FileNotFoundException("Resource not found");
+        return new GsonTranslationSource(url.toURI(), (g) -> {
+            var is = classLoader.getResourceAsStream(name);
+            if (is == null) throw new IllegalArgumentException("Resource stream not found");
+            try (var fr = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
                 return g.fromJson(fr, JsonObject.class);
             } catch (IOException e) {
                 throw new TranslationLoadError("IO exception when reading json object", e);
