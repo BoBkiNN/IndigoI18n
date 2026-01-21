@@ -99,10 +99,11 @@ public class TemplateParser implements ITemplateParser {
             seqArgIdx++;
         }
         visitor.visitArgument(arg);
-        reader.popMark(false); // pop push mark earlier
+        reader.popMark(false); // pop mark pushed earlier
         return seqArgIdx;
     }
 
+    @Override
     public void parse(String text, TemplateVisitor visitor, TemplateParseOptions options) {
         var reader = new TemplateReader(text);
         int seqArgIdx = options.initialSeqArgIdx();
