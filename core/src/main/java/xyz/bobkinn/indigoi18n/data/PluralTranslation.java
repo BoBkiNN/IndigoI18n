@@ -11,6 +11,12 @@ import xyz.bobkinn.indigoi18n.context.impl.CountContext;
 
 import java.util.Map;
 
+/**
+ * Plural translations are used for text to have different variants for plural category
+ * @see CountContext
+ * @see PluralResolutionException
+ * @see PluralCategory
+ */
 @RequiredArgsConstructor
 @Getter
 public class PluralTranslation extends Translation {
@@ -27,11 +33,23 @@ public class PluralTranslation extends Translation {
         var ov = plurals.get(PluralCategory.OTHER);
         if (ov != null) return ov;
         return plurals.entrySet().stream().findFirst()
-                .orElseThrow(() -> new IllegalStateException("No %s, OTHER, or any plural value"
+                .orElseThrow(() -> new PluralResolutionException("No %s, OTHER, or any plural value found"
                         .formatted(category.name()))
                 ).getValue();
     }
 
+    /**
+     * Thrown when plural cannot be selected
+     */
+    public static class PluralResolutionException extends IllegalStateException {
+        public PluralResolutionException(String msg) {
+            super(msg);
+        }
+    }
+
+    /**
+     * If count context not found, {@link PluralCategory#OTHER} is used
+     */
     @Override
     public @NotNull String resolve(Context ctx) {
         var count = ctx.resolveOptional(CountContext.class)
@@ -42,9 +60,10 @@ public class PluralTranslation extends Translation {
         var lang = ctx.language();
         var lr = ctx.getI18n().getLocaleResolver();
         var locale = lr.getLocale(lang);
-        if (locale == null) throw new IllegalStateException("No locale resolved from language "+lang);
+        if (locale == null) throw new PluralResolutionException("No locale resolved from language "+lang);
+        // trivial
         var rule = PluralRule.create(locale, PluralRuleType.CARDINAL).orElse(null);
-        if (rule == null) throw new IllegalStateException("No rule found for locale "+locale);
+        if (rule == null) throw new PluralResolutionException("No rule found for locale "+locale);
         var cat = rule.select(count);
         return get(cat);
     }
