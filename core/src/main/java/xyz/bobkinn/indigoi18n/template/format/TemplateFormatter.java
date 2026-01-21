@@ -60,7 +60,7 @@ public abstract class TemplateFormatter<O> {
     }
 
     /**
-     * Returns converter based value class. <br>
+     * Returns converter based value class. Used when exact type converter is needed<br>
      * If value is null, then null is key for converters map and null converter is returned if it set.
      * @param value value to find converter for
      * @return argument converter for this value of argument
@@ -124,7 +124,8 @@ public abstract class TemplateFormatter<O> {
             return ArgConverters.STRING_CONVERTER.format(ctx, rawRepr, format);
         }
         if (arg.isRepr('h', 'H')) {
-            return String.format("%"+arg.getRepr(), value);
+            // probably ok delegation to %h/H
+            return ArgConverters.STRING_CONVERTER.format(ctx, String.format("%"+arg.getRepr(), value), format);
         }
         if (arg.isRepr('s') && (value == null || value.getClass() != String.class)) {
             // !s converts any object (except string) to string and then formats using string converter
