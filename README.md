@@ -1,6 +1,5 @@
 
 TODO:
-- kotlin bukkit extension methods
 - abstraction for visitor to allow custom template parts
 - (adventure) optional style leaking.<br>
   When enabled, inserting '&cArg' into '%s-text' will produce '<red>Arg-text'
