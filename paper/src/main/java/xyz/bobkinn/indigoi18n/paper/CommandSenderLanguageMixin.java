@@ -1,40 +1,27 @@
 package xyz.bobkinn.indigoi18n.paper;
 
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 import xyz.bobkinn.indigoi18n.context.Context;
 
 public interface CommandSenderLanguageMixin {
 
     /**
-     * @return default language to use when sender is not player
+     * Returns {@link ViewerLanguageResolver#DEFAULT_RESOLVER} by default.<br>
+     * You should override this method if you want to change viewer language lookup behaviour
+     * @return viewer language resolver used to extract language from {@link CommandSender viewer}
      */
-    default String getDefaultLanguage() {
-        return "en_us";
+    default @NotNull ViewerLanguageResolver getViewerLangResolver() {
+        return ViewerLanguageResolver.DEFAULT_RESOLVER;
     }
 
     /**
-     * Default implementation is {@link #getDefaultLanguage()}
-     * @return language that will be used for {@link ConsoleCommandSender}
-     */
-    default String getConsoleLanguage() {
-        return getDefaultLanguage();
-    }
-
-    /**
-     * Get language of sender
+     * Get language of sender using {@link #getViewerLangResolver()}
      * @param sender entity whose language is used
      * @return language of sender or default language.
-     * @see #getDefaultLanguage()
-     * @see #getConsoleLanguage()
      */
     default String getLanguage(CommandSender sender) {
-        if (sender == null) return getDefaultLanguage();
-        if (sender instanceof ConsoleCommandSender) return getConsoleLanguage();
-        if (sender instanceof Player p) //noinspection deprecation
-            return p.getLocale();
-        return getDefaultLanguage();
+        return getViewerLangResolver().getLanguage(sender);
     }
 
     default Context injectCtx(Context ctx, CommandSender viewer) {
