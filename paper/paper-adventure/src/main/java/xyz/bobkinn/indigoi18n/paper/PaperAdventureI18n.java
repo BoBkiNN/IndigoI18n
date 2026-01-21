@@ -6,10 +6,10 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 import xyz.bobkinn.indigoi18n.context.Context;
-import xyz.bobkinn.indigoi18n.format.adventure.AdventureRenderers;
-import xyz.bobkinn.indigoi18n.format.adventure.AdventureI18n;
-import xyz.bobkinn.indigoi18n.format.adventure.ComponentTemplateFormatter;
-import xyz.bobkinn.indigoi18n.format.adventure.format.ComponentRenderer;
+import xyz.bobkinn.indigoi18n.render.adventure.AdventureRenderers;
+import xyz.bobkinn.indigoi18n.render.adventure.AdventureI18n;
+import xyz.bobkinn.indigoi18n.render.adventure.ComponentTemplateFormatter;
+import xyz.bobkinn.indigoi18n.render.adventure.format.ComponentRenderer;
 import xyz.bobkinn.indigoi18n.template.format.FormatPattern;
 
 /**

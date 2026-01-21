@@ -1,10 +1,10 @@
-package xyz.bobkinn.indigoi18n.format;
+package xyz.bobkinn.indigoi18n.render;
 
 import lombok.RequiredArgsConstructor;
 import xyz.bobkinn.indigoi18n.context.Context;
 import xyz.bobkinn.indigoi18n.data.TemplateCache;
 import xyz.bobkinn.indigoi18n.Translations;
-import xyz.bobkinn.indigoi18n.format.impl.StringRenderer;
+import xyz.bobkinn.indigoi18n.render.impl.StringRenderer;
 
 import java.util.List;
 

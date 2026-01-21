@@ -1,4 +1,4 @@
-package xyz.bobkinn.indigoi18n.format.adventure;
+package xyz.bobkinn.indigoi18n.render.adventure;
 
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;

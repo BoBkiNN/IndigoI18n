@@ -1,9 +1,9 @@
-package xyz.bobkinn.indigoi18n.format.adventure;
+package xyz.bobkinn.indigoi18n.render.adventure;
 
 import net.kyori.adventure.text.Component;
-import xyz.bobkinn.indigoi18n.format.RenderType;
-import xyz.bobkinn.indigoi18n.format.adventure.format.LegacyComponentRenderer;
-import xyz.bobkinn.indigoi18n.format.adventure.format.MiniMessageComponentRenderer;
+import xyz.bobkinn.indigoi18n.render.RenderType;
+import xyz.bobkinn.indigoi18n.render.adventure.format.LegacyComponentRenderer;
+import xyz.bobkinn.indigoi18n.render.adventure.format.MiniMessageComponentRenderer;
 
 /**
  * Constants defining common render flavors of {@link Component} output.

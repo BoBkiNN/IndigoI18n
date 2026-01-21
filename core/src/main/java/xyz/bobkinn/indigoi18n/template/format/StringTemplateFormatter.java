@@ -2,7 +2,7 @@ package xyz.bobkinn.indigoi18n.template.format;
 
 import xyz.bobkinn.indigoi18n.context.Context;
 import xyz.bobkinn.indigoi18n.data.ParsedEntry;
-import xyz.bobkinn.indigoi18n.format.RenderType;
+import xyz.bobkinn.indigoi18n.render.RenderType;
 import xyz.bobkinn.indigoi18n.template.InlineTranslation;
 import xyz.bobkinn.indigoi18n.template.TemplateVisitor;
 import xyz.bobkinn.indigoi18n.template.arg.ArgConverters;

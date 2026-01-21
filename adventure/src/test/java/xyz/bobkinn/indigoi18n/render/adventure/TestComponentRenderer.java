@@ -1,4 +1,4 @@
-package xyz.bobkinn.indigoi18n.format.adventure;
+package xyz.bobkinn.indigoi18n.render.adventure;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -10,9 +10,9 @@ import org.junit.jupiter.api.Test;
 import xyz.bobkinn.indigoi18n.context.Context;
 import xyz.bobkinn.indigoi18n.context.impl.LangKeyContext;
 import xyz.bobkinn.indigoi18n.data.TemplateCache;
-import xyz.bobkinn.indigoi18n.format.adventure.format.ComponentRenderer;
-import xyz.bobkinn.indigoi18n.format.adventure.format.LegacyComponentRenderer;
-import xyz.bobkinn.indigoi18n.format.adventure.format.MiniMessageComponentRenderer;
+import xyz.bobkinn.indigoi18n.render.adventure.format.ComponentRenderer;
+import xyz.bobkinn.indigoi18n.render.adventure.format.LegacyComponentRenderer;
+import xyz.bobkinn.indigoi18n.render.adventure.format.MiniMessageComponentRenderer;
 import xyz.bobkinn.indigoi18n.template.TemplateParser;
 
 import java.util.List;

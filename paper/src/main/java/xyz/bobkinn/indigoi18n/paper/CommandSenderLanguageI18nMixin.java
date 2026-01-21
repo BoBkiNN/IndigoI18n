@@ -3,7 +3,7 @@ package xyz.bobkinn.indigoi18n.paper;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import xyz.bobkinn.indigoi18n.context.Context;
-import xyz.bobkinn.indigoi18n.format.I18nMixin;
+import xyz.bobkinn.indigoi18n.render.I18nMixin;
 
 public interface CommandSenderLanguageI18nMixin extends I18nMixin {
 

@@ -3,9 +3,9 @@ package xyz.bobkinn.indigoi18n;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import xyz.bobkinn.indigoi18n.codegen.GenStaticDefault;
-import xyz.bobkinn.indigoi18n.format.RenderType;
-import xyz.bobkinn.indigoi18n.format.impl.StringRenderer;
-import xyz.bobkinn.indigoi18n.format.impl.StringI18nMixin;
+import xyz.bobkinn.indigoi18n.render.RenderType;
+import xyz.bobkinn.indigoi18n.render.impl.StringRenderer;
+import xyz.bobkinn.indigoi18n.render.impl.StringI18nMixin;
 
 
 /**

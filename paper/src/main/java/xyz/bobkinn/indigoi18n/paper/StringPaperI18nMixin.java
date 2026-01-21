@@ -2,7 +2,7 @@ package xyz.bobkinn.indigoi18n.paper;
 
 import org.bukkit.command.CommandSender;
 import xyz.bobkinn.indigoi18n.context.Context;
-import xyz.bobkinn.indigoi18n.format.impl.StringI18nMixin;
+import xyz.bobkinn.indigoi18n.render.impl.StringI18nMixin;
 
 import java.util.List;
 

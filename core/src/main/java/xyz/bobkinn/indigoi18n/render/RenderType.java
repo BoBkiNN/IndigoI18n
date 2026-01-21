@@ -1,4 +1,4 @@
-package xyz.bobkinn.indigoi18n.format;
+package xyz.bobkinn.indigoi18n.render;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;

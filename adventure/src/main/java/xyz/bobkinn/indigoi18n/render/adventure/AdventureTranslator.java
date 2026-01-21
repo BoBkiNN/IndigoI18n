@@ -1,4 +1,4 @@
-package xyz.bobkinn.indigoi18n.format.adventure;
+package xyz.bobkinn.indigoi18n.render.adventure;
 
 import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.key.Key;
@@ -9,7 +9,7 @@ import net.kyori.adventure.util.TriState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.bobkinn.indigoi18n.IndigoI18n;
-import xyz.bobkinn.indigoi18n.format.RenderType;
+import xyz.bobkinn.indigoi18n.render.RenderType;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;

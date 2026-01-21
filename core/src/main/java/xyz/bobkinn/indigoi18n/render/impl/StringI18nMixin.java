@@ -1,8 +1,8 @@
-package xyz.bobkinn.indigoi18n.format.impl;
+package xyz.bobkinn.indigoi18n.render.impl;
 
 import xyz.bobkinn.indigoi18n.context.Context;
-import xyz.bobkinn.indigoi18n.format.RenderType;
-import xyz.bobkinn.indigoi18n.format.I18nMixin;
+import xyz.bobkinn.indigoi18n.render.RenderType;
+import xyz.bobkinn.indigoi18n.render.I18nMixin;
 
 import java.util.Arrays;
 import java.util.List;

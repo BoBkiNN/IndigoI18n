@@ -8,8 +8,8 @@ import xyz.bobkinn.indigoi18n.context.impl.LangKeyContext;
 import xyz.bobkinn.indigoi18n.context.impl.SourceContext;
 import xyz.bobkinn.indigoi18n.data.Translation;
 import xyz.bobkinn.indigoi18n.data.TranslationInfo;
-import xyz.bobkinn.indigoi18n.format.RenderType;
-import xyz.bobkinn.indigoi18n.format.Renderer;
+import xyz.bobkinn.indigoi18n.render.RenderType;
+import xyz.bobkinn.indigoi18n.render.Renderer;
 
 import java.util.List;
 import java.util.Locale;

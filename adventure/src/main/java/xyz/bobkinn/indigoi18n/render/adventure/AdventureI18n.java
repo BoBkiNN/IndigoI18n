@@ -1,15 +1,15 @@
-package xyz.bobkinn.indigoi18n.format.adventure;
+package xyz.bobkinn.indigoi18n.render.adventure;
 
 import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import xyz.bobkinn.indigoi18n.StringI18n;
-import xyz.bobkinn.indigoi18n.format.adventure.format.ComponentRenderer;
-import xyz.bobkinn.indigoi18n.format.adventure.format.LegacyComponentRenderer;
-import xyz.bobkinn.indigoi18n.format.adventure.format.MiniMessageComponentRenderer;
-import xyz.bobkinn.indigoi18n.format.adventure.mixin.LegacyAdventureI18nMixin;
-import xyz.bobkinn.indigoi18n.format.adventure.mixin.MiniMessageAdventureI18nMixin;
+import xyz.bobkinn.indigoi18n.render.adventure.format.ComponentRenderer;
+import xyz.bobkinn.indigoi18n.render.adventure.format.LegacyComponentRenderer;
+import xyz.bobkinn.indigoi18n.render.adventure.format.MiniMessageComponentRenderer;
+import xyz.bobkinn.indigoi18n.render.adventure.mixin.LegacyAdventureI18nMixin;
+import xyz.bobkinn.indigoi18n.render.adventure.mixin.MiniMessageAdventureI18nMixin;
 import xyz.bobkinn.indigoi18n.template.arg.ArgumentConverter;
 
 import java.util.function.Consumer;

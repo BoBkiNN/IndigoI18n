@@ -1,10 +1,10 @@
-package xyz.bobkinn.indigoi18n.format.adventure.mixin;
+package xyz.bobkinn.indigoi18n.render.adventure.mixin;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import xyz.bobkinn.indigoi18n.context.Context;
-import xyz.bobkinn.indigoi18n.format.I18nMixin;
-import xyz.bobkinn.indigoi18n.format.adventure.AdventureRenderers;
+import xyz.bobkinn.indigoi18n.render.I18nMixin;
+import xyz.bobkinn.indigoi18n.render.adventure.AdventureRenderers;
 
 import java.util.Arrays;
 import java.util.List;

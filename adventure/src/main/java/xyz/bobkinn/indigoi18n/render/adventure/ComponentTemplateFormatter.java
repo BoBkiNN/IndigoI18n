@@ -1,4 +1,4 @@
-package xyz.bobkinn.indigoi18n.format.adventure;
+package xyz.bobkinn.indigoi18n.render.adventure;
 
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.bobkinn.indigoi18n.context.Context;
 import xyz.bobkinn.indigoi18n.data.ParsedEntry;
-import xyz.bobkinn.indigoi18n.format.RenderType;
+import xyz.bobkinn.indigoi18n.render.RenderType;
 import xyz.bobkinn.indigoi18n.template.InlineTranslation;
 import xyz.bobkinn.indigoi18n.template.TemplateVisitor;
 import xyz.bobkinn.indigoi18n.template.arg.ArgConverters;

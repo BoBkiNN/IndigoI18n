@@ -8,7 +8,7 @@ import xyz.bobkinn.indigoi18n.context.impl.RenderTypeContext;
 import xyz.bobkinn.indigoi18n.context.impl.InlineContext;
 import xyz.bobkinn.indigoi18n.context.impl.LangKeyContext;
 import xyz.bobkinn.indigoi18n.data.ParsedEntry;
-import xyz.bobkinn.indigoi18n.format.RenderType;
+import xyz.bobkinn.indigoi18n.render.RenderType;
 import xyz.bobkinn.indigoi18n.template.InlineTranslation;
 import xyz.bobkinn.indigoi18n.template.arg.ArgConverters;
 import xyz.bobkinn.indigoi18n.template.arg.ArgumentConverter;

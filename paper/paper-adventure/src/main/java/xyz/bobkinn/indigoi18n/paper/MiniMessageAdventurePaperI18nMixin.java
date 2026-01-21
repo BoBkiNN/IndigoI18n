@@ -3,7 +3,7 @@ package xyz.bobkinn.indigoi18n.paper;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import xyz.bobkinn.indigoi18n.context.Context;
-import xyz.bobkinn.indigoi18n.format.adventure.mixin.MiniMessageAdventureI18nMixin;
+import xyz.bobkinn.indigoi18n.render.adventure.mixin.MiniMessageAdventureI18nMixin;
 
 import java.util.List;
 

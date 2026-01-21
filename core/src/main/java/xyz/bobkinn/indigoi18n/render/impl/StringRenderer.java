@@ -1,9 +1,9 @@
-package xyz.bobkinn.indigoi18n.format.impl;
+package xyz.bobkinn.indigoi18n.render.impl;
 
 import lombok.Getter;
 import xyz.bobkinn.indigoi18n.context.Context;
 import xyz.bobkinn.indigoi18n.data.TemplateCache;
-import xyz.bobkinn.indigoi18n.format.Renderer;
+import xyz.bobkinn.indigoi18n.render.Renderer;
 import xyz.bobkinn.indigoi18n.template.format.StringTemplateFormatter;
 import xyz.bobkinn.indigoi18n.template.format.TemplateFormatter;
 

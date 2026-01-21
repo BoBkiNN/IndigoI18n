@@ -11,8 +11,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import xyz.bobkinn.indigoi18n.StringI18n;
 import xyz.bobkinn.indigoi18n.data.BasicTranslation;
-import xyz.bobkinn.indigoi18n.format.RenderType;
-import xyz.bobkinn.indigoi18n.format.impl.StringRenderer;
+import xyz.bobkinn.indigoi18n.render.RenderType;
+import xyz.bobkinn.indigoi18n.render.impl.StringRenderer;
 
 public class TestPaper {
 
