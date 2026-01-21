@@ -4,24 +4,27 @@ import org.bukkit.command.CommandSender;
 import xyz.bobkinn.indigoi18n.context.Context;
 import xyz.bobkinn.indigoi18n.format.impl.StringI18nMixin;
 
-import java.util.Arrays;
 import java.util.List;
 
 @SuppressWarnings("unused")
-public interface StringPaperI18nMixin extends StringI18nMixin, CommandSenderLanguageMixin {
+public interface StringPaperI18nMixin extends StringI18nMixin, CommandSenderLanguageI18nMixin {
     default String parse(Context ctx, CommandSender viewer, String key, List<Object> args) {
-        return parse(viewerCtx(ctx, viewer), getLanguage(viewer), key, args);
+        var l = getLanguage(viewer);
+        return parse(viewerCtx(ctx, viewer, key, l), l, key, args);
     }
 
     default String parse(Context ctx, CommandSender viewer, String key, Object... args) {
-        return parse(viewerCtx(ctx, viewer), getLanguage(viewer), key, Arrays.asList(args));
+        var l = getLanguage(viewer);
+        return parse(viewerCtx(ctx, viewer, key, l), l, key, args);
     }
 
     default String parse(CommandSender viewer, String key, List<Object> args) {
-        return parse(viewerCtx(viewer), getLanguage(viewer), key, args);
+        var l = getLanguage(viewer);
+        return parse(viewerCtx(viewer, key, l), l, key, args);
     }
 
     default String parse(CommandSender viewer, String key, Object... args) {
-        return parse(viewerCtx(viewer), getLanguage(viewer), key, args);
+        var l = getLanguage(viewer);
+        return parse(viewerCtx(viewer, key, l), l, key, args);
     }
 }

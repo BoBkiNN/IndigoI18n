@@ -6,7 +6,7 @@ import xyz.bobkinn.indigoi18n.context.ContextEntry;
 
 /**
  * Context entry storing viewer of translation.
- * Added when {@link CommandSenderLanguageMixin} is used
+ * Added when {@link CommandSenderLanguageI18nMixin} is used
  */
 @Data
 public class ViewerContext implements ContextEntry {

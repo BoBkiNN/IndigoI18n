@@ -13,7 +13,7 @@ import xyz.bobkinn.indigoi18n.format.adventure.format.ComponentI18nFormat;
 import xyz.bobkinn.indigoi18n.template.format.FormatPattern;
 
 /**
- * Same as {@link AdventureI18n} but also with 3 mixins using {@link CommandSenderLanguageMixin}
+ * Same as {@link AdventureI18n} but also with 3 mixins using {@link CommandSenderLanguageI18nMixin}
  * @see AdventureI18n
  */
 @SuppressWarnings("unused")
