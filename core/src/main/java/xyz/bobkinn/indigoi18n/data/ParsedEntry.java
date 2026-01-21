@@ -10,7 +10,9 @@ import java.util.List;
 
 /**
  * This class represents parsed text.
- * @param parts Each part is either String or {@link TemplateArgument}. Order of elements must be saved. Never empty
+ * @param parts Each part is either String or {@link TemplateArgument} or {@link InlineTranslation}.
+ *              Order of elements must be saved. Must be not empty. <br>
+ *              Actually you can store any custom parts here by avoiding {@link #visit(TemplateVisitor)}
  */
 public record ParsedEntry(List<Object> parts) {
 
