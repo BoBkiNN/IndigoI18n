@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import xyz.bobkinn.indigoi18n.context.Context;
 import xyz.bobkinn.indigoi18n.data.TemplateCache;
 import xyz.bobkinn.indigoi18n.format.Renderer;
-import xyz.bobkinn.indigoi18n.format.adventure.AdventureFormats;
+import xyz.bobkinn.indigoi18n.format.adventure.AdventureRenderers;
 import xyz.bobkinn.indigoi18n.format.adventure.ComponentTemplateFormatter;
 import xyz.bobkinn.indigoi18n.format.adventure.SharedSeqArgContext;
 import xyz.bobkinn.indigoi18n.template.TemplateParseOptions;
@@ -94,7 +94,7 @@ public abstract class ComponentRenderer extends Renderer<Component> {
     /**
      * Plain component I18n format. Instead of actually deserializing input
      * it just wraps text into {@link TextComponent}.<br> Used as fallback in some places.
-     * @see AdventureFormats#PLAIN
+     * @see AdventureRenderers#PLAIN
      */
     public static class PlainComponentRenderer extends ComponentRenderer {
 

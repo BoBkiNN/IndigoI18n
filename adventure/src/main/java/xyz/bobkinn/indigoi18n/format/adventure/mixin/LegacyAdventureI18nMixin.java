@@ -3,7 +3,7 @@ package xyz.bobkinn.indigoi18n.format.adventure.mixin;
 import net.kyori.adventure.text.Component;
 import xyz.bobkinn.indigoi18n.context.Context;
 import xyz.bobkinn.indigoi18n.format.I18nMixin;
-import xyz.bobkinn.indigoi18n.format.adventure.AdventureFormats;
+import xyz.bobkinn.indigoi18n.format.adventure.AdventureRenderers;
 
 import java.util.Arrays;
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.List;
 @SuppressWarnings("unused")
 public interface LegacyAdventureI18nMixin extends I18nMixin {
     default Component parseA(Context ctx, String lang, String key, List<Object> args) {
-        return parse(AdventureFormats.LEGACY, ctx, lang, key, args);
+        return parse(AdventureRenderers.LEGACY, ctx, lang, key, args);
     }
 
     default Component parseA(Context ctx, String lang, String key, Object... args) {

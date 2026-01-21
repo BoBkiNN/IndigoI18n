@@ -6,9 +6,9 @@ import xyz.bobkinn.indigoi18n.format.adventure.format.LegacyComponentRenderer;
 import xyz.bobkinn.indigoi18n.format.adventure.format.MiniMessageComponentRenderer;
 
 /**
- * Constants defining common format flavors of {@link Component} output.
+ * Constants defining common render flavors of {@link Component} output.
  */
-public class AdventureFormats {
+public class AdventureRenderers {
 
     /**
      * Simple {@link Component#text(String)} renderer

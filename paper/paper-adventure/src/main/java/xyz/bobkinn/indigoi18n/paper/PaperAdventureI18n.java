@@ -6,7 +6,7 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 import xyz.bobkinn.indigoi18n.context.Context;
-import xyz.bobkinn.indigoi18n.format.adventure.AdventureFormats;
+import xyz.bobkinn.indigoi18n.format.adventure.AdventureRenderers;
 import xyz.bobkinn.indigoi18n.format.adventure.AdventureI18n;
 import xyz.bobkinn.indigoi18n.format.adventure.ComponentTemplateFormatter;
 import xyz.bobkinn.indigoi18n.format.adventure.format.ComponentRenderer;
@@ -31,12 +31,12 @@ public class PaperAdventureI18n extends AdventureI18n implements MiniMessageAdve
      * Argument converter for {@link Entity} that creates text with entity name and attaches hover event by
      * {@link Entity#asHoverEvent()}.<br>
      * {@link FormatPattern} is applied to entity name text if this instance has {@link ComponentRenderer}
-     * {@link AdventureFormats#PLAIN plain format} and String converter
+     * {@link AdventureRenderers#PLAIN plain format} and String converter
      * is {@link ComponentTemplateFormatter#findConverter(Object) found}
      */
     public Component convertEntity(Context ctx, @NotNull Entity e, FormatPattern format) {
         var eName = e.getName();
-        var r = getRenderer(AdventureFormats.PLAIN);
+        var r = getRenderer(AdventureRenderers.PLAIN);
         Component base = null;
         if (r instanceof ComponentRenderer cf) {
             var conv = cf.getTemplateFormatter().findConverter(eName);

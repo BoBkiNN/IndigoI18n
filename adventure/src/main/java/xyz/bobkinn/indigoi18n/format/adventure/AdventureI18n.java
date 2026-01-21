@@ -20,7 +20,7 @@ import java.util.function.Consumer;
  * Its legacy i18n format converts string arguments using specified legacy component serializer and contains
  * default template formatters.<br>
  * Its MiniMessage i18n format also uses default template formatter.<br>
- * Also it supports {@link AdventureFormats#PLAIN} format using
+ * Also it supports {@link AdventureRenderers#PLAIN} format using
  * {@link ComponentRenderer.PlainComponentRenderer}
  */
 @SuppressWarnings("unused")
@@ -40,12 +40,12 @@ public class AdventureI18n extends StringI18n implements LegacyAdventureI18nMixi
 
     @Override
     protected void addDefaultRenderers() {
-        super.addDefaultRenderers(); // add string format
-        // add plain format, used as fallback when inlining
-        addRenderer(AdventureFormats.PLAIN, ComponentRenderer.PlainComponentRenderer::new);
-        addRenderer(AdventureFormats.LEGACY,
+        super.addDefaultRenderers(); // add string renderer
+        // add plain renderer, used as fallback when inlining
+        addRenderer(AdventureRenderers.PLAIN, ComponentRenderer.PlainComponentRenderer::new);
+        addRenderer(AdventureRenderers.LEGACY,
                 c -> new LegacyComponentRenderer(c, true, legacyComponentSerializer));
-        addRenderer(AdventureFormats.MINI_MESSAGE, c -> new MiniMessageComponentRenderer(c, miniMessage));
+        addRenderer(AdventureRenderers.MINI_MESSAGE, c -> new MiniMessageComponentRenderer(c, miniMessage));
     }
 
     /**

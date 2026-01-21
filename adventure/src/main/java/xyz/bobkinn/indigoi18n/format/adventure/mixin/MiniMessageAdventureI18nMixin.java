@@ -4,7 +4,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import xyz.bobkinn.indigoi18n.context.Context;
 import xyz.bobkinn.indigoi18n.format.I18nMixin;
-import xyz.bobkinn.indigoi18n.format.adventure.AdventureFormats;
+import xyz.bobkinn.indigoi18n.format.adventure.AdventureRenderers;
 
 import java.util.Arrays;
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.List;
 @SuppressWarnings("unused")
 public interface MiniMessageAdventureI18nMixin extends I18nMixin {
     default Component parseMM(Context ctx, String lang, String key, List<Object> args) {
-        return parse(AdventureFormats.MINI_MESSAGE, ctx, lang, key, args);
+        return parse(AdventureRenderers.MINI_MESSAGE, ctx, lang, key, args);
     }
 
     default Component parseMM(Context ctx, String lang, String key, Object... args) {
