@@ -7,6 +7,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.bobkinn.indigoi18n.context.Context;
 
+/**
+ * Translation is a holder for one or multiple texts.
+ * It represents logical text input and unit of text map.
+ */
 @Getter
 @RequiredArgsConstructor
 public abstract class Translation {
@@ -27,8 +31,19 @@ public abstract class Translation {
      */
     public abstract @NotNull String resolve(Context ctx);
 
+    /**
+     * Used to correctly create cache for translation data.<br>
+     * For example, plural translation can create cache for all of its variants
+     * @param cache cache store
+     * @param info info about this translation
+     */
     public abstract void createCache(TemplateCache cache, TranslationInfo info);
 
+    /**
+     * Used to correctly reset cache for translation data.<br>
+     * For example, plural translation can reset cache for all of its variants
+     * @param cache cache store
+     */
     public abstract void resetCache(TemplateCache cache);
 
     @Contract("_ -> new")
