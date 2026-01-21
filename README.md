@@ -86,6 +86,20 @@ To create your own Renderer you need to subclass
 [Renderer<O>](core/src/main/java/xyz/bobkinn/indigoi18n/render/Renderer.java) and implement abstract 
 methods. Type variable O is output type of you renderer, for example String or your custom text.
 
+## Core of system
+The Core module defines system layers and abstract classes/interfaces with default implementations.
+Going from top to bottom, these layers and abstract classes are:
+- I18nMixin: defines high-level methods that are attached to IndigoI18n.
+- IndigoI18n: empty entrypoint class which can be populated or subclassed for customization
+  - TranslationSource: source that can load translation texts into IndigoI18n from JSON and other formats
+  - TranslationResolver: defines strategy used to lookup translation by key
+- Renderer: renderer controls how to work with input string: how to treat it, what template formatter to use
+  - TemplateCache: caches parsed templates and invokes parser
+  - ITemplateParser: parses input template text into parts
+- TemplateFormatter: template formatter takes template parts, 
+  replaces arguments and builds resulting object from them
+- ArgumentConverter: implementations of this interface controls how different types of arguments are converted
+
 ## Custom I18n
 
 You can customize high-level api by adding renderers and mixins to IndigoI18n subclass. Usual steps are:
