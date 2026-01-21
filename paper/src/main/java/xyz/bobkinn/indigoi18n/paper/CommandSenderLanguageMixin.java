@@ -24,7 +24,7 @@ public interface CommandSenderLanguageMixin {
         return getViewerLangResolver().getLanguage(viewer);
     }
 
-    default Context injectCtx(Context ctx, CommandSender viewer) {
+    default Context viewerCtx(Context ctx, CommandSender viewer) {
         if (ctx == null) return new Context().with(new ViewerContext(viewer));
         // override previous viewer context. Guess it is better than keeping any existing.
         return ctx.with(new ViewerContext(viewer));

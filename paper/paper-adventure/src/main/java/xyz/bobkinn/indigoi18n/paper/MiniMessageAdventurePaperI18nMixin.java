@@ -10,11 +10,11 @@ import java.util.List;
 @SuppressWarnings("unused")
 public interface MiniMessageAdventurePaperI18nMixin extends MiniMessageAdventureI18nMixin, CommandSenderLanguageMixin {
     default Component parseMM(Context ctx, CommandSender viewer, String key, List<Object> args) {
-        return parseMM(injectCtx(ctx, viewer), getLanguage(viewer), key, args);
+        return parseMM(viewerCtx(ctx, viewer), getLanguage(viewer), key, args);
     }
 
     default Component parseMM(Context ctx, CommandSender viewer, String key, Object... args) {
-        return parseMM(injectCtx(ctx, viewer), getLanguage(viewer), key, args);
+        return parseMM(viewerCtx(ctx, viewer), getLanguage(viewer), key, args);
     }
 
     default Component parseMM(CommandSender viewer, String key, List<Object> args) {
