@@ -11,8 +11,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import xyz.bobkinn.indigoi18n.StringI18n;
 import xyz.bobkinn.indigoi18n.data.BasicTranslation;
-import xyz.bobkinn.indigoi18n.format.FormatType;
-import xyz.bobkinn.indigoi18n.format.impl.StringI18nFormat;
+import xyz.bobkinn.indigoi18n.format.RenderType;
+import xyz.bobkinn.indigoi18n.format.impl.StringRenderer;
 
 public class TestPaper {
 
@@ -55,7 +55,7 @@ public class TestPaper {
     void testViewer() {
         var i18n = new TestPaperI18N();
         i18n.setup();
-        var f = (StringI18nFormat) i18n.getFormat(FormatType.STRING_FORMAT_TYPE);
+        var f = (StringRenderer) i18n.getRenderer(RenderType.STRING);
         // add marker handling
         f.getTemplateFormatter().putConverter(ViewerName.class, (ctx, argument, format) -> {
             var viewer = ctx.getOptional(ViewerContext.class, ViewerContext::getViewer).orElseThrow();

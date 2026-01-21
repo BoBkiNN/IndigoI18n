@@ -4,11 +4,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.bobkinn.indigoi18n.I18nEngine;
 import xyz.bobkinn.indigoi18n.context.Context;
-import xyz.bobkinn.indigoi18n.context.impl.FormatTypeContext;
+import xyz.bobkinn.indigoi18n.context.impl.RenderTypeContext;
 import xyz.bobkinn.indigoi18n.context.impl.InlineContext;
 import xyz.bobkinn.indigoi18n.context.impl.LangKeyContext;
 import xyz.bobkinn.indigoi18n.data.ParsedEntry;
-import xyz.bobkinn.indigoi18n.format.FormatType;
+import xyz.bobkinn.indigoi18n.format.RenderType;
 import xyz.bobkinn.indigoi18n.template.InlineTranslation;
 import xyz.bobkinn.indigoi18n.template.arg.ArgConverters;
 import xyz.bobkinn.indigoi18n.template.arg.ArgumentConverter;
@@ -153,7 +153,7 @@ public abstract class TemplateFormatter<O> {
     }
 
     /**
-     * Uses {@link I18nEngine#parse(FormatType, Context, String, String, List) parse method}
+     * Uses {@link I18nEngine#parse(RenderType, Context, String, String, List) parse method}
      * to parse and return text specified by key and translation inside {@link InlineTranslation}.<br>
      * Each inlining decreases remaining depth in passed sub-context.<br>
      * When no inlining were previously done, remaining depth is equals to maxDepth from {@link InlineTranslation}.<br>
@@ -163,7 +163,7 @@ public abstract class TemplateFormatter<O> {
      * @param ft output type
      * @param params list of arguments
      */
-    public O formatInline(@SuppressWarnings("SameParameterValue") FormatType<O> ft,
+    public O formatInline(@SuppressWarnings("SameParameterValue") RenderType<O> ft,
                              @NotNull InlineTranslation inline,
                              @NotNull Context ctx, List<Object> params) {
         // get remaining depth or use specified max depth from InlineTranslation
@@ -265,20 +265,20 @@ public abstract class TemplateFormatter<O> {
     }
 
     /**
-     * Resolves format type from context using {@link FormatTypeContext} and casts it to {@code FormatType<O>}
-     * @return null if no format type in context or context is null
+     * Resolves render type from context using {@link RenderTypeContext} and casts it to {@code FormatType<O>}
+     * @return null if no render type in context or context is null
      * @throws IllegalStateException if incompatible type found
      */
-    public @Nullable FormatType<O> resolveFormatType(Context ctx) {
+    public @Nullable RenderType<O> resolveRenderType(Context ctx) {
         if (ctx == null) return null;
-        var ftc = ctx.resolve(FormatTypeContext.class);
-        if (ftc == null) return null;
+        var rtc = ctx.resolve(RenderTypeContext.class);
+        if (rtc == null) return null;
         try {
             //noinspection unchecked
-            return (FormatType<O>) ftc.getFormatType();
+            return (RenderType<O>) rtc.getRenderType();
         } catch (ClassCastException e) {
-            throw new IllegalStateException("Incompatible format type %s found in context %s"
-                    .formatted(ftc.getFormatType(), ctx), e);
+            throw new IllegalStateException("Incompatible render type %s found in context %s"
+                    .formatted(rtc.getRenderType(), ctx), e);
         }
     }
 }

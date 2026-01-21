@@ -7,8 +7,8 @@ import xyz.bobkinn.indigoi18n.context.Context;
 import xyz.bobkinn.indigoi18n.data.TemplateCache;
 import xyz.bobkinn.indigoi18n.data.Translation;
 import xyz.bobkinn.indigoi18n.data.TranslationInfo;
-import xyz.bobkinn.indigoi18n.format.FormatType;
-import xyz.bobkinn.indigoi18n.format.I18nFormat;
+import xyz.bobkinn.indigoi18n.format.RenderType;
+import xyz.bobkinn.indigoi18n.format.Renderer;
 import xyz.bobkinn.indigoi18n.resolver.DefaultTranslationResolver;
 import xyz.bobkinn.indigoi18n.resolver.TranslationResolver;
 import xyz.bobkinn.indigoi18n.source.TranslationSource;
@@ -21,7 +21,7 @@ import java.util.function.Function;
 
 
 /**
- * I18n with no formats or its access methods.<br>
+ * I18n with no renderers or its access methods.<br>
  * Uses default resolver and do not include any translations
  * @see StringI18n
  */
@@ -34,7 +34,7 @@ public class IndigoI18n implements I18nEngine {
     @Getter
     private @NotNull TranslationResolver resolver;
     @Getter
-    private final Map<FormatType<?>, I18nFormat<?>> formats;
+    private final Map<RenderType<?>, Renderer<?>> renderers;
 
     @Getter
     private final LocaleResolver localeResolver;
@@ -44,7 +44,7 @@ public class IndigoI18n implements I18nEngine {
     public IndigoI18n(ITemplateParser templateParser, LocaleResolver localeResolver) {
         texts = new Translations(new TemplateCache(templateParser));
         resolver = new DefaultTranslationResolver();
-        formats = new HashMap<>();
+        renderers = new HashMap<>();
         this.localeResolver = localeResolver;
     }
 
@@ -56,20 +56,20 @@ public class IndigoI18n implements I18nEngine {
      * Adds default formats
      */
     public void setup() {
-        addDefaultFormats();
+        addDefaultRenderers();
     }
 
-    public <T> void addFormat(FormatType<T> t, Function<TemplateCache, I18nFormat<T>> formatFactory) {
-        formats.put(t, formatFactory.apply(texts.getCache()));
+    public <T> void addRenderer(RenderType<T> t, Function<TemplateCache, Renderer<T>> factory) {
+        renderers.put(t, factory.apply(texts.getCache()));
     }
 
-    protected void addDefaultFormats() {
+    protected void addDefaultRenderers() {
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> I18nFormat<T> getFormat(FormatType<T> ft) {
-        var f = (I18nFormat<T>) formats.get(ft);
+    public <T> Renderer<T> getRenderer(RenderType<T> ft) {
+        var f = (Renderer<T>) renderers.get(ft);
         return Objects.requireNonNull(f, "No format for type "+ft);
     }
 

@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.bobkinn.indigoi18n.context.Context;
 import xyz.bobkinn.indigoi18n.data.ParsedEntry;
-import xyz.bobkinn.indigoi18n.format.FormatType;
+import xyz.bobkinn.indigoi18n.format.RenderType;
 import xyz.bobkinn.indigoi18n.template.InlineTranslation;
 import xyz.bobkinn.indigoi18n.template.TemplateVisitor;
 import xyz.bobkinn.indigoi18n.template.arg.ArgConverters;
@@ -135,7 +135,7 @@ public class ComponentTemplateFormatter extends TemplateFormatter<Component> {
 
     /**
      * Called when inlining of {@link InlineTranslation}
-     * by {@link #formatInline(FormatType, InlineTranslation, Context, List)} failed.<br>
+     * by {@link #formatInline(RenderType, InlineTranslation, Context, List)} failed.<br>
      * Default implementations returns text {@code <inline.key>} where {@code inline.key} is key inline is pointing to.<br>
      * If null value is returned, no components appended to result.
      * @param exception exception produced by formatInline method.
@@ -156,7 +156,7 @@ public class ComponentTemplateFormatter extends TemplateFormatter<Component> {
         var sq = ctx.getOptional(SharedSeqArgContext.class)
                 .orElseGet(SharedSeqArgContext::new);
         final int[] ic = {0};
-        var ft = resolveFormatType(ctx);
+        var rt = resolveRenderType(ctx);
         List<Component> extra = new ArrayList<>(entry.parts().size());
         entry.visit(new TemplateVisitor() {
             @Override
@@ -184,7 +184,7 @@ public class ComponentTemplateFormatter extends TemplateFormatter<Component> {
             @Override
             public void visitInline(InlineTranslation inline) {
                 // fallback to plain formatter
-                var tft = ft != null ? ft : AdventureFormats.PLAIN;
+                var tft = rt != null ? rt : AdventureFormats.PLAIN;
                 try {
                     var il = formatInline(tft, inline, ctx, params);
                     extra.add(il);

@@ -12,11 +12,11 @@ import xyz.bobkinn.indigoi18n.template.format.StringTemplateFormatter;
  * Default format that parses input text into Component using {@link net.kyori.adventure.text.minimessage.MiniMessage}
  */
 @Getter
-public class MiniMessageComponentI18nFormat extends ComponentI18nFormat {
+public class MiniMessageComponentRenderer extends ComponentRenderer {
     private final MiniMessage serializer;
 
-    public MiniMessageComponentI18nFormat(TemplateCache cache,
-                                          ComponentTemplateFormatter templateFormatter, MiniMessage serializer) {
+    public MiniMessageComponentRenderer(TemplateCache cache,
+                                        ComponentTemplateFormatter templateFormatter, MiniMessage serializer) {
         super(cache, templateFormatter);
         this.serializer = serializer;
     }
@@ -25,7 +25,7 @@ public class MiniMessageComponentI18nFormat extends ComponentI18nFormat {
      * Creates new format with {@link ComponentTemplateFormatter} that uses {@link StringTemplateFormatter}.<br>
      * @param serializer serializer used to convert text into Component and to convert String arguments into Component
      */
-    public MiniMessageComponentI18nFormat(TemplateCache cache, @NotNull MiniMessage serializer) {
+    public MiniMessageComponentRenderer(TemplateCache cache, @NotNull MiniMessage serializer) {
         this(cache, new ComponentTemplateFormatter(new StringTemplateFormatter(), null), serializer);
     }
 

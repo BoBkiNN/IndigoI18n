@@ -3,14 +3,14 @@ package xyz.bobkinn.indigoi18n;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import xyz.bobkinn.indigoi18n.codegen.GenStaticDefault;
-import xyz.bobkinn.indigoi18n.format.FormatType;
-import xyz.bobkinn.indigoi18n.format.impl.StringI18nFormat;
+import xyz.bobkinn.indigoi18n.format.RenderType;
+import xyz.bobkinn.indigoi18n.format.impl.StringRenderer;
 import xyz.bobkinn.indigoi18n.format.impl.StringI18nMixin;
 
 
 /**
- * Simple I18n class. It uses only {@link StringI18nFormat} formatter and implements {@link StringI18nMixin}.
- * @see StringI18nFormat
+ * Simple I18n class. It uses only {@link StringRenderer} formatter and implements {@link StringI18nMixin}.
+ * @see StringRenderer
  */
 @GenStaticDefault(name = "Indigo", creator = "create")
 public class StringI18n extends IndigoI18n implements StringI18nMixin {
@@ -23,7 +23,7 @@ public class StringI18n extends IndigoI18n implements StringI18nMixin {
     }
 
     @Override
-    protected void addDefaultFormats() {
-        addFormat(FormatType.STRING_FORMAT_TYPE, StringI18nFormat::new);
+    protected void addDefaultRenderers() {
+        addRenderer(RenderType.STRING, StringRenderer::new);
     }
 }

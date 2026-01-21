@@ -6,7 +6,7 @@ import net.kyori.adventure.text.TextComponent;
 import org.jetbrains.annotations.NotNull;
 import xyz.bobkinn.indigoi18n.context.Context;
 import xyz.bobkinn.indigoi18n.data.TemplateCache;
-import xyz.bobkinn.indigoi18n.format.I18nFormat;
+import xyz.bobkinn.indigoi18n.format.Renderer;
 import xyz.bobkinn.indigoi18n.format.adventure.AdventureFormats;
 import xyz.bobkinn.indigoi18n.format.adventure.ComponentTemplateFormatter;
 import xyz.bobkinn.indigoi18n.format.adventure.SharedSeqArgContext;
@@ -16,13 +16,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-public abstract class ComponentI18nFormat extends I18nFormat<Component> {
+public abstract class ComponentRenderer extends Renderer<Component> {
 
     private final ComponentTemplateFormatter templateFormatter;
 
     public abstract Component deserializeInput(String text);
 
-    public ComponentI18nFormat(TemplateCache cache, ComponentTemplateFormatter templateFormatter) {
+    public ComponentRenderer(TemplateCache cache, ComponentTemplateFormatter templateFormatter) {
         super(cache);
         this.templateFormatter = templateFormatter;
     }
@@ -96,13 +96,13 @@ public abstract class ComponentI18nFormat extends I18nFormat<Component> {
      * it just wraps text into {@link TextComponent}.<br> Used as fallback in some places.
      * @see AdventureFormats#PLAIN
      */
-    public static class PlainComponentI18nFormat extends ComponentI18nFormat {
+    public static class PlainComponentRenderer extends ComponentRenderer {
 
-        public PlainComponentI18nFormat(TemplateCache cache, ComponentTemplateFormatter templateFormatter) {
+        public PlainComponentRenderer(TemplateCache cache, ComponentTemplateFormatter templateFormatter) {
             super(cache, templateFormatter);
         }
 
-        public PlainComponentI18nFormat(TemplateCache cache) {
+        public PlainComponentRenderer(TemplateCache cache) {
             this(cache, ComponentTemplateFormatter.defaultString(null));
         }
 

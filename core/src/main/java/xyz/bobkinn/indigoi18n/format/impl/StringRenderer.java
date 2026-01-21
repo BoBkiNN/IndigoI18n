@@ -3,20 +3,20 @@ package xyz.bobkinn.indigoi18n.format.impl;
 import lombok.Getter;
 import xyz.bobkinn.indigoi18n.context.Context;
 import xyz.bobkinn.indigoi18n.data.TemplateCache;
-import xyz.bobkinn.indigoi18n.format.I18nFormat;
+import xyz.bobkinn.indigoi18n.format.Renderer;
 import xyz.bobkinn.indigoi18n.template.format.StringTemplateFormatter;
 import xyz.bobkinn.indigoi18n.template.format.TemplateFormatter;
 
 import java.util.List;
 
 @Getter
-public class StringI18nFormat extends I18nFormat<String> {
+public class StringRenderer extends Renderer<String> {
     /**
      * Template formatter that is used to format input strings
      */
     private final TemplateFormatter<String> templateFormatter;
 
-    public StringI18nFormat(TemplateCache cache) {
+    public StringRenderer(TemplateCache cache) {
         super(cache);
         templateFormatter = new StringTemplateFormatter();
     }

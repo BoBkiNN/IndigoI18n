@@ -5,9 +5,9 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import xyz.bobkinn.indigoi18n.StringI18n;
-import xyz.bobkinn.indigoi18n.format.adventure.format.ComponentI18nFormat;
-import xyz.bobkinn.indigoi18n.format.adventure.format.LegacyComponentI18nFormat;
-import xyz.bobkinn.indigoi18n.format.adventure.format.MiniMessageComponentI18nFormat;
+import xyz.bobkinn.indigoi18n.format.adventure.format.ComponentRenderer;
+import xyz.bobkinn.indigoi18n.format.adventure.format.LegacyComponentRenderer;
+import xyz.bobkinn.indigoi18n.format.adventure.format.MiniMessageComponentRenderer;
 import xyz.bobkinn.indigoi18n.format.adventure.mixin.LegacyAdventureI18nMixin;
 import xyz.bobkinn.indigoi18n.format.adventure.mixin.MiniMessageAdventureI18nMixin;
 import xyz.bobkinn.indigoi18n.template.arg.ArgumentConverter;
@@ -21,7 +21,7 @@ import java.util.function.Consumer;
  * default template formatters.<br>
  * Its MiniMessage i18n format also uses default template formatter.<br>
  * Also it supports {@link AdventureFormats#PLAIN} format using
- * {@link ComponentI18nFormat.PlainComponentI18nFormat}
+ * {@link ComponentRenderer.PlainComponentRenderer}
  */
 @SuppressWarnings("unused")
 @RequiredArgsConstructor
@@ -39,24 +39,24 @@ public class AdventureI18n extends StringI18n implements LegacyAdventureI18nMixi
     }
 
     @Override
-    protected void addDefaultFormats() {
-        super.addDefaultFormats(); // add string format
+    protected void addDefaultRenderers() {
+        super.addDefaultRenderers(); // add string format
         // add plain format, used as fallback when inlining
-        addFormat(AdventureFormats.PLAIN, ComponentI18nFormat.PlainComponentI18nFormat::new);
-        addFormat(AdventureFormats.LEGACY,
-                c -> new LegacyComponentI18nFormat(c, true, legacyComponentSerializer));
-        addFormat(AdventureFormats.MINI_MESSAGE, c -> new MiniMessageComponentI18nFormat(c, miniMessage));
+        addRenderer(AdventureFormats.PLAIN, ComponentRenderer.PlainComponentRenderer::new);
+        addRenderer(AdventureFormats.LEGACY,
+                c -> new LegacyComponentRenderer(c, true, legacyComponentSerializer));
+        addRenderer(AdventureFormats.MINI_MESSAGE, c -> new MiniMessageComponentRenderer(c, miniMessage));
     }
 
     /**
-     * Adds converter to template formatter of every {@link ComponentI18nFormat format} in this I18n instance
+     * Adds converter to template formatter of every {@link ComponentRenderer format} in this I18n instance
      */
     public <T> void putConverter(Class<T> cls, ArgumentConverter<T, Component> conv) {
         visitTemplateFormatters(f -> f.putConverter(cls, conv));
     }
 
     /**
-     * Visit all {@link ComponentI18nFormat} in this instance and consume their {@link ComponentTemplateFormatter}
+     * Visit all {@link ComponentRenderer} in this instance and consume their {@link ComponentTemplateFormatter}
      * @param consumer visitor
      */
     public void visitTemplateFormatters(Consumer<ComponentTemplateFormatter> consumer) {
@@ -64,11 +64,11 @@ public class AdventureI18n extends StringI18n implements LegacyAdventureI18nMixi
     }
 
     /**
-     * Invokes consumer with each format that is {@link ComponentI18nFormat}
+     * Invokes consumer with each format that is {@link ComponentRenderer}
      */
-    public void visitFormats(Consumer<ComponentI18nFormat> formatConsumer) {
-        for (var f : getFormats().values()) {
-            if (f instanceof ComponentI18nFormat c) formatConsumer.accept(c);
+    public void visitFormats(Consumer<ComponentRenderer> formatConsumer) {
+        for (var f : getRenderers().values()) {
+            if (f instanceof ComponentRenderer c) formatConsumer.accept(c);
         }
     }
 }

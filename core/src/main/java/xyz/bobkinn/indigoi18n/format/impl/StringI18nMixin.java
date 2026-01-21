@@ -1,7 +1,7 @@
 package xyz.bobkinn.indigoi18n.format.impl;
 
 import xyz.bobkinn.indigoi18n.context.Context;
-import xyz.bobkinn.indigoi18n.format.FormatType;
+import xyz.bobkinn.indigoi18n.format.RenderType;
 import xyz.bobkinn.indigoi18n.format.I18nMixin;
 
 import java.util.Arrays;
@@ -10,7 +10,7 @@ import java.util.List;
 @SuppressWarnings("unused")
 public interface StringI18nMixin extends I18nMixin {
     default String parse(Context ctx, String lang, String key, List<Object> args) {
-        return parse(FormatType.STRING_FORMAT_TYPE, ctx, lang, key, args);
+        return parse(RenderType.STRING, ctx, lang, key, args);
     }
 
     default String parse(Context ctx, String lang, String key, Object... args) {

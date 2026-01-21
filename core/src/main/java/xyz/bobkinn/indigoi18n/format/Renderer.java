@@ -4,17 +4,18 @@ import lombok.RequiredArgsConstructor;
 import xyz.bobkinn.indigoi18n.context.Context;
 import xyz.bobkinn.indigoi18n.data.TemplateCache;
 import xyz.bobkinn.indigoi18n.Translations;
+import xyz.bobkinn.indigoi18n.format.impl.StringRenderer;
 
 import java.util.List;
 
 
 /**
- * I18n format is used to work with specified output type
+ * Renderer is used to work with specified output type
  * @param <T> output text type
- * @see xyz.bobkinn.indigoi18n.format.impl.StringI18nFormat format for String
+ * @see StringRenderer format for String
  */
 @RequiredArgsConstructor
-public abstract class I18nFormat<T> {
+public abstract class Renderer<T> {
     /**
      * Cache that can be used
      */
@@ -47,7 +48,7 @@ public abstract class I18nFormat<T> {
      * @param text original text
      * @param args arguments
      */
-    public T format(Context ctx, String text, List<Object> args) {
+    public T render(Context ctx, String text, List<Object> args) {
         var obj = produce(text);
         return replaceArguments(ctx, obj, args);
     }

@@ -7,22 +7,22 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Format type describes type of {@link I18nFormat}
- * It is used to have different {@link I18nFormat} with different flavors.
- * @param <T> formatting output type
+ * Render type describes type of {@link Renderer}
+ * It is used to have different {@link Renderer} with different flavors.
+ * @param <T> renderer output type
  */
 @Data
 @RequiredArgsConstructor
-public final class FormatType<T> {
+public final class RenderType<T> {
     /**
-     * Default type describing String format with no flavor
+     * Default type describing String renderer with no flavor
      */
-    public static final FormatType<String> STRING_FORMAT_TYPE = new FormatType<>(String.class);
+    public static final RenderType<String> STRING = new RenderType<>(String.class);
 
     private final Class<T> outputType;
     private final @Nullable String flavor;
 
-    public FormatType(Class<T> outputType) {
+    public RenderType(Class<T> outputType) {
         this(outputType, null);
     }
 

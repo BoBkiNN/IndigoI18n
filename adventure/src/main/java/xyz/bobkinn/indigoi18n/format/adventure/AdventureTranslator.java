@@ -9,7 +9,7 @@ import net.kyori.adventure.util.TriState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.bobkinn.indigoi18n.IndigoI18n;
-import xyz.bobkinn.indigoi18n.format.FormatType;
+import xyz.bobkinn.indigoi18n.format.RenderType;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -33,7 +33,7 @@ public class AdventureTranslator implements Translator  {
     /**
      * Format type used to perform formatting
      */
-    private final FormatType<Component> formatType;
+    private final RenderType<Component> renderType;
 
     @Override
     public @NotNull Key name() {
@@ -58,7 +58,7 @@ public class AdventureTranslator implements Translator  {
 
     @Override
     public @Nullable Component translate(@NotNull TranslatableComponent component, @NotNull Locale locale) {
-        var format = i18n.getFormat(formatType);
+        var format = i18n.getRenderer(renderType);
         if (format == null) return null;
         var lang = i18n.getLocaleResolver().getId(locale);
         var key = component.key();
@@ -73,7 +73,7 @@ public class AdventureTranslator implements Translator  {
         for (var arg : args) {
             params.add(arg.value());
         }
-        return format.format(ctx, text, params);
+        return format.render(ctx, text, params);
     }
 
 }

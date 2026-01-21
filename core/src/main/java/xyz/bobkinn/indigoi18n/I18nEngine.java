@@ -3,13 +3,13 @@ package xyz.bobkinn.indigoi18n;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.bobkinn.indigoi18n.context.Context;
-import xyz.bobkinn.indigoi18n.context.impl.FormatTypeContext;
+import xyz.bobkinn.indigoi18n.context.impl.RenderTypeContext;
 import xyz.bobkinn.indigoi18n.context.impl.LangKeyContext;
 import xyz.bobkinn.indigoi18n.context.impl.SourceContext;
 import xyz.bobkinn.indigoi18n.data.Translation;
 import xyz.bobkinn.indigoi18n.data.TranslationInfo;
-import xyz.bobkinn.indigoi18n.format.FormatType;
-import xyz.bobkinn.indigoi18n.format.I18nFormat;
+import xyz.bobkinn.indigoi18n.format.RenderType;
+import xyz.bobkinn.indigoi18n.format.Renderer;
 
 import java.util.List;
 import java.util.Locale;
@@ -27,10 +27,10 @@ public interface I18nEngine {
     Translation get(Context context, String key, String language);
 
     /**
-     * Returns format that can be used to output and format {@link T}
+     * Returns renderer that can be used to output and format {@link T}
      * @param <T> type of output object
      */
-    <T> I18nFormat<T> getFormat(FormatType<T> ft);
+    <T> Renderer<T> getRenderer(RenderType<T> ft);
 
     /**
      * Returns info about translation
@@ -54,7 +54,7 @@ public interface I18nEngine {
 
     /**
      * Computes context, gets {@link Translation}, merges context overrides, resolves text from translation,
-     * performs formatting using {@link I18nFormat}
+     * performs rendering using {@link Renderer}
      * @param ft output (format) type
      * @param ctx context to pass
      * @param lang language id
@@ -62,18 +62,18 @@ public interface I18nEngine {
      * @param args formatting arguments
      * @param <T> output type
      */
-    default <T> T parse(FormatType<T> ft, @Nullable Context ctx, String lang, String key, List<Object> args) {
+    default <T> T parse(RenderType<T> ft, @Nullable Context ctx, String lang, String key, List<Object> args) {
         var targetCtx = computeContext(ctx, lang, key);
-        var format = getFormat(ft);
-        if (format == null) throw new IllegalArgumentException("Unknown format for output "+ft);
-        // set current format type
-        targetCtx.set(new FormatTypeContext(ft));
+        var renderer = getRenderer(ft);
+        if (renderer == null) throw new IllegalArgumentException("Unknown renderer for output "+ft);
+        // set current renderer type
+        targetCtx.set(new RenderTypeContext(ft));
         var tr = get(targetCtx, key, lang);
-        if (tr == null) return format.onNullTranslation(targetCtx, key);
+        if (tr == null) return renderer.onNullTranslation(targetCtx, key);
 
         var ovr = tr.getContextOverride();
         if (ovr != null) targetCtx.merge(ovr, true);
-        return format.format(targetCtx, tr.resolve(targetCtx), args);
+        return renderer.render(targetCtx, tr.resolve(targetCtx), args);
     }
 
     /**

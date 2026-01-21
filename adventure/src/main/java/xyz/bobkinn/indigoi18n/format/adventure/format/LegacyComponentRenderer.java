@@ -12,11 +12,11 @@ import xyz.bobkinn.indigoi18n.template.format.StringTemplateFormatter;
  * Default format that parses input text into Component using {@link LegacyComponentSerializer}
  */
 @Getter
-public class LegacyComponentI18nFormat extends ComponentI18nFormat {
+public class LegacyComponentRenderer extends ComponentRenderer {
     private final LegacyComponentSerializer serializer;
 
-    public LegacyComponentI18nFormat(TemplateCache cache,
-                                     ComponentTemplateFormatter templateFormatter, LegacyComponentSerializer serializer) {
+    public LegacyComponentRenderer(TemplateCache cache,
+                                   ComponentTemplateFormatter templateFormatter, LegacyComponentSerializer serializer) {
         super(cache, templateFormatter);
         this.serializer = serializer;
     }
@@ -27,7 +27,7 @@ public class LegacyComponentI18nFormat extends ComponentI18nFormat {
      * format String arguments using it
      * @param serializer serializer used to convert text into Component and to convert String arguments into Component
      */
-    public LegacyComponentI18nFormat(TemplateCache cache, boolean convertStringArgument, @NotNull LegacyComponentSerializer serializer) {
+    public LegacyComponentRenderer(TemplateCache cache, boolean convertStringArgument, @NotNull LegacyComponentSerializer serializer) {
         this(cache, new ComponentTemplateFormatter(new StringTemplateFormatter(),
                 convertStringArgument ? serializer::deserialize : null), serializer);
     }
