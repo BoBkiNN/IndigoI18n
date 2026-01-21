@@ -13,6 +13,11 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+/**
+ * Context is used to store context entries. Only one instance per entry type can exist, however
+ * multiple instances of same entry type can exist across context tree.<br>
+ * Methods prefixed with resolve will search for entry in entire context tree.
+ */
 @RequiredArgsConstructor
 public class Context implements ContextEntry {
     private final @Nullable Context parent;
@@ -52,6 +57,11 @@ public class Context implements ContextEntry {
         return resolveI18n() != null;
     }
 
+    /**
+     * Combines data maps from this context and other context. Parents are not merged.
+     * @param other other context to merge data from
+     * @param override if true, existing entries are replaced with new ones
+     */
     public void merge(Context other, boolean override) {
         for (var e : other.data.entrySet()) {
             if (override) data.put(e.getKey(), e.getValue());
