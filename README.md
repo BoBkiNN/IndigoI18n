@@ -176,3 +176,5 @@ You can customize high-level api by adding renderers and mixins to IndigoI18n su
 - wiki:
   - troubleshooting for `No format type for String` and etc
 - module with examples
+- warn about missing plural strings for plural translations
+- (gson) throw error when no plural strings attached for plural type
