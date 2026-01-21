@@ -9,7 +9,7 @@ import xyz.bobkinn.indigoi18n.format.adventure.ComponentTemplateFormatter;
 import xyz.bobkinn.indigoi18n.template.format.StringTemplateFormatter;
 
 /**
- * Default format that parses input text into Component using {@link net.kyori.adventure.text.minimessage.MiniMessage}
+ * Default renderer that parses input text into Component using {@link net.kyori.adventure.text.minimessage.MiniMessage}
  */
 @Getter
 public class MiniMessageComponentRenderer extends ComponentRenderer {
@@ -26,7 +26,7 @@ public class MiniMessageComponentRenderer extends ComponentRenderer {
      * @param serializer serializer used to convert text into Component and to convert String arguments into Component
      */
     public MiniMessageComponentRenderer(TemplateCache cache, @NotNull MiniMessage serializer) {
-        this(cache, new ComponentTemplateFormatter(new StringTemplateFormatter(), null), serializer);
+        this(cache, ComponentTemplateFormatter.defaultString(null), serializer);
     }
 
     @Override
