@@ -73,6 +73,16 @@ public class IndigoI18n implements I18nEngine {
         return Objects.requireNonNull(f, "No format for type "+ft);
     }
 
+    /**
+     * Remove renderer by its type from renderers map
+     * @param rt render type to match
+     * @return true if removed
+     */
+    @SuppressWarnings("unused")
+    public boolean removeRenderer(RenderType<?> rt) {
+        return renderers.remove(rt) != null;
+    }
+
     public void load(TranslationSource source) {
         texts.load(source);
     }
