@@ -68,9 +68,9 @@ public class IndigoI18n implements I18nEngine {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> Renderer<T> getRenderer(RenderType<T> ft) {
-        var f = (Renderer<T>) renderers.get(ft);
-        return Objects.requireNonNull(f, "No format for type "+ft);
+    public <T> Renderer<T> getRenderer(RenderType<T> rt) {
+        var f = (Renderer<T>) renderers.get(rt);
+        return Objects.requireNonNull(f, "No renderer for type "+rt);
     }
 
     /**
