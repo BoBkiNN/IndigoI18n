@@ -55,9 +55,9 @@ public class TestPaper {
     void testViewer() {
         var i18n = new TestPaperI18N();
         i18n.setup();
-        var f = (StringRenderer) i18n.getRenderer(RenderType.STRING);
+        var r = (StringRenderer) i18n.getRenderer(RenderType.STRING);
         // add marker handling
-        f.getTemplateFormatter().putConverter(ViewerName.class, (ctx, argument, format) -> {
+        r.getTemplateFormatter().putConverter(ViewerName.class, (ctx, argument, format) -> {
             var viewer = ctx.getOptional(ViewerContext.class, ViewerContext::getViewer).orElseThrow();
             return viewer.getName();
         });
@@ -65,7 +65,7 @@ public class TestPaper {
         viewer.setLocale("en");
         server.addPlayer(viewer);
         i18n.getTexts().put("test", "en", new BasicTranslation("Viewer name is %s"));
-        var r = i18n.parse(viewer, "test", new ViewerName());
-        Assertions.assertEquals("Viewer name is Meow", r);
+        var res = i18n.parse(viewer, "test", new ViewerName());
+        Assertions.assertEquals("Viewer name is Meow", res);
     }
 }
