@@ -18,7 +18,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * This class contains default {@link ArgumentConverter}'s and several utility methods used by them.<br>
+ * This class contains <strong>default</strong> {@link ArgumentConverter}'s and several utility methods used by them.<br>
  * These converters implement actual formatting logic for given object and {@link FormatPattern}.
  */
 public class ArgConverters {
