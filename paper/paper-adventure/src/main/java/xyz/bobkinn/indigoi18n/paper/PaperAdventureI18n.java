@@ -17,13 +17,13 @@ import xyz.bobkinn.indigoi18n.template.format.FormatPattern;
  * @see AdventureI18n
  */
 @SuppressWarnings("unused")
-public class PaperAdventureI18N extends AdventureI18n implements MiniMessageAdventurePaperI18nMixin,
+public class PaperAdventureI18n extends AdventureI18n implements MiniMessageAdventurePaperI18nMixin,
         LegacyAdventurePaperI18nMixin, StringPaperI18nMixin {
-    public PaperAdventureI18N() {
+    public PaperAdventureI18n() {
         super();
     }
 
-    public PaperAdventureI18N(LegacyComponentSerializer serializer, MiniMessage miniMessage) {
+    public PaperAdventureI18n(LegacyComponentSerializer serializer, MiniMessage miniMessage) {
         super(serializer, miniMessage);
     }
 
