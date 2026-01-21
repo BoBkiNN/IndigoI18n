@@ -29,11 +29,6 @@ public class GenStaticDefaultProcessor extends AbstractProcessor {
     // =========================
 
     private void processClass(TypeElement classElement) {
-        processingEnv.getMessager().printMessage(
-                Diagnostic.Kind.NOTE,
-                "Processor triggered for: " + classElement.getSimpleName()
-        );
-
         GenStaticDefault ann = classElement.getAnnotation(GenStaticDefault.class);
 
         String packageName = getPackageName(classElement);
