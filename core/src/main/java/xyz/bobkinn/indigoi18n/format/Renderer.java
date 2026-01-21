@@ -10,9 +10,10 @@ import java.util.List;
 
 
 /**
- * Renderer is used to work with specified output type
+ * Renderer controls output object producing and template formatters usage.
  * @param <T> output text type
  * @see StringRenderer format for String
+ * @see #render(Context, String, List) 
  */
 @RequiredArgsConstructor
 public abstract class Renderer<T> {
