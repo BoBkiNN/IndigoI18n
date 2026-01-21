@@ -24,12 +24,19 @@ public interface CommandSenderLanguageMixin {
         return getViewerLangResolver().getLanguage(viewer);
     }
 
+    /**
+     * Sets {@link ViewerContext} to context. If context is null, new one is created
+     * @return context with viewer set
+     */
     default Context viewerCtx(Context ctx, CommandSender viewer) {
         if (ctx == null) return new Context().with(new ViewerContext(viewer));
         // override previous viewer context. Guess it is better than keeping any existing.
         return ctx.with(new ViewerContext(viewer));
     }
 
+    /**
+     * @return new context with {@link ViewerContext} set
+     */
     default Context viewerCtx(CommandSender viewer) {
         return new Context().with(new ViewerContext(viewer));
     }
