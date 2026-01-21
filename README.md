@@ -61,3 +61,4 @@ System.out.println(text); // outputs "Hello"
 - wiki:
   - troubleshooting for `No format type for String` and etc
 - module with examples
+- maybe rename I18nFormat to renderer
