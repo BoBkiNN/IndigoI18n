@@ -21,11 +21,24 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
+/**
+ * TemplateFormatter is used to produce output object O from {@link ParsedEntry template parts}.<br>
+ * Usually it performs inlining, argument representation and conversion (using {@link ArgumentConverter})
+ * and building output object.
+ * @param <O> output type
+ * @see ArgumentConverter
+ * @see StringTemplateFormatter string implementation
+ * @see #format(Context, ParsedEntry, List) main entrypoint
+ * @see ParsedEntry
+ */
 public abstract class TemplateFormatter<O> {
     /**
      * Map of class type to its converter. null key may be mapped to null value converter
      */
     protected final Map<Class<?>, ArgumentConverter<?, O>> converters = new HashMap<>();
+    /**
+     * !r representation handlers
+     */
     protected final Map<Class<?>, Function<Object, O>> rawReprCreators = new HashMap<>();
 
     public TemplateFormatter() {
@@ -152,6 +165,7 @@ public abstract class TemplateFormatter<O> {
     public O formatInline(@SuppressWarnings("SameParameterValue") FormatType<O> ft,
                              @NotNull InlineTranslation inline,
                              @NotNull Context ctx, List<Object> params) {
+        // get remaining depth or use specified max depth from InlineTranslation
         int cd = ctx.getOptional(InlineContext.class, InlineContext::getRemainingDepth)
                 .orElse(inline.getMaxDepth());
         var key = inline.getKey();
