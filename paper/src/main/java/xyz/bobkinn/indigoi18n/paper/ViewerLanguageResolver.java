@@ -7,8 +7,7 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * Viewer language resolver is used to lookup language id for {@link CommandSender viewer}.<br>
- * It can be used to attach some sort of player locale storage. 
- * You can override default methods to attach your own behaviour.
+ * You can override default methods to attach your own behaviour like player locale storage.
  * @see #getPlayerLanguage(Player) 
  * @see #getLanguage(CommandSender) 
  * @see #DEFAULT_RESOLVER
