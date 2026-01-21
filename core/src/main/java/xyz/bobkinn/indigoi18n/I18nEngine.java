@@ -15,6 +15,10 @@ import java.util.List;
 import java.util.Locale;
 
 
+/**
+ * Declares main high-level API
+ * @see IndigoI18n minimal implementation
+ */
 public interface I18nEngine {
 
     /**
