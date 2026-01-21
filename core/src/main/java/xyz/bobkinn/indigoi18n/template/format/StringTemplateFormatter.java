@@ -98,7 +98,7 @@ public class StringTemplateFormatter extends TemplateFormatter<String> {
     @Override
     public String format(Context ctx, ParsedEntry entry, List<Object> params) {
         var rt = resolveRenderType(ctx);
-        // fallback to string format type
+        // fallback to string render type
         var tft = rt != null ? rt : RenderType.STRING;
         var result = new StringBuilder();
         entry.visit(new TemplateVisitor() {

@@ -183,7 +183,7 @@ public class ComponentTemplateFormatter extends TemplateFormatter<Component> {
 
             @Override
             public void visitInline(InlineTranslation inline) {
-                // fallback to plain formatter
+                // fallback to plain renderer
                 var tft = rt != null ? rt : AdventureRenderers.PLAIN;
                 try {
                     var il = formatInline(tft, inline, ctx, params);
