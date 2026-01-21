@@ -9,7 +9,7 @@ import xyz.bobkinn.indigoi18n.context.Context;
 
 /**
  * Translation is a holder for one or multiple texts.
- * It represents logical text input and unit of text map.
+ * It represents logical text unit.
  */
 @Getter
 @RequiredArgsConstructor
@@ -24,7 +24,7 @@ public abstract class Translation {
     }
 
     /**
-     * Used to select text from this translation
+     * Used to select string from this translation
      * @param ctx context that can be used to resolve text based on some conditions,
      *            for example {@link xyz.bobkinn.indigoi18n.context.impl.CountContext}
      * @return resolved string
