@@ -106,7 +106,11 @@ You can customize high-level api by adding renderers and mixins to IndigoI18n su
     ```
 3. Add mixins:
     Mixins are high-level interfaces with all default methods. <br>
-    They provide useful shortcuts for different render types and other common-used utilities
+    They provide useful shortcuts for different render types and other common-used utilities.<br>
+    You can use them or create your own, for example they can be used to: 
+      - retrieve language from thread local or system environment
+      - accept text viewer and extract language from it
+      - alter created context with own data
     ```java
       public class MyI18n extends IndigoI18n implements StringI18nMixin
     ```
