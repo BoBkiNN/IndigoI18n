@@ -1,9 +1,6 @@
 package xyz.bobkinn.indigoi18n.source.impl.gson;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Contract;
@@ -109,7 +106,12 @@ public class GsonTranslationSource implements TranslationSource, SingleLangSourc
         for (var e : obj.entrySet()) {
             var key = e.getKey();
             var v = e.getValue();
-            var t = parseTranslation(gson, v);
+            Translation t;
+            try {
+                t = parseTranslation(gson, v);
+            } catch (JsonParseException ex) {
+                throw new IllegalArgumentException("Failed to parse translation "+key, ex);
+            }
             if (t == null) throw new IllegalArgumentException("Unknown JSON value to use as translation: "+v);
             to.add(key, language, t);
         }
