@@ -13,7 +13,7 @@ import java.util.Set;
 public class SourceTextAdder implements ISourceTextAdder {
     private final ISourceTextAdder addFunction;
     /**
-     * Map of key & language to text
+     * Map of key &amp; language to text
      */
     @Getter
     private final Map<Map.Entry<String, String>, Translation> added = new HashMap<>(128);

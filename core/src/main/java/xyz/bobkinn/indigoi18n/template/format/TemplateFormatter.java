@@ -157,7 +157,7 @@ public abstract class TemplateFormatter<O> {
      * to parse and return text specified by key and translation inside {@link InlineTranslation}.<br>
      * Each inlining decreases remaining depth in passed sub-context.<br>
      * When no inlining were previously done, remaining depth is equals to maxDepth from {@link InlineTranslation}.<br>
-     * If remaining depth <= 0, exception is thrown.<br>
+     * If remaining depth &lt;= 0, exception is thrown.<br>
      * If context tree does not contain {@link LangKeyContext} when language override not declared,
      * exception is thrown.
      * @param ft output type
