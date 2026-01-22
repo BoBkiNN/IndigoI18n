@@ -9,19 +9,13 @@ import xyz.bobkinn.indigoi18n.data.PluralTranslation;
 import java.lang.reflect.Type;
 import java.util.EnumMap;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * Used to ignore key case
  */
 @RequiredArgsConstructor
 public class PluralTranslationAdapter implements JsonDeserializer<PluralTranslation> {
-    private final String typeFieldName;
     private final ContextParser contextParser;
-
-    public PluralTranslationAdapter(ContextParser parser) {
-        this(DiscriminatorAdapter.DEFAULT_FIELD_NAME, parser);
-    }
 
     @Override
     public PluralTranslation deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
@@ -30,21 +24,14 @@ public class PluralTranslationAdapter implements JsonDeserializer<PluralTranslat
 
         Map<PluralCategory, String> plurals = new EnumMap<>(PluralCategory.class);
 
-        for (Map.Entry<String, JsonElement> e : obj.entrySet()) {
-            String key = e.getKey();
-            if (Objects.equals(key, typeFieldName)) continue;
-            if (Objects.equals(key, ContextParser.FIELD_NAME)) continue;
-
-            PluralCategory category;
-            try {
-                category = PluralCategory.valueOf(key.toUpperCase());
-            } catch (IllegalArgumentException ex) {
-                throw new JsonParseException(
-                        "Unknown plural category: " + key
-                );
+        for (var cat : PluralCategory.values()) {
+            var name = cat.name().toLowerCase();
+            for (var e : obj.entrySet()) {
+                if (e.getKey().toLowerCase().equals(name)) {
+                    // match
+                    plurals.put(cat, e.getValue().getAsString());
+                }
             }
-
-            plurals.put(category, e.getValue().getAsString());
         }
 
         Context ctx;
