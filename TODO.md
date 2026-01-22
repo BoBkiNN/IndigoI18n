@@ -5,8 +5,9 @@
   instead of '<red>Arg</red>-text'.<br>
   Leaked style is spread unless new style is specified.<br>
   Not sure of correct rules yet
-- readme
+- complete readme
 - wiki:
     - troubleshooting for `No format type for String` and etc
 - module with examples
 - warn about missing plural strings for plural translations
+- flat map translation source to avoid nested object (plurals like `key.one`, `key.many`)
