@@ -131,4 +131,13 @@ public class TestTemplateParser {
         assertEquals("%{s!r:.3}", entry.argumentAt(2).getSource());
         assertEquals("%5", entry.argumentAt(4).getSource());
     }
+
+    @Test
+    void testFormatsEqual() {
+        var entry = TemplateParser.INSTANCE.parse("%{}%s%{:}");
+        var def = FormatPattern.newDefault();
+        assertEquals(def, entry.argumentAt(0).getFormat());
+        assertEquals(def, entry.argumentAt(1).getFormat());
+        assertEquals(def, entry.argumentAt(2).getFormat());
+    }
 }

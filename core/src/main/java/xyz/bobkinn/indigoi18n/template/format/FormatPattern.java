@@ -1,13 +1,9 @@
 package xyz.bobkinn.indigoi18n.template.format;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import lombok.Data;
 import xyz.bobkinn.indigoi18n.template.TemplateReader;
 
-@RequiredArgsConstructor
-@Getter
-@ToString
+@Data
 public class FormatPattern {
     private final String source;
     private final Alignment alignment;
