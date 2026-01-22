@@ -54,6 +54,13 @@ subprojects {
 
                     url = "https://github.com/BoBkiNN/IndigoI18n"
 
+                    licenses {
+                        license {
+                            name = "MIT License"
+                            url = "https://opensource.org/license/mit"
+                        }
+                    }
+
                     developers {
                         developer {
                             id = "bobkinn"
@@ -65,7 +72,7 @@ subprojects {
                     scm {
                         url.set("https://github.com/BoBkiNN/IndigoI18n")
                         connection.set("scm:git:git://github.com/BoBkiNN/IndigoI18n.git")
-                        developerConnection.set("scm:git:ssh://git@github.com/BoBkiNN/IndigoI18n.git")
+                        developerConnection.set("scm:git:ssh://github.com:BoBkiNN/IndigoI18n.git")
                     }
                 }
             }
