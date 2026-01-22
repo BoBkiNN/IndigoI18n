@@ -107,7 +107,7 @@ syntax inspired by printf-style formatting and custom templates.
 
 ### 1. **Plain Text**
 
-Any text outside of `%` sequences is treated as plain text and is passed directly to the output.
+Any text outside of `%` sequences is treated as plain text.
 
 ```text
 Hello, world! → "Hello, world!"
@@ -196,7 +196,7 @@ Hello, world! → "Hello, world!"
 
 ### **Argument format syntax**
 
-Using advanced argument syntax, formatting rules can be changed for that arguments.
+Using advanced argument syntax, formatting rules can be changed for that argument.
 Format syntax is almost same as 
 [Python 3.11 Format Specification Mini-Language](https://docs.python.org/3.11/library/string.html#formatspec)
 so you can use it for syntax reference.
@@ -207,6 +207,7 @@ Differences are:
 
 ## Argument converters rules
 There are several common argument converters builtin into core module.
+They implement how `FormatPattern` is used to format input argument.
 
 \<TODO>
 
