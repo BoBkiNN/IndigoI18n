@@ -37,18 +37,18 @@ subprojects {
         (options as StandardJavadocDocletOptions).addStringOption("Xdoclint:none", "-quiet")
     }
 
-
-    publishing {
-        publications {
+    afterEvaluate {
+        val p = this@afterEvaluate
+        publishing.publications {
             create<MavenPublication>("mavenLocal") {
                 from(components["java"])
 
                 groupId = "io.github.bobkinn"
-                artifactId = "indigo-i18n-${this@subprojects.name}"
+                artifactId = "indigo-i18n-${p.name}"
 
                 pom {
-                    name.set(rootProject.name+"-"+this@subprojects.name)
-                    this@subprojects.description?.let {
+                    name.set(rootProject.name+"-"+p.name)
+                    p.description?.let {
                         description = it
                     }
 
@@ -78,4 +78,5 @@ subprojects {
             }
         }
     }
+
 }
