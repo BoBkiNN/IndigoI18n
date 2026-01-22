@@ -6,6 +6,7 @@ plugins {
 
 group = "xyz.bobkinn.indigoi18n"
 version = rootProject.version
+description = "IndigoI18n localization library core that also contains String localization"
 
 repositories {
     mavenCentral()
@@ -24,24 +25,4 @@ dependencies {
 tasks.test {
     useJUnitPlatform()
     // jvmArgs("-XX:StartFlightRecording=filename=recording.jfr,dumponexit=true,settings=profile")
-}
-
-java {
-    withSourcesJar()
-}
-
-publishing {
-    publications {
-        create<MavenPublication>("mavenLocal") {
-            from(components["java"])
-
-            groupId = "io.github.bobkinn"
-            artifactId = "indigo-i18n-core"
-
-            pom {
-                name.set(rootProject.name)
-                description.set("IndigoI18n localization library core that also contains String localization")
-            }
-        }
-    }
 }

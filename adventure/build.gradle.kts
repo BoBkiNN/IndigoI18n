@@ -6,6 +6,7 @@ plugins {
 
 group = "xyz.bobkinn.indigoi18n"
 version = rootProject.version
+description = "IndigoI18n localization library Adventure MiniMessage and Legacy formats"
 
 repositories {
     mavenCentral()
@@ -18,26 +19,3 @@ dependencies {
     implementation("net.kyori:adventure-text-minimessage:${property("adventure-version")}")
 }
 
-tasks.test {
-    useJUnitPlatform()
-}
-
-java {
-    withSourcesJar()
-}
-
-publishing {
-    publications {
-        create<MavenPublication>("mavenLocal") {
-            from(components["java"])
-
-            groupId = "io.github.bobkinn"
-            artifactId = "indigo-i18n-adventure"
-
-            pom {
-                name.set(rootProject.name)
-                description.set("IndigoI18n localization library Adventure MiniMessage and Legacy formats")
-            }
-        }
-    }
-}

@@ -6,6 +6,7 @@ plugins {
 
 group = "xyz.bobkinn.indigoi18n"
 version = rootProject.version
+description = "IndigoI18n localization library paper CommandSender compatibility and new argument converters"
 
 repositories {
     mavenCentral()
@@ -20,28 +21,4 @@ dependencies {
     implementation("io.papermc.paper:paper-api:${property("paper-version")}")
 
     testImplementation("com.github.seeseemelk:MockBukkit-v1.18:2.85.2")
-}
-
-tasks.test {
-    useJUnitPlatform()
-}
-
-java {
-    withSourcesJar()
-}
-
-publishing {
-    publications {
-        create<MavenPublication>("mavenLocal") {
-            from(components["java"])
-
-            groupId = "io.github.bobkinn"
-            artifactId = "indigo-i18n-paper"
-
-            pom {
-                name.set(rootProject.name)
-                description.set("IndigoI18n localization library paper CommandSender compatibility and new argument converters")
-            }
-        }
-    }
 }

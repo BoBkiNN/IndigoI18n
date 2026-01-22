@@ -1,6 +1,7 @@
 plugins {
     id("java")
     id("io.freefair.lombok") version "9.1.0"
+    `maven-publish`
 }
 
 group = "xyz.bobkinn.indigoi18n"
@@ -20,8 +21,54 @@ allprojects {
     }
 }
 
-dependencies {
-    testImplementation(platform("org.junit:junit-bom:5.10.0"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+subprojects {
+    apply(plugin = "maven-publish")
+
+    java {
+        withSourcesJar()
+        withJavadocJar()
+    }
+
+    tasks.test {
+        useJUnitPlatform()
+    }
+
+    tasks.withType<Javadoc> {
+        (options as StandardJavadocDocletOptions).addStringOption("Xdoclint:none", "-quiet")
+    }
+
+
+    publishing {
+        publications {
+            create<MavenPublication>("mavenLocal") {
+                from(components["java"])
+
+                groupId = "io.github.bobkinn"
+                artifactId = "indigo-i18n-${this@subprojects.name}"
+
+                pom {
+                    name.set(rootProject.name+"-"+this@subprojects.name)
+                    this@subprojects.description?.let {
+                        description = it
+                    }
+
+                    url = "https://github.com/BoBkiNN/IndigoI18n"
+
+                    developers {
+                        developer {
+                            id = "bobkinn"
+                            name = "BoBkiNN"
+                            url = "https://github.com/BoBkiNN"
+                        }
+                    }
+
+                    scm {
+                        url.set("https://github.com/BoBkiNN/IndigoI18n")
+                        connection.set("scm:git:git://github.com/BoBkiNN/IndigoI18n.git")
+                        developerConnection.set("scm:git:ssh://git@github.com/BoBkiNN/IndigoI18n.git")
+                    }
+                }
+            }
+        }
+    }
 }
