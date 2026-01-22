@@ -100,6 +100,116 @@ Going from top to bottom, these layers and abstract classes are:
   replaces arguments and builds resulting object from them
 - ArgumentConverter: implementations of this interface controls how different types of arguments are converted
 
+## Template Syntax
+
+The default template parser supports **placeholder substitution** and **inline translations** with a flexible 
+syntax inspired by printf-style formatting and custom templates.
+
+### 1. **Plain Text**
+
+Any text outside of `%` sequences is treated as plain text and is passed directly to the output.
+
+```text
+Hello, world! → "Hello, world!"
+```
+
+### 2. **Simple Argument Placeholder**
+
+* **Syntax:** `%s`
+* **Description:** Represents the next sequential argument. The parser automatically assigns it the next index.
+
+```text
+"Hello, %s!" → first argument replaces %s
+```
+
+### 3. **Indexed Argument Placeholder**
+
+* **Syntax:** `%n` where `n` is a 1-based argument index.
+* **Description:** Explicitly references an argument at the given index.
+
+```text
+"Hello, %1!" → replaces with the first argument
+```
+
+### 4. **Advanced Argument Placeholder**
+
+* **Syntax:** `%{...}`
+* **Description:** Enclosed in `%{` and `}`, these placeholders can include optional index, sequential marker, conversion, and formatting specifications.
+
+#### Components
+
+| Component     | Description                                                           |
+|---------------|-----------------------------------------------------------------------|
+| `index`       | Optional, a number starting from 1, explicitly selects an argument    |
+| `'s'`         | Optional, indicates the next sequential argument (equivalent to `%s`) |
+| `!conversion` | Optional, a single character representing a conversion                |
+| `:formatSpec` | Optional, defines formatting rules (via `FormatPattern`)              |
+
+#### Examples
+
+```text
+"%{1!r}"   → argument 1 with conversion 'r'
+"%{s!r}"   → next sequential argument with conversion 'r'
+"%{:0.2f}" → next sequential argument with format specifier 0.2f
+"%{s}"     → next sequential argument, default format
+"%{}"      → equivalent to "%s", next sequential argument
+"%{:}"     → equivalent to "%s", next sequential argument
+```
+
+*Notes:*
+
+* Explicit indexes (`1`, `2`, …) override sequential indexing.
+* `'s'` is used to explicitly indicate sequential arguments inside `%{...}`.
+* If no index or `'s'` is specified, the argument will use the next sequential index.
+* `%{}`, `%{s}`, and `%{:}` are all functionally equivalent to `%s`.
+
+### 5. **Inline Translation**
+
+* **Syntax:** `%{t:key[:depth][:lang]}`
+* **Description:** Represents a translation entry with optional recursion depth and language override.
+
+#### Components
+
+| Component | Description                                                                                      |
+|-----------|--------------------------------------------------------------------------------------------------|
+| `key`     | Translation key (required)                                                                       |
+| `depth`   | Optional, maximum depth of recursion (default = 1). Applied only if not inside recursion already |
+| `lang`    | Optional, language override                                                                      |
+
+#### Examples
+
+```text
+"%{t:greeting}"         → translate key "greeting"
+"%{t:greeting:2}"       → translate key "greeting" with depth = 2
+"%{t:greeting::fr}"     → translate key "greeting" in French
+"%{t:greeting:3:es}"    → translate key "greeting", depth 3, Spanish
+```
+
+### 6. **Escaping Percent Sign**
+
+* **Syntax:** `%%`
+* **Description:** Represents a literal percent sign.
+
+```text
+"Progress: 50%%" → "Progress: 50%"
+```
+
+### **Argument format syntax**
+
+Using advanced argument syntax, formatting rules can be changed for that arguments.
+Format syntax is almost same as 
+[Python 3.11 Format Specification Mini-Language](https://docs.python.org/3.11/library/string.html#formatspec)
+so you can use it for syntax reference.
+
+Differences are:
+* `z` flag are not supported
+* each argument converter can handle this format with its own rules so illegal combinations isn't checked when parsing.
+
+## Argument converters rules
+There are several common argument converters builtin into core module.
+
+\<TODO>
+
 ## Custom I18n
 
 You can customize high-level api by adding renderers and mixins to IndigoI18n subclass. Usual steps are:
