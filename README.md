@@ -50,42 +50,6 @@ var text = Indigo.parse("en", "hello");
 System.out.println(text); // outputs "Hello"
 ```
 
-## Extending
-
-You can extend different parts of system by subclassing and overriding methods 
-or adding new converters, renderers etc.
-
-### Adding argument converter
-When you obtain an instance of `TemplateFormatter` you can use method `putConverter` to attach 
-your implementation of `ArgumentConverter` for some class. Example:
-```java
-// obtain template formatter 
-TemplateFormatter<String> f = ...
-// argument converter that returns MyObject value wrapped in square brackets
-ArgumentConverter<MyObject, String> converter = (ctx, obj, format) -> "["+obj.value+"]";
-// use this converter for MyObject class
-f.putConverter(MyObject.class, converter);
-```
-
-### Adding renderer type
-
-```java
-// obtain IndigoI18n instance
-var i = new IndigoI18n();
-// create render type or use existing
-var type = new RenderType<>(String.class);
-// add StringRenderer keyed with this type
-i.addRenderer(type, StringRenderer::new);
-// use this renderer using render type
-i.parse(type, null, "en", "test", List.of());
-```
-
-Example simple implementation is 
-[StringRenderer](core/src/main/java/xyz/bobkinn/indigoi18n/render/impl/StringRenderer.java).<br>
-To create your own Renderer you need to subclass 
-[Renderer<O>](core/src/main/java/xyz/bobkinn/indigoi18n/render/Renderer.java) and implement abstract 
-methods. Type variable O is output type of you renderer, for example String or your custom text.
-
 ## Core of system
 The Core module defines system layers and abstract classes/interfaces with default implementations.
 Going from top to bottom, these layers and abstract classes are:
@@ -210,6 +174,43 @@ There are several common argument converters builtin into core module.
 They implement how `FormatPattern` is used to format input argument.
 
 \<TODO>
+
+## Extending
+
+You can extend different parts of system by subclassing and overriding methods
+or adding new converters, renderers etc.
+
+### Adding argument converter
+When you obtain an instance of `TemplateFormatter` you can use method `putConverter` to attach
+your implementation of `ArgumentConverter` for some class. Example:
+```java
+// obtain template formatter 
+TemplateFormatter<String> f = ...
+// argument converter that returns MyObject value wrapped in square brackets
+ArgumentConverter<MyObject, String> converter = (ctx, obj, format) -> "["+obj.value+"]";
+// use this converter for MyObject class
+f.putConverter(MyObject.class, converter);
+```
+
+### Adding renderer type
+
+```java
+// obtain IndigoI18n instance
+var i = new IndigoI18n();
+// create render type or use existing
+var type = new RenderType<>(String.class);
+// add StringRenderer keyed with this type
+i.addRenderer(type, StringRenderer::new);
+// use this renderer using render type
+i.parse(type, null, "en", "test", List.of());
+```
+
+Example simple implementation is
+[StringRenderer](core/src/main/java/xyz/bobkinn/indigoi18n/render/impl/StringRenderer.java).<br>
+To create your own Renderer you need to subclass
+[Renderer<O>](core/src/main/java/xyz/bobkinn/indigoi18n/render/Renderer.java) and implement abstract
+methods. Type variable O is output type of you renderer, for example String or your custom text.
+
 
 ## Custom I18n
 
