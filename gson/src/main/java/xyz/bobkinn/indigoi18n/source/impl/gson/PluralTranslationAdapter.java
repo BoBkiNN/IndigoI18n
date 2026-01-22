@@ -34,6 +34,10 @@ public class PluralTranslationAdapter implements JsonDeserializer<PluralTranslat
             }
         }
 
+        if (plurals.isEmpty()) {
+            throw new JsonParseException("No plural categories supplied");
+        }
+
         Context ctx;
         if (obj.has(ContextParser.FIELD_NAME)) {
             ctx = contextParser.parse(obj.getAsJsonObject(ContextParser.FIELD_NAME));
