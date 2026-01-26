@@ -241,11 +241,229 @@ Differences are:
 * `z` flag are not supported
 * each argument converter can handle this format with its own rules so illegal combinations isn't checked when parsing.
 
-## Argument converters rules
-There are several common argument converters builtin into core module.
-They implement how `FormatPattern` is used to format input argument.
+### *Conversion implementation*
 
-\<TODO>
+By default, there are 3 conversion modes.
+
+#### `r` - raw
+- `Number`s are converted to string using basic `.toString()` method
+- Other objects are converted to `String` using basic `.toString()` method and then quoted.
+
+##### Quoting
+
+When used, string values are quoted using Python-like rules:
+
+* Single quotes (`'`) are preferred when possible
+* If the string already contains single quotes, double quotes (`"`) are used instead
+* If both quote types are present, the less frequent one is chosen
+* The chosen quote character and backslashes (`\`) are escaped
+
+This ensures the shortest and most readable quoted representation while remaining unambiguous.
+
+Example:
+
+```text
+hello        → 'hello'
+he'llo       → "he'llo"
+he"l'lo      → 'he"l\'lo'
+```
+
+#### `h`/`H` - hash
+Outputs hash code of argument in hexadecimal format.<br>
+If argument is null, `null` is outputted.
+If conversion is `H`, resulting string is uppercased.
+
+This matches `%h`/`%H` behaviour from 
+[`String.format`](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html#format(java.lang.String,java.lang.Object...))
+
+Examples:
+```text
+!h with "zz"  -> "f40"
+!H with "zz"  -> "F40"
+!H with null  -> "null"
+!H with null  -> "NULL"
+```
+
+#### `s` - string
+If argument is not a string, it is converted using `String.valueOf` method. No quoting performed.
+
+## Argument converters rules
+
+This section describes how builtin argument converters interpret `FormatPattern`.
+Parsing only validates syntax — all semantic behavior is defined by converters.
+
+### Common behavior
+
+All builtin converters support:
+
+* **Width and alignment**
+
+    * Default alignment:
+
+        * strings → left
+        * numbers → right
+    * Custom fill and alignment types are supported, including sign-aware alignment (`=`).
+* **Sign handling**
+
+    * Controlled by sign flag (`+`, `-`, space)
+    * Applied before width alignment
+* Unsupported format options are ignored unless explicitly stated.
+
+---
+
+### String converter
+
+Applies generic string formatting.
+
+Supported options:
+
+* **Precision** — maximum string length (cut from the end)
+* **Width & alignment**
+
+Notes:
+
+* No numeric formatting
+
+---
+
+### Integer number converter (`byte`, `short`, `int`, `long`)
+
+Base behavior for all integer-like converters.
+
+Supported type specifiers:
+
+* `d` (default) — decimal
+* `b`, `o`, `x`, `X` — binary, octal, hexadecimal
+* `c` — Unicode character
+* `n` — locale-aware decimal formatting
+
+Supported options:
+
+* **Alternate form (`#`)**
+
+    * Adds radix prefix (`0b`, `0o`, `0x`)
+* **Grouping**
+
+    * Decimal → groups of 3
+    * Binary / octal / hex → groups of 4
+* **Sign handling**
+* **Width & alignment**
+
+    * Sign-aware (`=`) alignment supported
+
+Special cases:
+
+* `c` outputs a single character if value is valid, otherwise falls back to default formatting
+* `n` uses locale from rendering context
+
+---
+
+### BigInteger converter
+
+Same rules as **integer number converter**, with these differences:
+
+* No size limitations
+* Grouping is applied to string digits instead of numeric value
+* Locale-aware `n` mode uses `NumberFormat`
+
+---
+
+### Floating-point number converter (`float`, `double`)
+
+Same alignment and sign rules as integer converter.
+
+Supported type specifiers:
+
+* `f`, `F` — fixed-point
+* `e`, `E` — scientific
+* `%` — percent
+* `n` — locale-aware decimal formatting
+
+Precision:
+
+* Default precision is `6`
+* Interpreted as:
+
+    * fractional digits for `f`, `%`
+    * significant digits for `e`
+
+Grouping:
+
+* Applies only to integer part
+* Ignored for scientific notation
+
+Special values:
+
+* `NaN` → `nan` / `NAN`
+* `Infinity` → `inf` / `INF`
+
+Alternate form (`#`):
+
+* Removes trailing `.0` if fractional part is zero
+
+---
+
+### BigDecimal converter
+
+Same rules as **floating-point number converter**, with these differences:
+
+* Uses exact decimal arithmetic (no binary rounding)
+* Precision controls:
+
+    * scale for `f`
+    * math context for `e`
+* Locale-aware modes:
+
+    * `n` — variable fraction digits
+    * `N` — enforces minimum fraction digits
+
+Grouping behavior matches floating-point converter.
+
+---
+
+### Temporal / Date / Calendar converters
+
+These converters support `TemporalAccessor`, `Date`, and `Calendar`.
+All three share identical formatting rules.
+
+Formatting is selected by the **type specifier** and may be locale-aware.
+
+#### Type specifiers
+
+**Time fields**
+
+* `h` — hour (no padding)
+* `H` — hour (2-digit, zero-padded)
+* `m` — minute
+* `M` — minute (2-digit)
+* `s` — second
+* `S` — second (2-digit)
+
+**Locale-aware date / time**
+
+* `N` — full date/time
+* `B` — long date/time
+* `n` — medium date/time
+* `b` — short date/time
+
+**Timezone**
+
+* `z` — timezone name / ID
+* `Z` — numeric offset (`±HHMM`)
+
+**Default**
+
+* Any other type uses medium date/time in root locale
+
+#### Post-processing
+
+After date/time formatting:
+
+* precision cuts the resulting string
+* width and alignment are applied
+
+If formatting fails, the value’s `toString()` is used as fallback.
+
 
 ## Extending
 
@@ -347,4 +565,4 @@ You can customize high-level api by adding renderers and mixins to IndigoI18n su
     ```
    Now you can use: `I18n.parse("en", "key", "arg1")`.<br>
    Generated class is located in same package and have `public static final INSTANCE` 
-   field with type of your class
+   field with type of your class.
