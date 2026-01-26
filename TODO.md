@@ -11,3 +11,4 @@
 - module with examples
 - warn about missing plural strings for plural translations
 - flat map translation source to avoid nested object (plurals like `key.one`, `key.many`)
+- possibly move string arguments legacy converter into utility methods instead of using it in builtin AdventureI18n 
