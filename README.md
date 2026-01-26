@@ -15,6 +15,14 @@ This is a flexible Java localization and internationalization library.
 - [Adventure](https://github.com/PaperMC/adventure) support (includes MiniMessage and Legacy serializers)
 - [Paper API](https://docs.papermc.io/paper/) support to use player language
 
+## Setup
+
+**Requirements**: Java 17 or newer
+
+### **Dependencies**:
+
+\<TODO>
+
 ## Examples
 Minimal usage:
 ```java
@@ -188,6 +196,13 @@ Hello, world! → "Hello, world!"
 
 * **Syntax:** `%{t:key[:depth][:lang]}`
 * **Description:** Represents a translation entry with optional recursion depth and language override.
+
+> To perform inlining, TemplateFormatter gets text by specified key in
+> specified language (or current one) and with same output type.<br>
+> It directly uses `parse(RenderType<T> ft, @Nullable Context ctx, String lang, String key, List<Object> args)` method 
+> to get object to insert.<br>Render type of inlined text will be same as originally requested.<br>
+
+When remaining depth is 0 or less, `<key>` is outputted, where `key` is key of translation which meant to be inlined.
 
 #### Components
 
