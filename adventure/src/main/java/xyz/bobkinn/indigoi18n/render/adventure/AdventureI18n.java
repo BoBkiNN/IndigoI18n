@@ -43,9 +43,13 @@ public class AdventureI18n extends StringI18n implements LegacyAdventureI18nMixi
         super.addDefaultRenderers(); // add string renderer
         // add plain renderer, used as fallback when inlining
         addRenderer(AdventureRenderers.PLAIN, ComponentRenderer.PlainComponentRenderer::new);
+        // add legacy renderer which converts string arguments using legacyComponentSerializer
         addRenderer(AdventureRenderers.LEGACY,
                 c -> new LegacyComponentRenderer(c, true, legacyComponentSerializer));
-        addRenderer(AdventureRenderers.MINI_MESSAGE, c -> new MiniMessageComponentRenderer(c, miniMessage));
+        // add MiniMessage renderer which converts string arguments using legacyComponentSerializer
+        addRenderer(AdventureRenderers.MINI_MESSAGE,
+                c -> new MiniMessageComponentRenderer(c,
+                        ComponentTemplateFormatter.defaultStringLegacy(legacyComponentSerializer), miniMessage));
     }
 
     /**

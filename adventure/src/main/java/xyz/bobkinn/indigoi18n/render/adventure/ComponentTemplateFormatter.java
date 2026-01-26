@@ -3,6 +3,7 @@ package xyz.bobkinn.indigoi18n.render.adventure;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -62,6 +63,20 @@ public class ComponentTemplateFormatter extends TemplateFormatter<Component> {
     @Contract("_ -> new")
     public static @NotNull ComponentTemplateFormatter defaultString(Function<String, Component> legacyConverter) {
         return new ComponentTemplateFormatter(new StringTemplateFormatter(), legacyConverter);
+    }
+
+    /**
+     * A utility method to create new instance with {@link StringTemplateFormatter}
+     * where {@link LegacyComponentSerializer} acts like legacy argument converter.
+     * @param legacyConverter legacy component serializer. If null, no legacy argument converter set.
+     * @see #ComponentTemplateFormatter(TemplateFormatter, Function)  ComponentTemplateFormatter
+     * @see #defaultString(Function)
+     */
+    public static @NotNull ComponentTemplateFormatter defaultStringLegacy(@Nullable LegacyComponentSerializer legacyConverter) {
+        if (legacyConverter == null) {
+            return ComponentTemplateFormatter.defaultString(null);
+        }
+        return ComponentTemplateFormatter.defaultString(legacyConverter::deserialize);
     }
 
     @Override
