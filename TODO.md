@@ -5,7 +5,8 @@
   instead of '<red>Arg</red>-text'.<br>
   Leaked style is spread unless new style is specified.<br>
   Not sure of correct rules yet
-- complete readme
+- complete readme:
+  - adventure & bukkit usage examples
 - wiki:
     - troubleshooting for `No format type for String` and etc
 - module with examples
