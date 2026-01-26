@@ -1,6 +1,7 @@
 plugins {
     `java-library`
     `maven-publish`
+    id("io.freefair.lombok")
 }
 
 group = "xyz.bobkinn.indigoi18n"
@@ -24,4 +25,8 @@ dependencies {
     implementation("net.kyori:adventure-api:${property("adventure-version")}")
     implementation("net.kyori:adventure-text-serializer-legacy:${property("adventure-version")}")
     implementation("net.kyori:adventure-text-minimessage:${property("adventure-version")}")
+
+    testImplementation("com.github.seeseemelk:MockBukkit-v1.18:2.85.2")
+    testImplementation("org.slf4j:slf4j-simple:2.0.17")
+    testImplementation(project(":gson"))
 }

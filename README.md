@@ -501,6 +501,10 @@ To create your own Renderer you need to subclass
 [Renderer<O>](core/src/main/java/xyz/bobkinn/indigoi18n/render/Renderer.java) and implement abstract
 methods. Type variable O is output type of you renderer, for example String or your custom text.
 
+## Adventure and bukkit examples:
+
+Test plugin showcasing AdventureI18n, AdventureTranslator and usage of GsonTranslationSource
+[Link to file](paper/paper-adventure/src/test/java/xyz/bobkinn/indigoi18n/paper/MyTestPlugin.java)
 
 ## Custom I18n
 

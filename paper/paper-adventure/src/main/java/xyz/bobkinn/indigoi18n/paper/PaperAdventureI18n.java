@@ -13,7 +13,9 @@ import xyz.bobkinn.indigoi18n.render.adventure.format.ComponentRenderer;
 import xyz.bobkinn.indigoi18n.template.format.FormatPattern;
 
 /**
- * Same as {@link AdventureI18n} but also with 3 mixins using {@link CommandSenderLanguageI18nMixin}
+ * Same as {@link AdventureI18n} but also with 3 mixins using {@link CommandSenderLanguageI18nMixin}.<br>
+ * By default, adds converter {@link #convertEntity(Context, Entity, FormatPattern)} for {@link Entity} arguments
+ * or its successors.
  * @see AdventureI18n
  */
 @SuppressWarnings("unused")
