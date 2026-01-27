@@ -28,7 +28,7 @@ public class StringRenderer extends Renderer<String> {
 
     @Override
     public String replaceArguments(Context ctx, String input, List<Object> args) {
-        var parsed = cache.getOrCreate(ctx, input);
+        var parsed = cache.getOrCompute(ctx, input);
         if (parsed == null) {
             return ctx.key();
         }

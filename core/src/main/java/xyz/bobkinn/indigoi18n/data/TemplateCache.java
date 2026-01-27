@@ -28,22 +28,44 @@ public class TemplateCache {
     @Setter
     private TemplateErrorHandler templateErrorHandler = new TemplateErrorHandler.JULTemplateErrorHandler();
 
+    @Setter
+    @Getter
+    private boolean enabled = true;
+
     @SuppressWarnings("UnusedReturnValue")
-    public ParsedEntry createCache(String text, TranslationInfo info) {
-        return createCache(info.asContext(), text, new TemplateParseOptions());
+    public ParsedEntry computeCache(String text, TranslationInfo info) {
+        return computeCache(info.asContext(), text, new TemplateParseOptions());
     }
 
-    public ParsedEntry createCache(Context ctx, String text, TemplateParseOptions parseOptions) {
-        ParsedEntry entry;
+    /**
+     * Parses template text using
+     * {@link xyz.bobkinn.indigoi18n.template.TemplateParser#parse(String, TemplateParseOptions)}
+     * and handles parsing exception
+     * @param ctx context that is passed to error handler in case of exception
+     * @return null if {@link TemplateParseException} is thrown and handled
+     * @see TemplateErrorHandler
+     * @see #setTemplateErrorHandler(TemplateErrorHandler)
+     * @see TemplateParseOptions
+     */
+    private @Nullable ParsedEntry parse(Context ctx, String text, TemplateParseOptions parseOptions) {
         try {
-            entry = templateParser.parse(text, parseOptions);
+            return templateParser.parse(text, parseOptions);
         } catch (TemplateParseException e) {
             if (templateErrorHandler != null) {
                 templateErrorHandler.handleParseException(e, text, ctx);
                 return null;
             } else throw e;
         }
-        templateCache.put(text, entry);
+    }
+
+    /**
+     * Parses template text and caches resulting {@link ParsedEntry}
+     * @return parsed entry or null if failed to parse
+     * @see #parse(Context, String, TemplateParseOptions)
+     */
+    public ParsedEntry computeCache(Context ctx, String text, TemplateParseOptions parseOptions) {
+        var entry = parse(ctx, text, parseOptions);
+        if (entry != null) templateCache.put(text, entry);
         return entry;
     }
 
@@ -51,6 +73,9 @@ public class TemplateCache {
         templateCache.remove(text);
     }
 
+    /**
+     * @return cached entry or null if not cached
+     */
     public @Nullable ParsedEntry get(String text) {
         return templateCache.get(text);
     }
@@ -58,16 +83,16 @@ public class TemplateCache {
     /**
      * @return null if failed to parse
      */
-    public @Nullable ParsedEntry getOrCreate(Context ctx, String text, TemplateParseOptions parseOptions) {
+    public @Nullable ParsedEntry getOrCompute(Context ctx, String text, TemplateParseOptions parseOptions) {
         var v = get(text);
         if (v != null) return v;
-        return createCache(ctx, text, parseOptions);
+        return computeCache(ctx, text, parseOptions);
     }
 
     /**
      * @return null if failed to parse
      */
-    public @Nullable ParsedEntry getOrCreate(Context ctx, String text) {
-        return getOrCreate(ctx, text, new TemplateParseOptions());
+    public @Nullable ParsedEntry getOrCompute(Context ctx, String text) {
+        return getOrCompute(ctx, text, new TemplateParseOptions());
     }
 }

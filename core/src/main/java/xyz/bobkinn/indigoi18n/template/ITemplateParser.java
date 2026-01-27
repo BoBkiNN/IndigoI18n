@@ -1,5 +1,6 @@
 package xyz.bobkinn.indigoi18n.template;
 
+import org.jetbrains.annotations.NotNull;
 import xyz.bobkinn.indigoi18n.data.ParsedEntry;
 import xyz.bobkinn.indigoi18n.template.arg.TemplateArgument;
 
@@ -21,7 +22,7 @@ public interface ITemplateParser {
      * @return new {@link ParsedEntry} containing collected parts
      * @throws TemplateParseException when parsing exception occurs
      */
-    default ParsedEntry parse(String text, TemplateParseOptions options) throws TemplateParseException {
+    default @NotNull ParsedEntry parse(String text, TemplateParseOptions options) throws TemplateParseException {
         var ls = new ArrayList<>();
         var visitor = new TemplateVisitor() {
             @Override

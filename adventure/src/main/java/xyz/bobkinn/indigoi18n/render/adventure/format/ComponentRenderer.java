@@ -33,10 +33,10 @@ public abstract class ComponentRenderer extends Renderer<Component> {
     }
 
     /**
-     * Called when {@link TemplateCache#getOrCreate(Context, String, TemplateParseOptions)} returned null.<br>
+     * Called when {@link TemplateCache#getOrCompute(Context, String, TemplateParseOptions)} returned null.<br>
      * Default implementation returns translation key text.
      * @param input text component that holds string failing to be parsed
-     * @see TemplateCache#getOrCreate(Context, String, TemplateParseOptions)
+     * @see TemplateCache#getOrCompute(Context, String, TemplateParseOptions)
      */
     @SuppressWarnings("unused")
     protected Component onParsingFailed(@NotNull Context ctx, TextComponent input) {
@@ -52,7 +52,7 @@ public abstract class ComponentRenderer extends Renderer<Component> {
                 .map(SharedSeqArgContext::getSeqIdx)
                 .map(TemplateParseOptions::new)
                 .orElseGet(TemplateParseOptions::new);
-        var parsed = cache.getOrCreate(ctx, full, parseOptions);
+        var parsed = cache.getOrCompute(ctx, full, parseOptions);
         if (parsed == null) {
             return onParsingFailed(ctx, comp);
         }

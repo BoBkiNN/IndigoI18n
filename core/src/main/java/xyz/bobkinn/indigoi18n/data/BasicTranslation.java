@@ -22,7 +22,7 @@ public class BasicTranslation extends Translation {
 
     @Override
     public void createCache(TemplateCache cache, TranslationInfo info) {
-        cache.createCache(text, info);
+        cache.computeCache(text, info);
     }
 
     @Override

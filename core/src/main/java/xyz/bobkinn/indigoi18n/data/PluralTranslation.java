@@ -71,7 +71,7 @@ public class PluralTranslation extends Translation {
     @Override
     public void createCache(TemplateCache cache, TranslationInfo info) {
         for (var v : plurals.values()) {
-            cache.createCache(v, info);
+            cache.computeCache(v, info);
         }
     }
 
