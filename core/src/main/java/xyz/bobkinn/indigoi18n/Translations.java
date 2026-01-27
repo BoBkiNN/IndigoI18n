@@ -44,11 +44,12 @@ public class Translations {
     /**
      * Creates new source text adder that is used by source to load texts.
      * For each added translation, its cache is created
+     *
      * @param source source to load
+     * @throws TranslationLoadError when source failed to load data
      * @see #loadedTexts(TranslationSource)
      * @see #unload(TranslationSource)
      * @see Translation#createCache(TemplateCache, TranslationInfo)
-     * @throws TranslationLoadError when source failed to load data
      */
     public void load(@NotNull TranslationSource source) {
         var adder = new SourceTextAdder(this::put);
@@ -71,6 +72,7 @@ public class Translations {
     /**
      * Finds all loaded keys from this source, then removes translations by language id and key.
      * If translation was removed, its cache is reset
+     *
      * @param source source which keys to unload.
      * @see Translation#resetCache(TemplateCache)
      * @see #load(TranslationSource)
@@ -91,6 +93,7 @@ public class Translations {
 
     /**
      * Unload source by its location
+     *
      * @param location location of source to match
      * @see #unload(TranslationSource)
      */
@@ -112,6 +115,7 @@ public class Translations {
 
     /**
      * Get text loaded from source
+     *
      * @return null if this source is not loaded
      */
     public @Nullable Map<String, Set<String>> loadedTexts(TranslationSource source) {
@@ -120,6 +124,7 @@ public class Translations {
 
     /**
      * Get text loaded from source identified to by location
+     *
      * @return null if this source is not loaded
      */
     public @Nullable Map<String, Set<String>> loadedTexts(URI location) {
@@ -144,6 +149,7 @@ public class Translations {
 
     /**
      * Finds first source that has this language and key and creates TranslationInfo
+     *
      * @return null if no sources contains text with passed key in passed language
      */
     public @Nullable TranslationInfo infoFor(String key, String lang) {
@@ -183,7 +189,8 @@ public class Translations {
 
     /**
      * Put translation under specified key and language. Old one is replaced by new one.
-     * @param key key
+     *
+     * @param key  key
      * @param lang language id
      * @param text translation
      */
@@ -193,11 +200,11 @@ public class Translations {
     }
 
     /**
-     * @see xyz.bobkinn.indigoi18n.resolver.TranslationResolver
-     * @param key translation key
+     * @param key  translation key
      * @param lang language id
      * @param or value to return if text with that id not found
      * @return text with this key and language or "or" argument
+     * @see xyz.bobkinn.indigoi18n.resolver.TranslationResolver
      */
     @Contract("_,_,!null -> !null")
     public Translation getOr(String key, String lang, Translation or) {
