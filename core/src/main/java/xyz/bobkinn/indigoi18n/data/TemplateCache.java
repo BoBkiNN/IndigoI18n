@@ -13,6 +13,9 @@ import xyz.bobkinn.indigoi18n.template.TemplateParseOptions;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * @see #getOrCompute(Context, String, TemplateParseOptions) common entrypoint 
+ */
 @RequiredArgsConstructor
 public class TemplateCache {
     /**
@@ -28,6 +31,10 @@ public class TemplateCache {
     @Setter
     private TemplateErrorHandler templateErrorHandler = new TemplateErrorHandler.JULTemplateErrorHandler();
 
+    /**
+     * When disabled, {@link #getOrCompute(Context, String, TemplateParseOptions)} 
+     * only calls {@link #parse(Context, String, TemplateParseOptions)}
+     */
     @Setter
     @Getter
     private boolean enabled = true;
@@ -47,7 +54,7 @@ public class TemplateCache {
      * @see #setTemplateErrorHandler(TemplateErrorHandler)
      * @see TemplateParseOptions
      */
-    private @Nullable ParsedEntry parse(Context ctx, String text, TemplateParseOptions parseOptions) {
+    public @Nullable ParsedEntry parse(Context ctx, String text, TemplateParseOptions parseOptions) {
         try {
             return templateParser.parse(text, parseOptions);
         } catch (TemplateParseException e) {
@@ -81,9 +88,12 @@ public class TemplateCache {
     }
 
     /**
+     * If caching is disabled, cache lookup and compute is skipped
+     * and {@link #parse(Context, String, TemplateParseOptions)} is called directly instead
      * @return null if failed to parse
      */
     public @Nullable ParsedEntry getOrCompute(Context ctx, String text, TemplateParseOptions parseOptions) {
+        if (!enabled) return parse(ctx, text, parseOptions);
         var v = get(text);
         if (v != null) return v;
         return computeCache(ctx, text, parseOptions);
