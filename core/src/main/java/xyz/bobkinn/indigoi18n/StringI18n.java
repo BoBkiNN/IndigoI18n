@@ -9,7 +9,7 @@ import xyz.bobkinn.indigoi18n.render.impl.StringI18nMixin;
 
 
 /**
- * Simple I18n class. It uses only {@link StringRenderer} formatter and implements {@link StringI18nMixin}.
+ * Simple I18n class. It uses only {@link StringRenderer} renderer and implements {@link StringI18nMixin}.
  * @see StringRenderer
  */
 @GenStaticDefault(name = "Indigo", creator = "create")

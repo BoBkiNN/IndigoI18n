@@ -41,11 +41,15 @@ public class IndigoI18n implements I18nEngine {
 
     private final Map<String, Locale> localeCache = new ConcurrentHashMap<>();
 
-    public IndigoI18n(ITemplateParser templateParser, LocaleResolver localeResolver) {
-        texts = new Translations(new TemplateCache(templateParser));
+    public IndigoI18n(Translations texts, LocaleResolver localeResolver) {
+        this.texts = texts;
         resolver = new DefaultTranslationResolver();
         renderers = new HashMap<>();
         this.localeResolver = localeResolver;
+    }
+
+    public IndigoI18n(ITemplateParser templateParser, LocaleResolver localeResolver) {
+        this(new Translations(new TemplateCache(templateParser)), localeResolver);
     }
 
     public IndigoI18n() {
