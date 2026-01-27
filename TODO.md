@@ -14,7 +14,6 @@
 - flat map translation source to avoid nested object (plurals like `key.one`, `key.many`)
 - possibly move string arguments legacy converter into utility methods instead of using it in builtin AdventureI18n 
 - Builtin multi-lang source to load multiple files from folder/jar
-- switch to toggle cache and other actions with it
 - Translation cache pre-computes cache for entire string, while in runtime lookup for this key will
 be performed using other strings produced by renderer. For example: translation cache is created, 
 then renderer uses only parts of original text to lookup for parsed entry. 
