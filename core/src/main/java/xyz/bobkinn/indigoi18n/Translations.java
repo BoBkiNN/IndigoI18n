@@ -215,6 +215,20 @@ public class Translations {
         }
     }
 
+    /**
+     * Removes translation from text map and from source associations
+     * @param lang language id
+     * @param key translation key
+     * @return removed translation.
+     */
+    public Translation remove(String lang, String key) {
+        var m = texts.get(key);
+        if (m == null) return null;
+        var d = m.remove(lang);
+        if (d != null) removeSourceMapping(key, lang);
+        return d;
+    }
+
     private void removeSourceMapping(String key, String lang) {
         var it = keysBySource.values().iterator();
         while (it.hasNext()) {
@@ -243,20 +257,6 @@ public class Translations {
         var v = lm.get(lang);
         if (v == null) return or;
         return v;
-    }
-
-    /**
-     * Removes translation from text map and from source associations
-     * @param lang language id
-     * @param key translation key
-     * @return removed translation.
-     */
-    public Translation remove(String lang, String key) {
-        var m = texts.get(key);
-        if (m == null) return null;
-        var d = m.remove(lang);
-        if (d != null) removeSourceMapping(key, lang);
-        return d;
     }
 
     public boolean hasAnyTexts() {
