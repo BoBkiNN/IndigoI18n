@@ -1,8 +1,12 @@
 package xyz.bobkinn.indigoi18n;
 
 import org.junit.jupiter.api.Test;
+import xyz.bobkinn.indigoi18n.data.TemplateCache;
+import xyz.bobkinn.indigoi18n.data.Translation;
 import xyz.bobkinn.indigoi18n.source.TranslationSource;
+import xyz.bobkinn.indigoi18n.source.impl.MapSource;
 import xyz.bobkinn.indigoi18n.source.impl.PropertiesSource;
+import xyz.bobkinn.indigoi18n.template.TemplateParser;
 
 import java.net.URI;
 import java.util.Properties;
@@ -46,5 +50,31 @@ public class TestSources {
         assertEquals("Test 2", i18n.parse("en", "test2"));
         i18n.unload(source);
         assertEquals("test2", i18n.parse("en", "test2"));
+    }
+
+    @Test
+    public void testTranslationSource() {
+        var tr = new Translations(new TemplateCache(TemplateParser.INSTANCE));
+        var s1 = new MapSource();
+        s1.put("t", "en", "Apple");
+        tr.load(s1);
+        // test source loaded
+        var ts1 = tr.sourcesWith("t", "en").stream().findFirst().orElse(null);
+        assertEquals(s1, ts1);
+        // overwrite manually
+        tr.put("t", "en", Translation.create("Banana"));
+        var ts12 = tr.sourcesWith("t", "en").stream().findFirst().orElse(null);
+        assertNull(ts12);
+        // test source changed
+        var s2 = new MapSource();
+        s2.put("t", "en", "Mango");
+        tr.load(s1);
+        tr.load(s2);
+        var ts2 = tr.sourcesWith("t", "en").stream().findFirst().orElse(null);
+        assertEquals(s2, ts2);
+        // test source removed
+        tr.remove("en", "t");
+        var ts21 = tr.sourcesWith("t", "en").stream().findFirst().orElse(null);
+        assertNull(ts21);
     }
 }

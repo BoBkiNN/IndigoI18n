@@ -98,6 +98,7 @@ public class Translations {
                 if (text != null) text.resetCache(cache);
             }
         }
+        keysBySource.remove(source);
     }
 
     /**
@@ -108,7 +109,9 @@ public class Translations {
      */
     @SuppressWarnings("unused")
     public void unload(URI location) {
-        var texts = loadedTexts(location);
+        var source = sourceByLocation(location);
+        if (source == null) return;
+        var texts = loadedTexts(source);
         if (texts == null) return;
         for (var e : texts.entrySet()) {
             var lang = e.getKey();
@@ -118,6 +121,7 @@ public class Translations {
                 if (text != null) text.resetCache(cache);
             }
         }
+        keysBySource.remove(source);
     }
 
     // sources info
@@ -132,14 +136,13 @@ public class Translations {
     }
 
     /**
-     * Get text loaded from source identified to by location
-     *
-     * @return null if this source is not loaded
+     * @param location unique source identifier
+     * @return first source with matching location
      */
-    public @Nullable Map<String, Set<String>> loadedTexts(URI location) {
+    public @Nullable TranslationSource sourceByLocation(URI location) {
         for (var e : keysBySource.entrySet()) {
             if (Objects.equals(e.getKey().getLocation(), location)) {
-                return e.getValue();
+                return e.getKey();
             }
         }
         return null;
@@ -204,9 +207,27 @@ public class Translations {
      * @param text translation
      */
     public void put(String key, String lang, Translation text) {
-        texts.computeIfAbsent(key, (s) -> new ConcurrentHashMap<>())
+        var old = texts.computeIfAbsent(key, s -> new ConcurrentHashMap<>())
                 .put(lang, text);
+        if (old != null) {
+            // remove old mappings
+            removeSourceMapping(key, lang);
+        }
     }
+
+    private void removeSourceMapping(String key, String lang) {
+        var it = keysBySource.values().iterator();
+        while (it.hasNext()) {
+            var byLang = it.next();
+            var keys = byLang.get(lang);
+            if (keys != null) {
+                keys.remove(key);
+                if (keys.isEmpty()) byLang.remove(lang);
+            }
+            if (byLang.isEmpty()) it.remove();
+        }
+    }
+
 
     /**
      * @param key  translation key
@@ -224,10 +245,18 @@ public class Translations {
         return v;
     }
 
+    /**
+     * Removes translation from text map and from source associations
+     * @param lang language id
+     * @param key translation key
+     * @return removed translation.
+     */
     public Translation remove(String lang, String key) {
         var m = texts.get(key);
         if (m == null) return null;
-        return m.remove(lang);
+        var d = m.remove(lang);
+        if (d != null) removeSourceMapping(key, lang);
+        return d;
     }
 
     public boolean hasAnyTexts() {
