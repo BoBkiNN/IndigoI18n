@@ -2,6 +2,7 @@ package xyz.bobkinn.indigoi18n;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -35,6 +36,13 @@ public class Translations {
     private final TemplateCache cache;
 
     /**
+     * When enabled, new translations will be parsed when added.
+     */
+    @Setter
+    @Getter
+    private boolean precomputeCache = true;
+
+    /**
      * @return immutable list of sources which has any keys loaded currently
      */
     public List<TranslationSource> sources() {
@@ -61,6 +69,7 @@ public class Translations {
         }
         var added = adder.getAdded();
         keysBySource.put(source, adder.getAddedKeys());
+        if (!precomputeCache) return;
         for (var e : added.entrySet()) {
             // pair of key and language
             var pair = e.getKey();

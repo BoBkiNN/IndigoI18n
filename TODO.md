@@ -16,3 +16,7 @@
 - Builtin multi-lang source to load multiple files from folder/jar
 - switch to toggle cache and other actions with it
 - more keys control in Translations#put flow. When overwritten, old text can become associated with wrong source
+- Translation cache pre-computes cache for entire string, while in runtime lookup for this key will
+be performed using other strings produced by renderer. For example: translation cache is created, 
+then renderer uses only parts of original text to lookup for parsed entry. 
+In result wrong or unused parsed entry is stored in cache. Should cache be pre-computed for each renderer available?
