@@ -80,6 +80,18 @@ public class TemplateCache {
         templateCache.remove(text);
     }
 
+
+    /**
+     * Reset all cache
+     * @return number of cleared entries
+     */
+    @SuppressWarnings("unused")
+    public int reset() {
+        var c = templateCache.size();
+        templateCache.clear();
+        return c;
+    }
+
     /**
      * @return cached entry or null if not cached
      */
