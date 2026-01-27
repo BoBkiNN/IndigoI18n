@@ -94,7 +94,8 @@ public class Translations {
             var lang = e.getKey();
             var keys = e.getValue();
             for (var key : keys) {
-                var text = remove(lang, key);
+                // we don't use remove method here cuz its modifies map we're iterating over here
+                var text = removeFromTextMap(lang, key);
                 if (text != null) text.resetCache(cache);
             }
         }
@@ -117,7 +118,8 @@ public class Translations {
             var lang = e.getKey();
             var keys = e.getValue();
             for (var key : keys) {
-                var text = remove(lang, key);
+                // we don't use remove method here cuz its modifies map we're iterating over here
+                var text = removeFromTextMap(lang, key);
                 if (text != null) text.resetCache(cache);
             }
         }
@@ -215,6 +217,12 @@ public class Translations {
         }
     }
 
+    protected Translation removeFromTextMap(String lang, String key) {
+        var m = texts.get(key);
+        if (m == null) return null;
+        return m.remove(lang);
+    }
+
     /**
      * Removes translation from text map and from source associations
      * @param lang language id
@@ -222,13 +230,14 @@ public class Translations {
      * @return removed translation.
      */
     public Translation remove(String lang, String key) {
-        var m = texts.get(key);
-        if (m == null) return null;
-        var d = m.remove(lang);
+        var d = removeFromTextMap(lang, key);
         if (d != null) removeSourceMapping(key, lang);
         return d;
     }
 
+    /**
+     * Called from {@link #remove(String, String)}
+     */
     private void removeSourceMapping(String key, String lang) {
         var it = keysBySource.values().iterator();
         while (it.hasNext()) {
