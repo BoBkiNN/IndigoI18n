@@ -87,19 +87,31 @@ public class IndigoI18n implements I18nEngine {
         return renderers.remove(rt) != null;
     }
 
+    /**
+     * @see Translations#load(TranslationSource)
+     */
     public void load(TranslationSource source) {
         texts.load(source);
     }
 
+    /**
+     * @see Translations#unload(TranslationSource)
+     */
     public void unload(TranslationSource source) {
         texts.unload(source);
     }
 
+    /**
+     * @see Translations#sources()
+     */
     @SuppressWarnings("unused")
     public List<TranslationSource> sources() {
         return texts.sources();
     }
 
+    /**
+     * @see Translations#infoFor(String, String)
+     */
     @Override
     public TranslationInfo infoFor(String lang, String key) {
         return texts.infoFor(key, lang);
