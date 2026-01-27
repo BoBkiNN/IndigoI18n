@@ -12,6 +12,7 @@ import xyz.bobkinn.indigoi18n.source.SourceTextAdder;
 import xyz.bobkinn.indigoi18n.source.TranslationLoadError;
 import xyz.bobkinn.indigoi18n.source.TranslationSource;
 
+import java.net.URI;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -27,13 +28,28 @@ public class Translations {
      */
     private final Map<TranslationSource, Map<String, Set<String>>> keysBySource = new ConcurrentHashMap<>();
 
+    /**
+     * Cache instance that is used to create/remove cache entries by translations being (un)loaded
+     */
     @Getter
     private final TemplateCache cache;
 
+    /**
+     * @return immutable list of sources which has any keys loaded currently
+     */
     public List<TranslationSource> sources() {
         return List.copyOf(keysBySource.keySet());
     }
 
+    /**
+     * Creates new source text adder that is used by source to load texts.
+     * For each added translation, its cache is created
+     * @param source source to load
+     * @see #loadedTexts(TranslationSource)
+     * @see #unload(TranslationSource)
+     * @see Translation#createCache(TemplateCache, TranslationInfo)
+     * @throws TranslationLoadError when source failed to load data
+     */
     public void load(@NotNull TranslationSource source) {
         var adder = new SourceTextAdder(this::put);
         try {
@@ -52,8 +68,35 @@ public class Translations {
         }
     }
 
+    /**
+     * Finds all loaded keys from this source, then removes translations by language id and key.
+     * If translation was removed, its cache is reset
+     * @param source source which keys to unload.
+     * @see Translation#resetCache(TemplateCache)
+     * @see #load(TranslationSource)
+     * @see #unload(URI)
+     */
     public void unload(TranslationSource source) {
         var texts = loadedTexts(source);
+        if (texts == null) return;
+        for (var e : texts.entrySet()) {
+            var lang = e.getKey();
+            var keys = e.getValue();
+            for (var key : keys) {
+                var text = remove(lang, key);
+                if (text != null) text.resetCache(cache);
+            }
+        }
+    }
+
+    /**
+     * Unload source by its location
+     * @param location location of source to match
+     * @see #unload(TranslationSource)
+     */
+    @SuppressWarnings("unused")
+    public void unload(URI location) {
+        var texts = loadedTexts(location);
         if (texts == null) return;
         for (var e : texts.entrySet()) {
             var lang = e.getKey();
@@ -68,10 +111,24 @@ public class Translations {
     // sources info
 
     /**
+     * Get text loaded from source
      * @return null if this source is not loaded
      */
     public @Nullable Map<String, Set<String>> loadedTexts(TranslationSource source) {
         return keysBySource.get(source);
+    }
+
+    /**
+     * Get text loaded from source identified to by location
+     * @return null if this source is not loaded
+     */
+    public @Nullable Map<String, Set<String>> loadedTexts(URI location) {
+        for (var e : keysBySource.entrySet()) {
+            if (Objects.equals(e.getKey().getLocation(), location)) {
+                return e.getValue();
+            }
+        }
+        return null;
     }
 
     public @NotNull Map<TranslationSource, Set<String>> loadedKeys() {
@@ -124,6 +181,12 @@ public class Translations {
 
     // end sources info
 
+    /**
+     * Put translation under specified key and language. Old one is replaced by new one.
+     * @param key key
+     * @param lang language id
+     * @param text translation
+     */
     public void put(String key, String lang, Translation text) {
         texts.computeIfAbsent(key, (s) -> new ConcurrentHashMap<>())
                 .put(lang, text);

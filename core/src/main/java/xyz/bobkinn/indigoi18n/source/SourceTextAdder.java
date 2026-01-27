@@ -9,6 +9,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Source text adder that is used to track added translations and keys
+ * @see ISourceTextAdder
+ * @see #getAdded()
+ * @see #getAddedKeys()
+ */
 @RequiredArgsConstructor
 public class SourceTextAdder implements ISourceTextAdder {
     private final ISourceTextAdder addFunction;

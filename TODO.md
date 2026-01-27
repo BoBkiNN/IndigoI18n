@@ -14,3 +14,5 @@
 - flat map translation source to avoid nested object (plurals like `key.one`, `key.many`)
 - possibly move string arguments legacy converter into utility methods instead of using it in builtin AdventureI18n 
 - Builtin multi-lang source to load multiple files from folder/jar
+- switch to toggle cache and other actions with it
+- more keys control in Translations#put flow. When overwritten, old text can become associated with wrong source
