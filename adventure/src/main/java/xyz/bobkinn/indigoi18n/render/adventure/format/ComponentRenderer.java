@@ -102,6 +102,7 @@ public abstract class ComponentRenderer extends Renderer<Component> {
             super(cache, templateFormatter);
         }
 
+        @SuppressWarnings("unused")
         public PlainComponentRenderer(TemplateCache cache) {
             this(cache, ComponentTemplateFormatter.defaultString());
         }
