@@ -23,10 +23,10 @@ public class MiniMessageComponentRenderer extends ComponentRenderer {
 
     /**
      * Creates new format with {@link ComponentTemplateFormatter} that uses {@link StringTemplateFormatter}.<br>
-     * @param serializer serializer used to convert text into Component and to convert String arguments into Component
+     * @param serializer serializer used to convert text into Component
      */
     public MiniMessageComponentRenderer(TemplateCache cache, @NotNull MiniMessage serializer) {
-        this(cache, ComponentTemplateFormatter.defaultString(null), serializer);
+        this(cache, ComponentTemplateFormatter.defaultString(), serializer);
     }
 
     @Override

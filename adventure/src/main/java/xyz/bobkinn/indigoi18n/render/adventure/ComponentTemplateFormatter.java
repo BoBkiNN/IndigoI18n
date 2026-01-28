@@ -41,42 +41,62 @@ public class ComponentTemplateFormatter extends TemplateFormatter<Component> {
 
     private final TemplateFormatter<String> stringTemplateFormatter;
 
-    private final Function<String, Component> legacyConverter;
-
     /**
      *
      * @param stringTemplateFormatter string template converter used to handle and replace text component contents
-     * @param legacyConverter if not null, legacy converter is used to convert String argument into Component
      */
-    public ComponentTemplateFormatter(TemplateFormatter<String> stringTemplateFormatter,
-                                      Function<String, Component> legacyConverter) {
+    public ComponentTemplateFormatter(TemplateFormatter<String> stringTemplateFormatter) {
         this.stringTemplateFormatter = stringTemplateFormatter;
-        this.legacyConverter = legacyConverter;
         registerDefaultConverters();
     }
 
     /**
      * A utility method to create new instance with {@link StringTemplateFormatter}
-     * @param legacyConverter legacy converter
-     * @see #ComponentTemplateFormatter(TemplateFormatter, Function)  ComponentTemplateFormatter
+     */
+    @Contract("-> new")
+    public static @NotNull ComponentTemplateFormatter defaultString() {
+        return new ComponentTemplateFormatter(new StringTemplateFormatter());
+    }
+
+    /**
+     * Utility method used to create default string converter with string argument converter set
+     * @param stringConverter function
+     * @return new instance
+     * @see #defaultString()
      */
     @Contract("_ -> new")
-    public static @NotNull ComponentTemplateFormatter defaultString(Function<String, Component> legacyConverter) {
-        return new ComponentTemplateFormatter(new StringTemplateFormatter(), legacyConverter);
+    public static @NotNull ComponentTemplateFormatter defaultString(Function<String, Component> stringConverter) {
+        var ctf = ComponentTemplateFormatter.defaultString();
+        addStringConverter(ctf, Objects.requireNonNull(stringConverter));
+        return ctf;
     }
 
     /**
      * A utility method to create new instance with {@link StringTemplateFormatter}
      * where {@link LegacyComponentSerializer} acts like legacy argument converter.
      * @param legacyConverter legacy component serializer. If null, no legacy argument converter set.
-     * @see #ComponentTemplateFormatter(TemplateFormatter, Function)  ComponentTemplateFormatter
-     * @see #defaultString(Function)
      */
     public static @NotNull ComponentTemplateFormatter defaultStringLegacy(@Nullable LegacyComponentSerializer legacyConverter) {
-        if (legacyConverter == null) {
-            return ComponentTemplateFormatter.defaultString(null);
-        }
-        return ComponentTemplateFormatter.defaultString(legacyConverter::deserialize);
+        return legacyConverter != null ? defaultString(legacyConverter::deserialize) : defaultString();
+    }
+
+    /**
+     * Adds converter for string argument which applies function and then formats output component using
+     * {@link #TEXT_COMPONENT_CONVERTER} when component is text component and has no children
+     * (with handling childless text we know exact text length to perform aligning etc.)<br>
+     * Currently used for compatibility so passing arg like '&cArg' displays color too.
+     * @param ctf component template formatter
+     * @param function converter function
+     */
+    public static void addStringConverter(ComponentTemplateFormatter ctf, Function<String, Component> function) {
+        ctf.putConverter(String.class, (ctx, argument, format) -> {
+            var c = function.apply(argument);
+            if (c == null) return null;
+            if (c.children().isEmpty() && c instanceof TextComponent tc) {
+                return TEXT_COMPONENT_CONVERTER.format(ctx, tc, format);
+            }
+            return c;
+        });
     }
 
     @Override
@@ -87,18 +107,6 @@ public class ComponentTemplateFormatter extends TemplateFormatter<Component> {
         // Maybe this probably should be moved to formatArgument logic so subclasses won't need to specify it every time,
         //  but I think it's ok
         putConverter(Component.class, ArgumentConverter.noOp());
-        // String -> legacyToAdventure for compatibility so passing arg like '&cArg' displays color too.
-        //  With handling childless text we know exact text length to perform aligning etc.
-        if (legacyConverter != null) {
-            putConverter(String.class, (ctx, argument, format) -> {
-                var c = legacyConverter.apply(argument);
-                if (c == null) return null;
-                if (c.children().isEmpty() && c instanceof TextComponent tc) {
-                    return TEXT_COMPONENT_CONVERTER.format(ctx, tc, format);
-                }
-                return c;
-            });
-        }
     }
 
     @Override

@@ -27,9 +27,8 @@ public class LegacyComponentRenderer extends ComponentRenderer {
      * format String arguments using it
      * @param serializer serializer used to convert text into Component and to convert String arguments into Component
      */
-    public LegacyComponentRenderer(TemplateCache cache, boolean convertStringArgument, @NotNull LegacyComponentSerializer serializer) {
-        this(cache, new ComponentTemplateFormatter(new StringTemplateFormatter(),
-                convertStringArgument ? serializer::deserialize : null), serializer);
+    public LegacyComponentRenderer(TemplateCache cache, @NotNull LegacyComponentSerializer serializer) {
+        this(cache, ComponentTemplateFormatter.defaultString(), serializer);
     }
 
     @Override

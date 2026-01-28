@@ -7,13 +7,10 @@ import org.junit.jupiter.api.Test;
 import xyz.bobkinn.indigoi18n.context.Context;
 import xyz.bobkinn.indigoi18n.template.TemplateParser;
 import xyz.bobkinn.indigoi18n.template.arg.TemplateArgument;
-import xyz.bobkinn.indigoi18n.template.format.StringTemplateFormatter;
 
 class TestComponentTemplateFormatter {
 
-    private final StringTemplateFormatter stringFormatter = new StringTemplateFormatter();
-    private final ComponentTemplateFormatter componentFormatter =
-            new ComponentTemplateFormatter(stringFormatter, Component::text);
+    private final ComponentTemplateFormatter componentFormatter = ComponentTemplateFormatter.defaultString();
 
     private Component formatArg(String pattern, Object value) {
         var entry = TemplateParser.INSTANCE.parse("%{" + pattern + "}");

@@ -103,7 +103,7 @@ public abstract class ComponentRenderer extends Renderer<Component> {
         }
 
         public PlainComponentRenderer(TemplateCache cache) {
-            this(cache, ComponentTemplateFormatter.defaultString(null));
+            this(cache, ComponentTemplateFormatter.defaultString());
         }
 
         @Override

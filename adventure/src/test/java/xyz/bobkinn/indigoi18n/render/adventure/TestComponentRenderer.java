@@ -145,7 +145,7 @@ class TestComponentRenderer {
     void testLegacyRender() {
         var s = LegacyComponentSerializer.builder()
                 .extractUrls().hexColors().character('&').build();
-        var f = new LegacyComponentRenderer(cache, false, s);
+        var f = new LegacyComponentRenderer(cache, s);
         var ctx = ctxWithInfo("test3");
         var r = f.render(ctx, "&c%s", List.of("red"));
         // style of original is merged with root so red is entire text instead of just child
@@ -158,7 +158,8 @@ class TestComponentRenderer {
     void testLegacyRenderLegacyArg() {
         var s = LegacyComponentSerializer.builder()
                 .extractUrls().hexColors().character('&').build();
-        var f = new LegacyComponentRenderer(cache, true, s);
+        var ctf = ComponentTemplateFormatter.defaultStringLegacy(s);
+        var f = new LegacyComponentRenderer(cache, ctf, s);
         var ctx = ctxWithInfo("test3");
         var r = f.render(ctx, "&c%s", List.of("&6gold"));
         // style of original is merged with root so red is entire text instead of just child, then child is golden
@@ -171,7 +172,7 @@ class TestComponentRenderer {
     void testLegacyRender2() {
         var s = LegacyComponentSerializer.builder()
                 .extractUrls().hexColors().character('&').build();
-        var f = new LegacyComponentRenderer(cache, false, s);
+        var f = new LegacyComponentRenderer(cache, s);
         var ctx = ctxWithInfo("test3");
         var r = f.render(ctx, "-&c%s", List.of("red"));
         // IDK how actual component is produced and what is part of our merging or legacy serializer
