@@ -84,7 +84,7 @@ public class ComponentTemplateFormatter extends TemplateFormatter<Component> {
      * Adds converter for string argument which applies function and then formats output component using
      * {@link #TEXT_COMPONENT_CONVERTER} when component is text component and has no children
      * (with handling childless text we know exact text length to perform aligning etc.)<br>
-     * Currently used for compatibility so passing arg like '&cArg' displays color too.
+     * Currently used for compatibility so passing arg like '&amp;cArg' displays color too.
      * @param ctf component template formatter
      * @param function converter function
      */
