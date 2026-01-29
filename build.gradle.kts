@@ -73,8 +73,11 @@ subprojects {
 
                 pom {
                     name.set(rootProject.name+"-"+p.name)
-                    p.description?.let {
-                        description = it
+                    if (p.description.isNullOrBlank()) {
+                        description = "IndigoI18n library part '${p.name}'"
+                        logger.error("Missing description for project ${p.name}")
+                    } else {
+                        description = p.description!!
                     }
 
                     url = "https://github.com/BoBkiNN/IndigoI18n"
@@ -108,6 +111,7 @@ subprojects {
             }
         }
 
+        // configuring after evaluation because mavenLocale publication is created at same time
         signing {
             val f = rootProject.file(".gradle/sign_key.asc")
             val signingKey = if (f.isFile) f.readText() else System.getenv("SIGNING_KEY")
