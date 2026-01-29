@@ -16,9 +16,9 @@ if (!isRelease) {
     version = "$version-SNAPSHOT"
 }
 
-val commit = runCommand("git rev-parse --short HEAD")
+val commit = runCommand("git rev-parse HEAD")
 
-println("Project version $version")
+println("Project version: $version; commit: $commit")
 
 fun runCommand(cmd: String): String {
     val proc = ProcessBuilder(cmd.split(" "))
