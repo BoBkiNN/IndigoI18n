@@ -2,6 +2,7 @@ plugins {
     id("java")
     id("io.freefair.lombok") version "9.1.0"
     `maven-publish`
+    signing
 }
 
 group = "xyz.bobkinn.indigoi18n"
@@ -23,6 +24,7 @@ allprojects {
 
 subprojects {
     apply(plugin = "maven-publish")
+    apply(plugin = "signing")
 
     java {
         withSourcesJar()
@@ -75,6 +77,20 @@ subprojects {
                         developerConnection.set("scm:git:ssh://github.com:BoBkiNN/IndigoI18n.git")
                     }
                 }
+            }
+        }
+
+        signing {
+            val f = rootProject.file(".gradle/sign_key.asc")
+            val signingKey = if (f.isFile) f.readText() else System.getenv("SIGNING_KEY")
+            val signingPassword = findProperty("signingPassword") as String?
+                ?: System.getenv("SIGNING_PASSWORD")
+
+            if (signingKey != null && signingPassword != null) {
+                useInMemoryPgpKeys(signingKey, signingPassword)
+                sign(publishing.publications["mavenLocal"]) // use local for now
+            } else {
+                logger.warn("Signing key or password not found in environment, skipping signing")
             }
         }
     }
