@@ -37,6 +37,13 @@ public class PropertiesSource implements TranslationSource, SingleLangSource {
         return new PropertiesSource(location, language, props);
     }
 
+    /**
+     * Uses {@link StandardCharsets#UTF_8} encoding to read entire file and create {@link Properties} to use in new source.<br>
+     * File must be saved with UTF-8 encoding to allow any language to be written and read correctly without escaping.
+     * @param language language id
+     * @param file file to load from
+     * @return new source
+     */
     public static PropertiesSource fromFile(String language, File file) {
         try (var reader = new BufferedReader(new FileReader(file, StandardCharsets.UTF_8))) {
             var props = new Properties();
