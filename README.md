@@ -1,9 +1,24 @@
-
 # IndigoI18n
 
-This is a flexible Java localization and internationalization library.
+A powerful and extensible Java library for localization and internationalization
 
-## Features
+## 📚 Navigation
+
+- [Features](#-features)
+- [Setup](#-setup)
+- [Examples](#-examples)
+- [Translation files](#-translation-files)
+    - [Properties](#properties)
+    - [Json](#json)
+- [Core of system](#-core-of-system)
+- [Template Syntax](#-template-syntax)
+- [Extending](#-extending)
+- [Adventure and bukkit examples](#-adventure-and-bukkit-examples)
+- [Custom I18n](#-custom-i18n)
+
+---
+
+## ✨ Features
 - Custom output formats (String, Component, any other)
 - Highly extensible architecture: provide your own formats, converters and more
 - Python-like argument format options (alignment, precision, width, grouping, representations, modes)
@@ -12,18 +27,18 @@ This is a flexible Java localization and internationalization library.
 - Plurals support based on The Unicode CLDR
 - Builtin common argument converters (string, numbers, Temporal, Calendar, Date)
 - JSON & Properties format locale loaders.
-- [Adventure](https://github.com/PaperMC/adventure) support (includes MiniMessage and Legacy serializers)
+- [Adventure](https://docs.papermc.io/adventure/) support (includes MiniMessage and Legacy serializers)
 - [Paper API](https://docs.papermc.io/paper/) support to use player language
 
-## Setup
+## 🛠️ Setup
 
 **Requirements**: Java 17 or newer
 
-### **Dependencies**:
+**Dependencies**:
 
 \<TODO>
 
-## Examples
+## 🚀 Examples
 Minimal usage:
 ```java
 public class Main {
@@ -42,7 +57,7 @@ public class Main {
 }
 ```
 
-Using JSON:
+Using JSON:  
 To load texts from json you need to use `indigo-i18n-gson` dependency.
 ```java
 try {
@@ -58,16 +73,17 @@ var text = Indigo.parse("en", "hello");
 System.out.println(text); // outputs "Hello"
 ```
 
-## Translation files
+## 🌍 Translation files
 
-Default Gson (`.json`) and Properties (`.properties`) sources parses data differently, 
+Default Gson (`.json`) and Properties (`.properties`) sources parses data differently,  
 but most of them are just key-value pairs.<br>
 Here is description of builtin formats.
 
 ### Properties
 Simplest translation source. Each key correspond to one basic translation, so no plurals allowed.<br>
-One file correspond to one language. 
+One file correspond to one language.  
 Builtin implementation is [PropertiesSource](core/src/main/java/xyz/bobkinn/indigoi18n/source/impl/PropertiesSource.java)
+
 Example file `en.properties`:
 ```properties
 item.apple=Apple
@@ -81,6 +97,7 @@ With this you can:
 - Attach context overrides
 
 One file correspond to one language.<br>
+
 Example file `en.json`:
 ```json5
 {
@@ -115,26 +132,26 @@ Example file `en.json`:
 }
 ```
 
-## Core of system
-The Core module defines system layers and abstract classes/interfaces with default implementations.
+## 🧠 Core of system
+The Core module defines system layers and abstract classes/interfaces with default implementations.  
 Going from top to bottom, these layers and abstract classes are:
 - I18nMixin: defines high-level methods that are attached to IndigoI18n.
 - IndigoI18n: empty entrypoint class which can be populated or subclassed for customization
-  - TranslationSource: source that can load translation texts into IndigoI18n from JSON and other formats
-  - TranslationResolver: defines strategy used to lookup translation by key
+    - TranslationSource: source that can load translation texts into IndigoI18n from JSON and other formats
+    - TranslationResolver: defines strategy used to lookup translation by key
 - Renderer: renderer controls how to work with input string: how to treat it, what template formatter to use
-  - TemplateCache: caches parsed templates and invokes parser
-  - ITemplateParser: parses input template text into parts
-- TemplateFormatter: template formatter takes template parts, 
+    - TemplateCache: caches parsed templates and invokes parser
+    - ITemplateParser: parses input template text into parts
+- TemplateFormatter: template formatter takes template parts,  
   replaces arguments and builds resulting object from them
 - ArgumentConverter: implementations of this interface controls how different types of arguments are converted
 
-## Template Syntax
+## 🧩 Template Syntax
 
-The default template parser supports **placeholder substitution** and **inline translations** with a flexible 
+The default template parser supports **placeholder substitution** and **inline translations** with a flexible  
 syntax inspired by printf-style formatting and custom templates.
 
-### 1. **Plain Text**
+### 1. Plain Text
 
 Any text outside of `%` sequences is treated as plain text.
 
@@ -142,28 +159,28 @@ Any text outside of `%` sequences is treated as plain text.
 Hello, world! → "Hello, world!"
 ```
 
-### 2. **Simple Argument Placeholder**
+### 2. Simple Argument Placeholder
 
-* **Syntax:** `%s`
-* **Description:** Represents the next sequential argument. The parser automatically assigns it the next index.
+- **Syntax:** `%s`
+- **Description:** Represents the next sequential argument. The parser automatically assigns it the next index.
 
 ```text
 "Hello, %s!" → first argument replaces %s
 ```
 
-### 3. **Indexed Argument Placeholder**
+### 3. Indexed Argument Placeholder
 
-* **Syntax:** `%n` where `n` is a 1-based argument index.
-* **Description:** Explicitly references an argument at the given index.
+- **Syntax:** `%n` where `n` is a 1-based argument index.
+- **Description:** Explicitly references an argument at the given index.
 
 ```text
 "Hello, %1!" → replaces with the first argument
 ```
 
-### 4. **Advanced Argument Placeholder**
+### 4. Advanced Argument Placeholder
 
-* **Syntax:** `%{...}`
-* **Description:** Enclosed in `%{` and `}`, these placeholders can include optional index, sequential marker, conversion, and formatting specifications.
+- **Syntax:** `%{...}`
+- **Description:** Enclosed in `%{` and `}`, these placeholders can include optional index, sequential marker, conversion, and formatting specifications.
 
 #### Components
 
@@ -185,21 +202,21 @@ Hello, world! → "Hello, world!"
 "%{:}"     → equivalent to "%s", next sequential argument
 ```
 
-*Notes:*
+Notes:
 
-* Explicit indexes (`1`, `2`, …) override sequential indexing.
-* `'s'` is used to explicitly indicate sequential arguments inside `%{...}`.
-* If no index or `'s'` is specified, the argument will use the next sequential index.
-* `%{}`, `%{s}`, and `%{:}` are all functionally equivalent to `%s`.
+- Explicit indexes (`1`, `2`, …) override sequential indexing.
+- `'s'` is used to explicitly indicate sequential arguments inside `%{...}`.
+- If no index or `'s'` is specified, the argument will use the next sequential index.
+- `%{}`, `%{s}`, and `%{:}` are all functionally equivalent to `%s`.
 
-### 5. **Inline Translation**
+### 5. Inline Translation
 
-* **Syntax:** `%{t:key[:depth][:lang]}`
-* **Description:** Represents a translation entry with optional recursion depth and language override.
+- **Syntax:** `%{t:key[:depth][:lang]}`
+- **Description:** Represents a translation entry with optional recursion depth and language override.
 
-> To perform inlining, TemplateFormatter gets text by specified key in
+> To perform inlining, TemplateFormatter gets text by specified key in  
 > specified language (or current one) and with same output type.<br>
-> It directly uses `parse(RenderType<T> ft, @Nullable Context ctx, String lang, String key, List<Object> args)` method 
+> It directly uses `parse(RenderType<T> ft, @Nullable Context ctx, String lang, String key, List<Object> args)` method  
 > to get object to insert.<br>Render type of inlined text will be same as originally requested.<br>
 
 When remaining depth is 0 or less, `<key>` is outputted, where `key` is key of translation which meant to be inlined.
@@ -221,27 +238,27 @@ When remaining depth is 0 or less, `<key>` is outputted, where `key` is key of t
 "%{t:greeting:3:es}"    → translate key "greeting", depth 3, Spanish
 ```
 
-### 6. **Escaping Percent Sign**
+### 6. Escaping Percent Sign
 
-* **Syntax:** `%%`
-* **Description:** Represents a literal percent sign.
+- **Syntax:** `%%`
+- **Description:** Represents a literal percent sign.
 
 ```text
 "Progress: 50%%" → "Progress: 50%"
 ```
 
-### **Argument format syntax**
+### Argument format syntax
 
-Using advanced argument syntax, formatting rules can be changed for that argument.
-Format syntax is almost same as 
-[Python 3.11 Format Specification Mini-Language](https://docs.python.org/3.11/library/string.html#formatspec)
+Using advanced argument syntax, formatting rules can be changed for that argument.  
+Format syntax is almost same as  
+[Python 3.11 Format Specification Mini-Language](https://docs.python.org/3.11/library/string.html#formatspec)  
 so you can use it for syntax reference.
 
 Differences are:
-* `z` flag are not supported
-* each argument converter can handle this format with its own rules so illegal combinations isn't checked when parsing.
+- `z` flag are not supported
+- each argument converter can handle this format with its own rules so illegal combinations isn't checked when parsing.
 
-### *Conversion implementation*
+### Conversion implementation
 
 By default, there are 3 conversion modes.
 
@@ -253,15 +270,14 @@ By default, there are 3 conversion modes.
 
 When used, string values are quoted using Python-like rules:
 
-* Single quotes (`'`) are preferred when possible
-* If the string already contains single quotes, double quotes (`"`) are used instead
-* If both quote types are present, the less frequent one is chosen
-* The chosen quote character and backslashes (`\`) are escaped
+- Single quotes (`'`) are preferred when possible
+- If the string already contains single quotes, double quotes (`"`) are used instead
+- If both quote types are present, the less frequent one is chosen
+- The chosen quote character and backslashes (`\`) are escaped
 
 This ensures the shortest and most readable quoted representation while remaining unambiguous.
 
 Example:
-
 ```text
 hello        → 'hello'
 he'llo       → "he'llo"
@@ -270,10 +286,10 @@ he"l'lo      → 'he"l\'lo'
 
 #### `h`/`H` - hash
 Outputs hash code of argument in hexadecimal format.<br>
-If argument is null, `null` is outputted.
+If argument is null, `null` is outputted.  
 If conversion is `H`, resulting string is uppercased.
 
-This matches `%h`/`%H` behaviour from 
+This matches `%h`/`%H` behaviour from  
 [`String.format`](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html#format(java.lang.String,java.lang.Object...))
 
 Examples:
@@ -287,191 +303,13 @@ Examples:
 #### `s` - string
 If argument is not a string, it is converted using `String.valueOf` method. No quoting performed.
 
-## Argument converters rules
+## 🧱 Extending
 
-This section describes how builtin argument converters interpret `FormatPattern`.
-Parsing only validates syntax — all semantic behavior is defined by converters.
-
-### Common behavior
-
-All builtin converters support:
-
-* **Width and alignment**
-
-    * Default alignment:
-
-        * strings → left
-        * numbers → right
-    * Custom fill and alignment types are supported, including sign-aware alignment (`=`).
-* **Sign handling**
-
-    * Controlled by sign flag (`+`, `-`, space)
-    * Applied before width alignment
-* Unsupported format options are ignored unless explicitly stated.
-
----
-
-### String converter
-
-Applies generic string formatting.
-
-Supported options:
-
-* **Precision** — maximum string length (cut from the end)
-* **Width & alignment**
-
-Notes:
-
-* No numeric formatting
-
----
-
-### Integer number converter (`byte`, `short`, `int`, `long`)
-
-Base behavior for all integer-like converters.
-
-Supported type specifiers:
-
-* `d` (default) — decimal
-* `b`, `o`, `x`, `X` — binary, octal, hexadecimal
-* `c` — Unicode character
-* `n` — locale-aware decimal formatting
-
-Supported options:
-
-* **Alternate form (`#`)**
-
-    * Adds radix prefix (`0b`, `0o`, `0x`)
-* **Grouping**
-
-    * Decimal → groups of 3
-    * Binary / octal / hex → groups of 4
-* **Sign handling**
-* **Width & alignment**
-
-    * Sign-aware (`=`) alignment supported
-
-Special cases:
-
-* `c` outputs a single character if value is valid, otherwise falls back to default formatting
-* `n` uses locale from rendering context
-
----
-
-### BigInteger converter
-
-Same rules as **integer number converter**, with these differences:
-
-* No size limitations
-* Grouping is applied to string digits instead of numeric value
-* Locale-aware `n` mode uses `NumberFormat`
-
----
-
-### Floating-point number converter (`float`, `double`)
-
-Same alignment and sign rules as integer converter.
-
-Supported type specifiers:
-
-* `f`, `F` — fixed-point
-* `e`, `E` — scientific
-* `%` — percent
-* `n` — locale-aware decimal formatting
-
-Precision:
-
-* Default precision is `6`
-* Interpreted as:
-
-    * fractional digits for `f`, `%`
-    * significant digits for `e`
-
-Grouping:
-
-* Applies only to integer part
-* Ignored for scientific notation
-
-Special values:
-
-* `NaN` → `nan` / `NAN`
-* `Infinity` → `inf` / `INF`
-
-Alternate form (`#`):
-
-* Removes trailing `.0` if fractional part is zero
-
----
-
-### BigDecimal converter
-
-Same rules as **floating-point number converter**, with these differences:
-
-* Uses exact decimal arithmetic (no binary rounding)
-* Precision controls:
-
-    * scale for `f`
-    * math context for `e`
-* Locale-aware modes:
-
-    * `n` — variable fraction digits
-    * `N` — enforces minimum fraction digits
-
-Grouping behavior matches floating-point converter.
-
----
-
-### Temporal / Date / Calendar converters
-
-These converters support `TemporalAccessor`, `Date`, and `Calendar`.
-All three share identical formatting rules.
-
-Formatting is selected by the **type specifier** and may be locale-aware.
-
-#### Type specifiers
-
-**Time fields**
-
-* `h` — hour (no padding)
-* `H` — hour (2-digit, zero-padded)
-* `m` — minute
-* `M` — minute (2-digit)
-* `s` — second
-* `S` — second (2-digit)
-
-**Locale-aware date / time**
-
-* `N` — full date/time
-* `B` — long date/time
-* `n` — medium date/time
-* `b` — short date/time
-
-**Timezone**
-
-* `z` — timezone name / ID
-* `Z` — numeric offset (`±HHMM`)
-
-**Default**
-
-* Any other type uses medium date/time in root locale
-
-#### Post-processing
-
-After date/time formatting:
-
-* precision cuts the resulting string
-* width and alignment are applied
-
-If formatting fails, the value’s `toString()` is used as fallback.
-
-
-## Extending
-
-You can extend different parts of system by subclassing and overriding methods
+You can extend different parts of system by subclassing and overriding methods  
 or adding new converters, renderers etc.
 
 ### Adding argument converter
-When you obtain an instance of `TemplateFormatter` you can use method `putConverter` to attach
+When you obtain an instance of `TemplateFormatter` you can use method `putConverter` to attach  
 your implementation of `ArgumentConverter` for some class. Example:
 ```java
 // obtain template formatter 
@@ -483,7 +321,6 @@ f.putConverter(MyObject.class, converter);
 ```
 
 ### Adding renderer type
-
 ```java
 // obtain IndigoI18n instance
 var i = new IndigoI18n();
@@ -495,51 +332,55 @@ i.addRenderer(type, StringRenderer::new);
 i.parse(type, null, "en", "test", List.of());
 ```
 
-Example simple implementation is
+Example simple implementation is  
 [StringRenderer](core/src/main/java/xyz/bobkinn/indigoi18n/render/impl/StringRenderer.java).<br>
-To create your own Renderer you need to subclass
-[Renderer<O>](core/src/main/java/xyz/bobkinn/indigoi18n/render/Renderer.java) and implement abstract
+To create your own Renderer you need to subclass  
+[Renderer<O>](core/src/main/java/xyz/bobkinn/indigoi18n/render/Renderer.java) and implement abstract  
 methods. Type variable O is output type of you renderer, for example String or your custom text.
 
-## Adventure and bukkit examples:
+## 🧪 Adventure and bukkit examples
 
-Test plugin showcasing AdventureI18n, AdventureTranslator and usage of GsonTranslationSource
+Test plugin showcasing AdventureI18n, AdventureTranslator and usage of GsonTranslationSource  
 [Link to file](paper/paper-adventure/src/test/java/xyz/bobkinn/indigoi18n/paper/MyTestPlugin.java)
 
-## Custom I18n
+## 🧰 Custom I18n
 
 You can customize high-level api by adding renderers and mixins to IndigoI18n subclass. Usual steps are:
 
 1. Subclass IndigoI18n or its subclass:
     ```java
-      public class MyI18n extends IndigoI18n {
-      }
+    public class MyI18n extends IndigoI18n {
+    }
     ```
-2. Add and configure renderers:
-    Override `addDefaultRenderers` method to add your renderers
+
+2. Add and configure renderers:  
+   Override `addDefaultRenderers` method to add your renderers
     ```java
-        @Override
-        protected void addDefaultRenderers() {
-            // add string renderer with key RenderType.STRING
-            addRenderer(RenderType.STRING, StringRenderer::new);
-        }
+    @Override
+    protected void addDefaultRenderers() {
+        // add string renderer with key RenderType.STRING
+        addRenderer(RenderType.STRING, StringRenderer::new);
+    }
     ```
-3. Add mixins:
-    Mixins are high-level interfaces with all default methods. <br>
-    They provide useful shortcuts for different render types and other common-used utilities.<br>
-    You can use them or create your own, for example they can be used to: 
-      - retrieve language from thread local or system environment
-      - accept text viewer and extract language from it
-      - alter created context with own data
+
+3. Add mixins:  
+   Mixins are high-level interfaces with all default methods.<br>
+   They provide useful shortcuts for different render types and other common-used utilities.<br>
+   You can use them or create your own, for example they can be used to:
+   - retrieve language from thread local or system environment
+   - accept text viewer and extract language from it
+   - alter created context with own data
     ```java
-      public class MyI18n extends IndigoI18n implements StringI18nMixin
+    public class MyI18n extends IndigoI18n implements StringI18nMixin
     ```
+
    The StringI18nMixin adds new `parse(...)` methods that uses `RenderType.STRING`.<br>
    Note that if mixin uses render type which is not registered, runtime errors like
    `Unknown renderer for output String` will occur later.
-4. Setup:
-    Before using your instance, you must call `setup()` method
-    to add renderers. Also, you probably want to load some sources.
+
+4. Setup:  
+   Before using your instance, you must call `setup()` method  
+   to add renderers. Also, you probably want to load some sources.
     ```java
     var i18n = new MyI18n();
     // invoke setup to register renderers
@@ -551,8 +392,9 @@ You can customize high-level api by adding renderers and mixins to IndigoI18n su
     // use high-level methods provided by mixin
     i18n.parse("en", "key", "arg1");
     ```
-5. (Optional) Static shortcut:
-    You can generate static shortcut using @GenStaticDefault annotation and annotation processor.<br>
+
+5. (Optional) Static shortcut:  
+   You can generate static shortcut using @GenStaticDefault annotation and annotation processor.
     ```java
     // specify generated class name and static method to use
     @GenStaticDefault(name = "I18n", creator = "create")
@@ -567,6 +409,7 @@ You can customize high-level api by adding renderers and mixins to IndigoI18n su
         }
     }
     ```
-   Now you can use: `I18n.parse("en", "key", "arg1")`.<br>
-   Generated class is located in same package and have `public static final INSTANCE` 
-   field with type of your class.
+
+    Now you can use: `I18n.parse("en", "key", "arg1")`.<br>
+    Generated class is located in same package and have `public static final INSTANCE`  
+    field with type of your class.
