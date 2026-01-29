@@ -1,5 +1,7 @@
+import java.util.concurrent.TimeUnit
+
 plugins {
-    id("java")
+    java
     id("io.freefair.lombok") version "9.1.0"
     `maven-publish`
     signing
@@ -7,6 +9,27 @@ plugins {
 
 group = "xyz.bobkinn.indigoi18n"
 version = property("version") as String
+
+val isRelease = findProperty("isRelease") == "true"
+
+if (!isRelease) {
+    version = "$version-SNAPSHOT"
+}
+
+val commit = runCommand("git rev-parse --short HEAD")
+
+println("Project version $version")
+
+fun runCommand(cmd: String): String {
+    val proc = ProcessBuilder(cmd.split(" "))
+        .directory(rootDir)
+        .redirectOutput(ProcessBuilder.Redirect.PIPE)
+        .redirectError(ProcessBuilder.Redirect.PIPE)
+        .start()
+    proc.waitFor(10, TimeUnit.SECONDS)
+    if (proc.exitValue() != 0) throw RuntimeException("Command exited with non-0 error code")
+    return proc.inputStream.bufferedReader().readText().trim()
+}
 
 repositories {
     mavenCentral()
@@ -76,6 +99,11 @@ subprojects {
                         connection.set("scm:git:git://github.com/BoBkiNN/IndigoI18n.git")
                         developerConnection.set("scm:git:ssh://github.com:BoBkiNN/IndigoI18n.git")
                     }
+
+                    withXml {
+                        asNode().appendNode("properties")
+                            .appendNode("commit", commit)
+                    }
                 }
             }
         }
@@ -85,8 +113,6 @@ subprojects {
             val signingKey = if (f.isFile) f.readText() else System.getenv("SIGNING_KEY")
             val signingPassword = findProperty("signingPassword") as String?
                 ?: System.getenv("SIGNING_PASSWORD")
-
-            val isRelease = findProperty("isRelease") == "true"
 
             gradle.taskGraph.whenReady {
                 val hasPublishTask = allTasks.any { it.name.contains("publish", ignoreCase = true) }
