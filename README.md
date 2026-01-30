@@ -13,7 +13,6 @@ A powerful and extensible Java library for localization and internationalization
 - [Core of system](#-core-of-system)
 - [Template Syntax](#-template-syntax)
 - [Extending](#-extending)
-- [Adventure and bukkit examples](#-adventure-and-bukkit-examples)
 - [Custom I18n](#-custom-i18n)
 
 ---
@@ -73,6 +72,11 @@ var text = Indigo.parse("en", "hello");
 System.out.println(text); // outputs "Hello"
 ```
 
+### Adventure and bukkit examples
+
+Test plugin showcasing AdventureI18n, AdventureTranslator and usage of GsonTranslationSource  
+[Link to file](paper/paper-adventure/src/test/java/xyz/bobkinn/indigoi18n/paper/MyTestPlugin.java)
+
 ## 🌍 Translation files
 
 Default Gson (`.json`) and Properties (`.properties`) sources parses data differently,  
@@ -106,7 +110,7 @@ Example file `en.json`:
   "bye": "Goodbye",
   // complex formats. type field is used to determine type of translation
   "long": { // same as "long": "Long"
-    "type": "basic",
+    "type": "basic", // basic type
     "text": "Long"
   },
   // plurality support
@@ -337,11 +341,6 @@ Example simple implementation is
 To create your own Renderer you need to subclass  
 [Renderer<O>](core/src/main/java/xyz/bobkinn/indigoi18n/render/Renderer.java) and implement abstract  
 methods. Type variable O is output type of you renderer, for example String or your custom text.
-
-## 🧪 Adventure and bukkit examples
-
-Test plugin showcasing AdventureI18n, AdventureTranslator and usage of GsonTranslationSource  
-[Link to file](paper/paper-adventure/src/test/java/xyz/bobkinn/indigoi18n/paper/MyTestPlugin.java)
 
 ## 🧰 Custom I18n
 
