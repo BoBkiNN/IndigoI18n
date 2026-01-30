@@ -12,7 +12,6 @@
 - module with examples
 - warn about missing plural strings for plural translations
 - flat map translation source to avoid nested object (plurals like `key.one`, `key.many`)
-- Builtin multi-lang source to load multiple files from folder/jar
 - Translation cache pre-computes cache for entire string, while in runtime lookup for this key will
 be performed using other strings produced by renderer. For example: translation cache is created, 
 then renderer uses only parts of original text to lookup for parsed entry. 
