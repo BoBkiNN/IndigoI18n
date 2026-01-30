@@ -84,7 +84,7 @@ class GsonTranslationSourceTest {
         }
 
         // Create source from file
-        GsonTranslationSource source = GsonTranslationSource.fromFile(file.toURI(), langName, file);
+        GsonTranslationSource source = GsonTranslationSource.fromFile(langName, file);
 
         TestAdder adder = new TestAdder();
         source.load(adder);

@@ -49,9 +49,9 @@ public class GsonTranslationSource implements TranslationSource, SingleLangSourc
         return new GsonTranslationSource(location, (g) -> element, DEFAULT_GSON_SUPPLIER, language, DEFAULT_CONTEXT_PARSER);
     }
 
-    @Contract("_, _, _ -> new")
-    public static @NotNull GsonTranslationSource fromFile(@Nullable URI location, String language, File file) {
-        return new GsonTranslationSource(location, (g) -> {
+    @Contract("_, _ -> new")
+    public static @NotNull GsonTranslationSource fromFile(String language, File file) {
+        return new GsonTranslationSource(file.toURI(), (g) -> {
             try (var fr = new BufferedReader(new FileReader(file, StandardCharsets.UTF_8))) {
                 return g.fromJson(fr, JsonObject.class);
             } catch (IOException e) {
