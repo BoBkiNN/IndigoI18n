@@ -1,6 +1,7 @@
 package xyz.bobkinn.indigoi18n.render.adventure.format;
 
 import lombok.Getter;
+import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import org.jetbrains.annotations.NotNull;
@@ -14,11 +15,39 @@ import xyz.bobkinn.indigoi18n.template.TemplateParseOptions;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Getter
 public abstract class ComponentRenderer extends Renderer<Component> {
 
     private final ComponentTemplateFormatter templateFormatter;
+
+    private final Map<String, Component> producerCache = new ConcurrentHashMap<>();
+
+    /**
+     * Toggles caching and cache usage of {@link #deserializeInput(String)} calls
+     */
+    @Getter
+    @Setter
+    private boolean producerCacheEnabled = true;
+
+    /**
+     * Clears producer cache for specified text
+     * @param text cache key
+     */
+    @SuppressWarnings("unused")
+    public void resetProducerCache(String text) {
+        producerCache.remove(text);
+    }
+
+    /**
+     * Clears all producer cache entries
+     */
+    @SuppressWarnings("unused")
+    public void resetProducerCache() {
+        producerCache.clear();
+    }
 
     public abstract Component deserializeInput(String text);
 
@@ -29,7 +58,14 @@ public abstract class ComponentRenderer extends Renderer<Component> {
 
     @Override
     public Component produce(String text) {
-        return deserializeInput(text);
+        if (producerCacheEnabled) {
+            // lookup cache
+            var cached = producerCache.get(text);
+            if (cached != null) return cached;
+        }
+        var v = deserializeInput(text);
+        if (producerCacheEnabled) producerCache.put(text, v);
+        return v;
     }
 
     /**
