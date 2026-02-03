@@ -1,0 +1,5 @@
+{
+  "myplugin.message.join": "&aPlayer &e%s&a joined",
+  "myplugin.message.quit": "&cPlayer &e%s&c left the game",
+  "myplugin.test": "&aThis is &etest &9message &f%{s:_.3f}"
+}

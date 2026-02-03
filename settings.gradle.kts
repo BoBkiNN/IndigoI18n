@@ -6,3 +6,5 @@ include("adventure")
 include("paper")
 include("paper:paper-adventure")
 include("examples")
+include("examples:test-plugin")
+findProject(":examples:test-plugin")?.name = "test-plugin"
