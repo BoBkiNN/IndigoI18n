@@ -45,11 +45,12 @@ public class AdventureTranslator implements Translator  {
         return i18n.getTexts().hasAnyTexts() ? TriState.TRUE : TriState.FALSE;
     }
 
-    @Override
-    public boolean canTranslate(@NotNull String key, @NotNull Locale locale) {
-        var lang = i18n.getLocaleResolver().getId(locale);
-        return i18n.getTexts().has(key, lang);
-    }
+    // adventure >= 4.20
+//    @Override
+//    public boolean canTranslate(@NotNull String key, @NotNull Locale locale) {
+//        var lang = i18n.getLocaleResolver().getId(locale);
+//        return i18n.getTexts().has(key, lang);
+//    }
 
     @Override
     public @Nullable MessageFormat translate(@NotNull String key, @NotNull Locale locale) {

@@ -7,16 +7,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.plugin.java.JavaPluginLoader;
-import org.jetbrains.annotations.NotNull;
 import xyz.bobkinn.indigoi18n.render.adventure.AdventureRenderers;
 import xyz.bobkinn.indigoi18n.render.adventure.AdventureTranslator;
 import xyz.bobkinn.indigoi18n.source.TranslationLoadError;
 import xyz.bobkinn.indigoi18n.source.impl.gson.GsonTranslationSource;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
 
@@ -30,8 +26,7 @@ public class MyTestPlugin extends JavaPlugin implements Listener {
     // adventure translator which will be used for TranslatableComponent
     private final AdventureTranslator translator;
 
-    public MyTestPlugin(@NotNull JavaPluginLoader loader, @NotNull PluginDescriptionFile description, @NotNull File dataFolder, @NotNull File file) {
-        super(loader, description, dataFolder, file);
+    public MyTestPlugin() {
         // prepare source to load translations from. Here we will use en.json file from resources
         try {
             source = GsonTranslationSource.fromResource("en", getClassLoader(), "en.json");

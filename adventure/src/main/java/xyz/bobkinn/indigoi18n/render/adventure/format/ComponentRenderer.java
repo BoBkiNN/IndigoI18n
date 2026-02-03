@@ -66,7 +66,10 @@ public abstract class ComponentRenderer extends Renderer<Component> {
             } else extra.add(c);
         }
         // apply root style and add children
-        return res.mergeStyle(comp).append(extra);
+        // .append method added in adventure 4.20
+        var nc = new ArrayList<>(res.children());
+        nc.addAll(extra);
+        return res.mergeStyle(comp).children(nc);
     }
 
     private void resetSharedSeqIdx(Context ctx) {

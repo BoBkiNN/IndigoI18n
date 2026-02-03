@@ -15,6 +15,7 @@ import xyz.bobkinn.indigoi18n.render.adventure.format.LegacyComponentRenderer;
 import xyz.bobkinn.indigoi18n.render.adventure.format.MiniMessageComponentRenderer;
 import xyz.bobkinn.indigoi18n.template.TemplateParser;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -42,6 +43,10 @@ class TestComponentRenderer {
         return Component.text(s);
     }
 
+    private static Component empty(Component... children) {
+        return Component.empty().children(Arrays.asList(children));
+    }
+
     @Test
     void replacesSimpleArgument() {
         Context ctx = ctxWithInfo("test");
@@ -50,8 +55,7 @@ class TestComponentRenderer {
         Component result = format.replaceArguments(ctx, input, List.of("world"));
 
         Assertions.assertEquals(
-                text("")
-                        .append(text("hello "), text("world")),
+                empty(text("hello "), text("world")),
                 result
         );
     }
@@ -64,7 +68,7 @@ class TestComponentRenderer {
         Component result = format.replaceArguments(ctx, input, List.of(1.234));
 
         Assertions.assertEquals(
-                text("").append(text("value "), text("1.23")),
+                empty(text("value "), text("1.23")),
                 result
         );
     }
@@ -77,7 +81,7 @@ class TestComponentRenderer {
         Component result = format.replaceArguments(ctx, input, List.of(10));
 
         Assertions.assertEquals(
-                Component.empty().append(text("value "), text("%2")),
+                empty(text("value "), text("%2")),
                 result
         );
     }
@@ -119,7 +123,7 @@ class TestComponentRenderer {
         Component result = format.replaceArguments(ctx, input, List.of("world"));
 
         Assertions.assertEquals(
-                Component.empty().append(text("hello "), text("world"))
+                empty(text("hello "), text("world"))
                         .color(NamedTextColor.RED),
                 result
         );
@@ -176,8 +180,7 @@ class TestComponentRenderer {
         var ctx = ctxWithInfo("test3");
         var r = f.render(ctx, "-&c%s", List.of("red"));
         // IDK how actual component is produced and what is part of our merging or legacy serializer
-        Assertions.assertEquals(Component.empty()
-                .append(Component.text("-"),
+        Assertions.assertEquals(empty(Component.text("-"),
                         Component.empty().color(NamedTextColor.RED)
                                 .append(Component.text("red"))), r);
     }
@@ -202,8 +205,7 @@ class TestComponentRenderer {
         var r = f.render(ctx, "-<red>%s</red>", List.of("red"));
         // red text component is inputted into formatter so result for <red>%s</red will be red empty component,
         // and then It's added to empty root component after -
-        Assertions.assertEquals(Component.empty().append(
-                Component.text("-"),
+        Assertions.assertEquals(empty(text("-"),
                 Component.empty().color(NamedTextColor.RED)
                         .append(Component.text("red"))), r);
     }

@@ -26,7 +26,7 @@ dependencies {
     implementation("net.kyori:adventure-text-serializer-legacy:${property("adventure-version")}")
     implementation("net.kyori:adventure-text-minimessage:${property("adventure-version")}")
 
-    testImplementation("com.github.seeseemelk:MockBukkit-v1.18:2.85.2")
+    testImplementation("com.github.seeseemelk:MockBukkit-v1.20:3.88.1")
     testImplementation("org.slf4j:slf4j-simple:2.0.17")
     testImplementation(project(":gson"))
 }

@@ -46,6 +46,9 @@ allprojects {
 }
 
 subprojects {
+    // do not configure examples
+    if (path.startsWith(":examples")) return@subprojects
+
     apply(plugin = "maven-publish")
     apply(plugin = "signing")
 
