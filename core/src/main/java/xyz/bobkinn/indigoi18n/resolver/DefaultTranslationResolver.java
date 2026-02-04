@@ -12,7 +12,9 @@ public class DefaultTranslationResolver implements TranslationResolver {
 
     @Override
     public Translation get(Context ctx, Translations texts, String key, String lang) {
-        return texts.getOr(key, lang, Translation.create(key));
+        var v = getOrNull(ctx, texts, key, lang);
+        if (v != null) return v;
+        return Translation.create(key);
     }
 
     @Override
@@ -22,6 +24,8 @@ public class DefaultTranslationResolver implements TranslationResolver {
 
     @Override
     public Translation getOrKey(Context ctx, Translations texts, String key, String lang) {
-        return texts.getOr(key, lang, Translation.create(key));
+        var v = getOrNull(ctx, texts, key, lang);
+        if (v != null) return v;
+        return Translation.create(key);
     }
 }
