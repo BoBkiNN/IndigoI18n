@@ -35,6 +35,6 @@ public interface TranslationResolver {
     default Translation getOrKey(Context ctx, Translations texts, String key, String lang) {
         var v = getOrNull(ctx, texts, key, lang);
         if (v == null) return Translation.create(key);
-        return null;
+        return v;
     }
 }
