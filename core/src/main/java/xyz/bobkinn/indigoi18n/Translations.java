@@ -280,6 +280,7 @@ public class Translations {
         return !texts.isEmpty();
     }
 
+    @SuppressWarnings("unused")
     public boolean has(String key, String lang) {
         return getOr(key, lang, null) != null;
     }
