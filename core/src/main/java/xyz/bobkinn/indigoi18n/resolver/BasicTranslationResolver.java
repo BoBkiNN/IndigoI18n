@@ -8,7 +8,7 @@ import xyz.bobkinn.indigoi18n.data.Translation;
 /**
  * Returns key if exact translation for exact language not found inside {@link Translations} texts map
  */
-public class DefaultTranslationResolver implements TranslationResolver {
+public class BasicTranslationResolver implements TranslationResolver {
 
     @Override
     public Translation get(Context ctx, Translations texts, String key, String lang) {

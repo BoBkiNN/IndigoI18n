@@ -268,6 +268,14 @@ public class Translations {
         return v;
     }
 
+    /**
+     * Returns null if translation with this key and language not found
+     * @see #getOr(String, String, Translation)
+     */
+    public Translation getOrNull(String key, String lang) {
+        return getOr(key, lang, null);
+    }
+
     public boolean hasAnyTexts() {
         return !texts.isEmpty();
     }

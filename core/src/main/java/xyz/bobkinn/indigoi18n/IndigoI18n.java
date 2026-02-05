@@ -9,7 +9,7 @@ import xyz.bobkinn.indigoi18n.data.Translation;
 import xyz.bobkinn.indigoi18n.data.TranslationInfo;
 import xyz.bobkinn.indigoi18n.render.RenderType;
 import xyz.bobkinn.indigoi18n.render.Renderer;
-import xyz.bobkinn.indigoi18n.resolver.DefaultTranslationResolver;
+import xyz.bobkinn.indigoi18n.resolver.FallbackTranslationResolver;
 import xyz.bobkinn.indigoi18n.resolver.TranslationResolver;
 import xyz.bobkinn.indigoi18n.source.TranslationSource;
 import xyz.bobkinn.indigoi18n.template.ITemplateParser;
@@ -26,6 +26,8 @@ import java.util.function.Function;
  * @see StringI18n
  */
 public class IndigoI18n implements I18nEngine {
+    public static final String DEFAULT_LANGUAGE = "en_us";
+
     @Getter
     protected final Translations texts;
     /**
@@ -43,7 +45,7 @@ public class IndigoI18n implements I18nEngine {
 
     public IndigoI18n(Translations texts, LocaleResolver localeResolver) {
         this.texts = texts;
-        resolver = new DefaultTranslationResolver();
+        resolver = new FallbackTranslationResolver(DEFAULT_LANGUAGE);
         renderers = new HashMap<>();
         this.localeResolver = localeResolver;
     }
