@@ -6,12 +6,13 @@ A powerful and extensible Java library for localization and internationalization
 
 - [Features](#-features)
 - [Setup](#-setup)
+- [Key concepts](#-key-concepts)
 - [Examples](#-examples)
 - [Translation files](#-translation-files)
     - [Properties](#properties)
     - [Json](#json)
 - [Core of system](#-core-of-system)
-- [Template Syntax](#-template-syntax)
+- [Template syntax](#-template-syntax)
 - [Extending](#-extending)
 - [Custom I18n](#-custom-i18n)
 
@@ -37,20 +38,25 @@ A powerful and extensible Java library for localization and internationalization
 
 \<TODO>
 
+## 🔰 Key Concepts
+**No branching in syntax**: To simplify syntax, no branching logic happens inside templates, their structure is flat.<br>
+**Composition**: To replace branching and plural inserting, inline translations are used to embed one translation into others.<br>
+**Plurals:** Unlike traditional I18n libraries, plural forms are resolved at translation selection stage instead of syntax logic.
+
 ## 🚀 Examples
 Minimal usage:
 ```java
 public class Main {
   public static void main(String[] args) {
     // create and fill source (lets use in-memory map)
-    var source = new MapSource(URI.create("mem://map_source")); // use URI for distinguishing & debugging purposes
+    var source = new MapSource();
     // put basic translation text with key 'item.apple' for language id 'en'
     source.put("item.apple", "en", "Apple");
     // load source into IndigoI18n instance
     // here we're using global StringI18n instance stored in Indigo static class
     Indigo.INSTANCE.load(source);
-    // once texts are loaded, we can use it using Indigo class and its static methods
-    var text = Indigo.parse("en", "item.apple");
+    // once texts are loaded, we can use Indigo class and its static methods to get, format and render translation
+    String text = Indigo.parse("en", "item.apple");
     System.out.println(text); // prints "Apple"
   }
 }
