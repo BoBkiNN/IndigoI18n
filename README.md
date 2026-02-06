@@ -81,7 +81,7 @@ Test plugin showcasing AdventureI18n, AdventureTranslator and usage of GsonTrans
 
 Default Gson (`.json`) and Properties (`.properties`) sources parses data differently,  
 but most of them are just key-value pairs.<br>
-Here is description of builtin formats.
+Here is description of builtin formats:
 
 ### Properties
 Simplest translation source. Each key correspond to one basic translation, so no plurals allowed.<br>
