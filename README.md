@@ -4,6 +4,7 @@ A powerful and extensible Java library for localization and internationalization
 
 ## 📚 Navigation
 
+- [When to use](#-when-to-use-indigoi18n)
 - [Features](#-features)
 - [Setup](#-setup)
 - [Key concepts](#-key-concepts)
@@ -17,6 +18,16 @@ A powerful and extensible Java library for localization and internationalization
 - [Custom I18n](#-custom-i18n)
 
 ---
+
+## 🤔 When to use IndigoI18n
+
+IndigoI18n is suitable for projects that require flexible and dynamic translation handling. Typical scenarios include:
+- You need plural forms that follow Unicode CLDR rules for multiple languages.
+- You want dynamic runtime language switching without restarting the application.
+- Your project requires custom argument formatting or converters.
+- You want to use custom output (render) types for different result formats.
+- You are developing Minecraft plugins and need integration with Adventure or Paper APIs.
+- You want full control over how translations are rendered, including custom output types.
 
 ## ✨ Features
 - Custom output formats (String, Component, any other)
