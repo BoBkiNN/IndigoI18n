@@ -45,9 +45,46 @@ IndigoI18n is suitable for projects that require flexible and dynamic translatio
 
 **Requirements**: Java 17 or newer
 
-**Dependencies**:
+### Dependencies:
 
-\<TODO>
+**Setting the repository**:<br>
+Use sonatype snapshots for snapshot versions:
+> Maven:
+```xml
+<repository>
+    <id>central-snapshots</id>
+    <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+</repository>
+```
+> Gradle Kotlin DSL
+```kotlin
+maven("https://central.sonatype.com/repository/maven-snapshots/")
+```
+For releases use maven central repository.
+
+**Add dependency**
+Make sure to replace `version` with latest version 
+and `<module>` with one of available modules:
+- `core`: Core of library
+- `codegen`: Code generation utilities
+- `gson`: JSON sources using [GSON](https://github.com/google/gson) library
+- `adventure`: [Adventure](https://docs.papermc.io/adventure/) renderers, formatters and translator
+- `paper`: [Paper API](https://docs.papermc.io/paper/) `CommandSender` overloads to query language from
+- `paper-adventure`: Extension to `paper` module with overloads for `adventure` module mixins
+
+> Maven:
+```xml
+<dependency>
+    <groupId>io.github.bobkinn</groupId>
+    <artifactId>indigo-i18n-<module></artifactId>
+    <version>version</version>
+</dependency>
+```
+> Gradle Kotlin DSL
+```kotlin
+implementation("io.github.bobkinn:indigo-i18n-<module>:version")
+```
+
 
 ## 🔰 Key Concepts
 **No branching in syntax**: To simplify syntax, no branching logic happens inside templates, their structure is flat.<br>
