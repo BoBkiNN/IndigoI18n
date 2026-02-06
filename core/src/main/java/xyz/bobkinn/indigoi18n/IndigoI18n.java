@@ -104,6 +104,13 @@ public class IndigoI18n implements I18nEngine {
     }
 
     /**
+     * @see Translations#unloadAll()
+     */
+    public void unloadAll() {
+        texts.unloadAll();
+    }
+
+    /**
      * @see Translations#sources()
      */
     @SuppressWarnings("unused")

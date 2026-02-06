@@ -12,6 +12,7 @@ import xyz.bobkinn.indigoi18n.paper.PaperAdventureI18n;
 import xyz.bobkinn.indigoi18n.render.adventure.AdventureRenderers;
 import xyz.bobkinn.indigoi18n.render.adventure.AdventureTranslator;
 import xyz.bobkinn.indigoi18n.source.TranslationLoadError;
+import xyz.bobkinn.indigoi18n.source.TranslationSource;
 import xyz.bobkinn.indigoi18n.source.impl.gson.GsonTranslationSource;
 
 import java.io.FileNotFoundException;
@@ -22,14 +23,13 @@ public class TestPlugin extends JavaPlugin implements Listener {
 
     // your i18n instance
     private final PaperAdventureI18n i18n;
-    // translation source will be loading
-    private final GsonTranslationSource source;
 
     // adventure translator which will be used for TranslatableComponent
     private final AdventureTranslator translator;
 
     public TestPlugin() {
         // prepare source to load translations from. Here we will use en.json file from resources
+        TranslationSource source;
         try {
             source = GsonTranslationSource.fromResource("en", getClassLoader(), "en.json");
         } catch (FileNotFoundException | URISyntaxException e) {
@@ -100,7 +100,7 @@ public class TestPlugin extends JavaPlugin implements Listener {
         // remove adventure translator instance from global translator
         GlobalTranslator.translator().removeSource(translator);
         // unload texts
-        i18n.unload(source);
+        i18n.unloadAll();
     }
 
 }

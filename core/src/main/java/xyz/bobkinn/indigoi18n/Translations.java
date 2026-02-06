@@ -126,6 +126,17 @@ public class Translations {
         keysBySource.remove(source);
     }
 
+    /**
+     * Unloads all loaded sources
+     * @see #unload(TranslationSource)
+     * @see #sources()
+     */
+    public void unloadAll() {
+        for (var source : sources()) {
+            unload(source);
+        }
+    }
+
     // sources info
 
     /**
