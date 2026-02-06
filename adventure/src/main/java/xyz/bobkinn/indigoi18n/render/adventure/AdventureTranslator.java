@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
+import net.kyori.adventure.translation.TranslationRegistry;
 import net.kyori.adventure.translation.Translator;
 import net.kyori.adventure.util.TriState;
 import org.jetbrains.annotations.NotNull;
@@ -21,7 +22,7 @@ import java.util.Locale;
  * @see Translator
  */
 @RequiredArgsConstructor
-public class AdventureTranslator implements Translator  {
+public class AdventureTranslator implements TranslationRegistry {
     /**
      * Name of translator that is used to identify it
      */
@@ -53,8 +54,29 @@ public class AdventureTranslator implements Translator  {
 //    }
 
     @Override
+    public boolean contains(@NotNull String key) {
+        return i18n.getTexts().has(key);
+    }
+
+    @Override
     public @Nullable MessageFormat translate(@NotNull String key, @NotNull Locale locale) {
         return null;
+    }
+
+    @Override
+    public void defaultLocale(@NotNull Locale locale) {
+        throw new UnsupportedOperationException("You cannot change default locale of IndigoI18n AdventureTranslator");
+    }
+
+    @Override
+    public void register(@NotNull String key, @NotNull Locale locale, @NotNull MessageFormat format) {
+        throw new UnsupportedOperationException("You cannot register MessageFormat texts into " +
+                "IndigoI18n AdventureTranslator using Adventure's TranslationRegistry");
+    }
+
+    @Override
+    public void unregister(@NotNull String key) {
+        i18n.getTexts().remove(key);
     }
 
     @Override

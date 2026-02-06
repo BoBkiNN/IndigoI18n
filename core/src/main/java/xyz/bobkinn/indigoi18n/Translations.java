@@ -236,6 +236,19 @@ public class Translations {
     }
 
     /**
+     * Removes all translations under this key
+     * @return true if anything removed
+     */
+    public boolean remove(String key) {
+        var r = texts.remove(key);
+        if (r == null) return false;
+        for (var lang : r.keySet()) {
+            removeSourceMapping(key, lang);
+        }
+        return true;
+    }
+
+    /**
      * Called from {@link #remove(String, String)}
      */
     private void removeSourceMapping(String key, String lang) {
@@ -285,4 +298,10 @@ public class Translations {
         return getOr(key, lang, null) != null;
     }
 
+    /**
+     * Check if texts contains this key
+     */
+    public boolean has(String key) {
+        return texts.containsKey(key);
+    }
 }
