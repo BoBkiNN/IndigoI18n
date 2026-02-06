@@ -68,48 +68,28 @@ subprojects {
     afterEvaluate {
         val p = this@afterEvaluate
         publishing.publications {
-            create<MavenPublication>("mavenLocal") {
+            create<MavenPublication>("main") {
                 from(components["java"])
 
                 groupId = "io.github.bobkinn"
                 artifactId = "indigo-i18n-${p.name}"
 
-                pom {
-                    name.set(rootProject.name+"-"+p.name)
-                    if (p.description.isNullOrBlank()) {
-                        description = "IndigoI18n library part '${p.name}'"
-                        logger.error("Missing description for project ${p.name}")
-                    } else {
-                        description = p.description!!
-                    }
+                setupPom(p)
+            }
+        }
 
-                    url = "https://github.com/BoBkiNN/IndigoI18n"
-
-                    licenses {
-                        license {
-                            name = "MIT License"
-                            url = "https://opensource.org/license/mit"
-                        }
-                    }
-
-                    developers {
-                        developer {
-                            id = "bobkinn"
-                            name = "BoBkiNN"
-                            url = "https://github.com/BoBkiNN"
-                        }
-                    }
-
-                    scm {
-                        url.set("https://github.com/BoBkiNN/IndigoI18n")
-                        connection.set("scm:git:git://github.com/BoBkiNN/IndigoI18n.git")
-                        developerConnection.set("scm:git:ssh://github.com:BoBkiNN/IndigoI18n.git")
-                    }
-
-                    withXml {
-                        asNode().appendNode("properties")
-                            .appendNode("commit", commit)
-                    }
+        publishing.repositories {
+            maven {
+                name = "central"
+                url = uri(
+                    if (!isRelease)
+                        "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+                    else
+                        "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+                )
+                credentials {
+                    username = System.getenv("CENTRAL_TOKEN_USER") ?: ""
+                    password = System.getenv("CENTRAL_TOKEN_PASSWORD") ?: ""
                 }
             }
         }
@@ -136,9 +116,47 @@ subprojects {
             if (!signingKey.isNullOrBlank() && !signingPassword.isNullOrBlank()) {
                 useInMemoryPgpKeys(signingKey, signingPassword)
                 // use local for now
-                sign(publishing.publications["mavenLocal"])
+                sign(publishing.publications["main"])
             }
         }
     }
 
+}
+
+fun MavenPublication.setupPom(p: Project) = pom {
+    name.set(rootProject.name+"-"+p.name)
+    if (p.description.isNullOrBlank()) {
+        description = "IndigoI18n library part '${p.name}'"
+        logger.error("Missing description for project ${p.name}")
+    } else {
+        description = p.description!!
+    }
+
+    url = "https://github.com/BoBkiNN/IndigoI18n"
+
+    licenses {
+        license {
+            name = "MIT License"
+            url = "https://opensource.org/license/mit"
+        }
+    }
+
+    developers {
+        developer {
+            id = "bobkinn"
+            name = "BoBkiNN"
+            url = "https://github.com/BoBkiNN"
+        }
+    }
+
+    scm {
+        url.set("https://github.com/BoBkiNN/IndigoI18n")
+        connection.set("scm:git:git://github.com/BoBkiNN/IndigoI18n.git")
+        developerConnection.set("scm:git:ssh://github.com:BoBkiNN/IndigoI18n.git")
+    }
+
+    withXml {
+        asNode().appendNode("properties")
+            .appendNode("commit", commit)
+    }
 }
