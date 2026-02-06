@@ -115,7 +115,6 @@ subprojects {
 
             if (!signingKey.isNullOrBlank() && !signingPassword.isNullOrBlank()) {
                 useInMemoryPgpKeys(signingKey, signingPassword)
-                // use local for now
                 sign(publishing.publications["main"])
             }
         }
