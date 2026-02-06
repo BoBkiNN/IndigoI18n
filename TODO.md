@@ -5,10 +5,8 @@
   instead of '<red>Arg</red>-text'.<br>
   Leaked style is spread unless new style is specified.<br>
   Not sure of correct rules yet
-- complete readme:
-  - adventure & bukkit usage examples
 - wiki:
-    - troubleshooting for `No format type for String` and etc
+    - move and separate some readme sections into wiki
 - module with examples
 - warn about missing plural strings for plural translations
 - flat map translation source to avoid nested object (plurals like `key.one`, `key.many`)
