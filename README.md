@@ -30,7 +30,7 @@ IndigoI18n is suitable for projects that require flexible and dynamic translatio
 - You want full control over how translations are rendered, including custom output types.
 
 ## ✨ Features
-- Custom output formats (String, Component, any other)
+- Custom output (render) types (String, Adventure Component, or any other type)
 - Highly extensible architecture: provide your own formats, converters and more
 - Python-like argument format options (alignment, precision, width, grouping, representations, modes)
 - Custom argument converters (Control how custom object argument gets formatted)
@@ -52,7 +52,10 @@ IndigoI18n is suitable for projects that require flexible and dynamic translatio
 ## 🔰 Key Concepts
 **No branching in syntax**: To simplify syntax, no branching logic happens inside templates, their structure is flat.<br>
 **Composition**: To replace branching and plural inserting, inline translations are used to embed one translation into others.<br>
-**Plurals:** Unlike traditional I18n libraries, plural forms are resolved at translation selection stage instead of syntax logic.
+**Plurals:** Unlike traditional I18n libraries, plural forms are resolved at translation selection stage instead of syntax logic.<br>
+**Missing translations:** If a key is not found, the library will return the key itself (or a fallback if configured), 
+ensuring templates can still be rendered without crashing.
+
 
 ## 🚀 Examples
 Minimal usage:
