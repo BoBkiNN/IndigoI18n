@@ -14,6 +14,7 @@ import xyz.bobkinn.indigoi18n.source.impl.gson.GsonTranslationSource;
 import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
 
+@SuppressWarnings("unused")
 public class ExamplePluginAdventure extends JavaPlugin {
 
     // your i18n instance
