@@ -45,6 +45,16 @@ allprojects {
     }
 }
 
+
+//nmcpAggregation {
+//    centralPortal {
+//        username = System.getenv("MAVEN_CENTRAL_USERNAME")
+//        password = System.getenv("MAVEN_CENTRAL_PASSWORD")
+//
+//        publishingType = "USER_MANAGED"
+//    }
+//}
+
 subprojects {
     // do not configure examples
     if (path.startsWith(":examples")) return@subprojects
@@ -65,58 +75,40 @@ subprojects {
         (options as StandardJavadocDocletOptions).addStringOption("Xdoclint:none", "-quiet")
     }
 
-    afterEvaluate {
-        val p = this@afterEvaluate
-        publishing.publications {
-            create<MavenPublication>("main") {
-                from(components["java"])
+    val p = this@subprojects
+    publishing.publications {
+        create<MavenPublication>("main") {
+            from(components["java"])
 
-                groupId = "io.github.bobkinn"
-                artifactId = "indigo-i18n-${p.name}"
+            groupId = "io.github.bobkinn"
+            artifactId = "indigo-i18n-${p.name}"
 
-                setupPom(p)
-            }
+            setupPom(p)
         }
+    }
 
-        publishing.repositories {
-            maven {
-                name = "central"
-                url = uri(
-                    if (!isRelease)
-                        "https://central.sonatype.com/repository/maven-snapshots/"
-                    else
-                        "https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/"
-                )
-                credentials {
-                    username = System.getenv("CENTRAL_TOKEN_USER") ?: ""
-                    password = System.getenv("CENTRAL_TOKEN_PASSWORD") ?: ""
+    // configuring after evaluation because mavenLocale publication is created at same time
+    signing {
+        val f = rootProject.file(".gradle/sign_key.asc")
+        val signingKey = if (f.isFile) f.readText() else System.getenv("SIGNING_KEY")
+        val signingPassword = findProperty("signingPassword") as String?
+            ?: System.getenv("SIGNING_PASSWORD")
+
+        gradle.taskGraph.whenReady {
+            val hasPublishTask = allTasks.any { it.name.contains("publish", ignoreCase = true) }
+
+            if (isRelease && hasPublishTask) {
+                if (signingKey.isNullOrBlank() || signingPassword.isNullOrBlank()) {
+                    throw GradleException(
+                        "SIGNING_KEY or SIGNING_PASSWORD is not set, required for release publish"
+                    )
                 }
             }
         }
 
-        // configuring after evaluation because mavenLocale publication is created at same time
-        signing {
-            val f = rootProject.file(".gradle/sign_key.asc")
-            val signingKey = if (f.isFile) f.readText() else System.getenv("SIGNING_KEY")
-            val signingPassword = findProperty("signingPassword") as String?
-                ?: System.getenv("SIGNING_PASSWORD")
-
-            gradle.taskGraph.whenReady {
-                val hasPublishTask = allTasks.any { it.name.contains("publish", ignoreCase = true) }
-
-                if (isRelease && hasPublishTask) {
-                    if (signingKey.isNullOrBlank() || signingPassword.isNullOrBlank()) {
-                        throw GradleException(
-                            "SIGNING_KEY or SIGNING_PASSWORD is not set, required for release publish"
-                        )
-                    }
-                }
-            }
-
-            if (!signingKey.isNullOrBlank() && !signingPassword.isNullOrBlank()) {
-                useInMemoryPgpKeys(signingKey, signingPassword)
-                sign(publishing.publications["main"])
-            }
+        if (!signingKey.isNullOrBlank() && !signingPassword.isNullOrBlank()) {
+            useInMemoryPgpKeys(signingKey, signingPassword)
+            sign(publishing.publications["main"])
         }
     }
 
@@ -124,11 +116,13 @@ subprojects {
 
 fun MavenPublication.setupPom(p: Project) = pom {
     name.set(rootProject.name+"-"+p.name)
-    if (p.description.isNullOrBlank()) {
-        description = "IndigoI18n library part '${p.name}'"
-        logger.error("Missing description for project ${p.name}")
-    } else {
-        description = p.description!!
+    description = provider {
+        if (p.description.isNullOrBlank()) {
+            logger.error("Missing description for project ${p.name}")
+            "IndigoI18n library part '${p.name}'"
+        } else {
+            p.description!!
+        }
     }
 
     url = "https://github.com/BoBkiNN/IndigoI18n"
