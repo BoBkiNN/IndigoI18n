@@ -1,10 +1,12 @@
-import java.util.concurrent.TimeUnit
+import eu.kakde.sonatypecentral.PublishingType
+import eu.kakde.sonatypecentral.SonatypeCentralPublishExtension
 
 plugins {
     java
     id("io.freefair.lombok") version "9.1.0"
     `maven-publish`
     signing
+    id("xyz.bobkinn.sonatype-publisher") version "1.2.2" apply false
 }
 
 group = "xyz.bobkinn.indigoi18n"
@@ -46,21 +48,13 @@ allprojects {
 }
 
 
-//nmcpAggregation {
-//    centralPortal {
-//        username = System.getenv("MAVEN_CENTRAL_USERNAME")
-//        password = System.getenv("MAVEN_CENTRAL_PASSWORD")
-//
-//        publishingType = "USER_MANAGED"
-//    }
-//}
-
 subprojects {
     // do not configure examples
     if (path.startsWith(":examples")) return@subprojects
 
     apply(plugin = "maven-publish")
     apply(plugin = "signing")
+    apply(plugin = "xyz.bobkinn.sonatype-publisher")
 
     java {
         withSourcesJar()
@@ -112,6 +106,12 @@ subprojects {
         }
     }
 
+    extensions.configure(SonatypeCentralPublishExtension::class) {
+        publication = publishing.publications["main"] as MavenPublication
+        username = System.getenv("MAVEN_CENTRAL_USERNAME")
+        password = System.getenv("MAVEN_CENTRAL_PASSWORD")
+        publishingType = PublishingType.USER_MANAGED
+    }
 }
 
 fun MavenPublication.setupPom(p: Project) = pom {

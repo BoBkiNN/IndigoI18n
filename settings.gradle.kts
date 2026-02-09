@@ -1,3 +1,18 @@
+pluginManagement {
+    repositories {
+        maven("https://jitpack.io")
+        gradlePluginPortal()
+    }
+
+    resolutionStrategy {
+        eachPlugin {
+            if (requested.id.id == "xyz.bobkinn.sonatype-publisher") {
+                useModule("com.github.BoBkiNN:sonatype-maven-central-publisher:${requested.version}")
+            }
+        }
+    }
+}
+
 rootProject.name = "IndigoI18n"
 include("core")
 include("gson")
