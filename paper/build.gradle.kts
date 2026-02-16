@@ -18,7 +18,7 @@ repositories {
 
 dependencies {
     api(project(":core"))
-    implementation("io.papermc.paper:paper-api:${property("paper-version")}")
+    compileOnly("io.papermc.paper:paper-api:${property("paper-version")}")
 
     testImplementation("com.github.seeseemelk:MockBukkit-v1.20:3.88.1")
     testImplementation(project(":gson"))

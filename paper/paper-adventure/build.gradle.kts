@@ -20,7 +20,7 @@ dependencies {
     api(project(":paper"))
     api(project(":adventure"))
 
-    implementation("io.papermc.paper:paper-api:${property("paper-version")}")
+    compileOnly("io.papermc.paper:paper-api:${property("paper-version")}")
 
     implementation("net.kyori:adventure-api:${property("adventure-version")}")
     implementation("net.kyori:adventure-text-serializer-legacy:${property("adventure-version")}")
