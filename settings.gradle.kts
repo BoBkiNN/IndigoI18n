@@ -6,8 +6,8 @@ pluginManagement {
 
     resolutionStrategy {
         eachPlugin {
-            if (requested.id.id == "xyz.bobkinn.sonatype-publisher") {
-                useModule("com.github.BoBkiNN:sonatype-maven-central-publisher:${requested.version}")
+            if (requested.id.id == "io.github.bobkinn.sonatype-publisher") {
+                useModule("com.github.BoBkiNN:sonatype-publisher:${requested.version}")
             }
         }
     }

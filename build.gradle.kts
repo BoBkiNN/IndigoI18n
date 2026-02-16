@@ -1,12 +1,13 @@
-import eu.kakde.sonatypecentral.PublishingType
-import eu.kakde.sonatypecentral.SonatypeCentralPublishExtension
+import xyz.bobkinn.sonatypepublisher.PublishingType
+import xyz.bobkinn.sonatypepublisher.sonatypePublish
+
 
 plugins {
     java
     id("io.freefair.lombok") version "9.1.0"
     `maven-publish`
     signing
-    id("xyz.bobkinn.sonatype-publisher") version "1.2.2" apply false
+    id("io.github.bobkinn.sonatype-publisher") version "2.2.1" apply false
 }
 
 group = "xyz.bobkinn.indigoi18n"
@@ -54,7 +55,7 @@ subprojects {
 
     apply(plugin = "maven-publish")
     apply(plugin = "signing")
-    apply(plugin = "xyz.bobkinn.sonatype-publisher")
+    apply(plugin = "io.github.bobkinn.sonatype-publisher")
 
     java {
         withSourcesJar()
@@ -106,11 +107,15 @@ subprojects {
         }
     }
 
-    extensions.configure(SonatypeCentralPublishExtension::class) {
-        publication = publishing.publications["main"] as MavenPublication
-        username = System.getenv("MAVEN_CENTRAL_USERNAME")
-        password = System.getenv("MAVEN_CENTRAL_PASSWORD")
+    sonatypePublish {
+        username = providers.environmentVariable("MAVEN_CENTRAL_USERNAME")
+            .orElse(providers.gradleProperty("maven_central_username"))
+
+        password = providers.environmentVariable("MAVEN_CENTRAL_PASSWORD")
+            .orElse(providers.gradleProperty("maven_central_password"))
         publishingType = PublishingType.USER_MANAGED
+
+        registerMaven(publishing.publications.named("main", MavenPublication::class))
     }
 }
 
