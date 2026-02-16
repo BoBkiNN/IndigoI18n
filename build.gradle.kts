@@ -70,6 +70,12 @@ subprojects {
         (options as StandardJavadocDocletOptions).addStringOption("Xdoclint:none", "-quiet")
     }
 
+    publishing.repositories {
+        maven("https://central.sonatype.com/repository/maven-snapshots/") {
+            name = "snapshots"
+        }
+    }
+
     val p = this@subprojects
     publishing.publications {
         create<MavenPublication>("main") {
