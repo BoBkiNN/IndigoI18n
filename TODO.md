@@ -8,6 +8,7 @@
 - wiki:
     - move and separate some readme sections into wiki
 - module with examples
+- better context injection methods in mixins
 - warn about missing plural strings for plural translations
 - flat map translation source to avoid nested object (plurals like `key.one`, `key.many`)
 - Translation cache pre-computes cache for entire string, while in runtime lookup for this key will
