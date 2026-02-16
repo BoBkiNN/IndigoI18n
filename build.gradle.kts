@@ -7,7 +7,7 @@ plugins {
     id("io.freefair.lombok") version "9.1.0"
     `maven-publish`
     signing
-    id("io.github.bobkinn.sonatype-publisher") version "2.2.2" apply false
+    id("io.github.bobkinn.sonatype-publisher") version "2.2.3" apply false
 }
 
 group = "xyz.bobkinn.indigoi18n"
