@@ -2,6 +2,13 @@
 
 A powerful and extensible Java library for localization and internationalization
 
+<a href="https://jitpack.io/#BoBkiNN/IndigoI18n">
+<img alt="JitPack" src="https://img.shields.io/jitpack/version/com.github.BoBkiNN/IndigoI18n">
+</a>
+<a href="https://central.sonatype.com/artifact/io.github.bobkinn/indigo-i18n-core">
+<img alt="Maven Central Version" src="https://img.shields.io/maven-central/v/io.github.bobkinn/indigo-i18n-core">
+</a>
+
 ## 📚 Navigation
 
 - [When to use](#-when-to-use-indigoi18n)
