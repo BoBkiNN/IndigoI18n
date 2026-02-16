@@ -52,10 +52,15 @@ IndigoI18n is suitable for projects that require flexible and dynamic translatio
 
 **Requirements**: Java 17 or newer
 
-### Dependencies:
+**1. Add repository**:<br>
+For releases use maven central repository:
+> Maven: Central repository already present
 
-**Setting the repository**:<br>
-Use sonatype snapshots for snapshot versions:
+> Gradle Kotlin DSL:
+```kotlin
+mavenCentral()
+```
+For snapshots use sonatype snapshots repository:
 > Maven:
 ```xml
 <repository>
@@ -67,9 +72,8 @@ Use sonatype snapshots for snapshot versions:
 ```kotlin
 maven("https://central.sonatype.com/repository/maven-snapshots/")
 ```
-For releases use maven central repository.
 
-**Add dependency**
+**2. Add dependency**<br>
 Make sure to replace `version` with latest version 
 and `<module>` with one of available modules:
 - `core`: Core of library
@@ -92,6 +96,9 @@ and `<module>` with one of available modules:
 implementation("io.github.bobkinn:indigo-i18n-<module>:version")
 ```
 
+> [!NOTE]
+> Modules using Paper API do not provide it via POM.
+> You need to manually add Paper API 1.20.4-R0.1-SNAPSHOT or later
 
 ## 🔰 Key Concepts
 **No branching in syntax**: To simplify syntax, no branching logic happens inside templates, their structure is flat.<br>
