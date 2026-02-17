@@ -6,7 +6,8 @@
   Leaked style is spread unless new style is specified.<br>
   Not sure of correct rules yet
 - wiki:
-    - move and separate some readme sections into wiki
+    - expand wiki with default overriding instructions
+    - maybe faq
 - module with examples
 - better context injection methods in mixins
 - warn about missing plural strings for plural translations
