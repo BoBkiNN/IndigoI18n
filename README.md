@@ -221,162 +221,29 @@ Going from top to bottom, these layers and abstract classes are:
   replaces arguments and builds resulting object from them
 - ArgumentConverter: implementations of this interface controls how different types of arguments are converted
 
+
 ## 🧩 Template Syntax
 
-The default template parser supports **placeholder substitution** and **inline translations** with a flexible  
-syntax inspired by printf-style formatting and custom templates.
-
-### 1. Plain Text
-
-Any text outside of `%` sequences is treated as plain text.
+Quick examples of template strings in translations:
 
 ```text
-Hello, world! → "Hello, world!"
+"Hello, %s!"                  → replaces %s with first argument
+"%{1!r}"                      → argument 1 with raw conversion and qouting if not a number
+"ID: %{s!h}"                  → next sequential argument, hashed
+"Notification: %{t:greeting}" → inline translation of key "greeting"
+"%{t:greeting:2:fr}"          → inline translation, depth=2, in French
+"Progress: 50%%"              → outputs "Progress: 50%"
 ```
 
-### 2. Simple Argument Placeholder
+### Features
 
-- **Syntax:** `%s`
-- **Description:** Represents the next sequential argument. The parser automatically assigns it the next index.
+* Sequential and indexed argument placeholders (`%s`, `%1`, `%{...}`)
+* Advanced formatting and conversions (`!r`, `!h`, `!H`, `!s`)
+* Inline translations with optional recursion depth and language
+* Literal percent signs using `%%`
+* Python-like format specifiers for numbers and strings
 
-```text
-"Hello, %s!" → first argument replaces %s
-```
-
-### 3. Indexed Argument Placeholder
-
-- **Syntax:** `%n` where `n` is a 1-based argument index.
-- **Description:** Explicitly references an argument at the given index.
-
-```text
-"Hello, %1!" → replaces with the first argument
-```
-
-### 4. Advanced Argument Placeholder
-
-- **Syntax:** `%{...}`
-- **Description:** Enclosed in `%{` and `}`, these placeholders can include optional index, sequential marker, conversion, and formatting specifications.
-
-#### Components
-
-| Component     | Description                                                           |
-|---------------|-----------------------------------------------------------------------|
-| `index`       | Optional, a number starting from 1, explicitly selects an argument    |
-| `'s'`         | Optional, indicates the next sequential argument (equivalent to `%s`) |
-| `!conversion` | Optional, a single character representing a conversion                |
-| `:formatSpec` | Optional, defines formatting rules (via `FormatPattern`)              |
-
-#### Examples
-
-```text
-"%{1!r}"   → argument 1 with conversion 'r'
-"%{s!r}"   → next sequential argument with conversion 'r'
-"%{:0.2f}" → next sequential argument with format specifier 0.2f
-"%{s}"     → next sequential argument, default format
-"%{}"      → equivalent to "%s", next sequential argument
-"%{:}"     → equivalent to "%s", next sequential argument
-```
-
-Notes:
-
-- Explicit indexes (`1`, `2`, …) override sequential indexing.
-- `'s'` is used to explicitly indicate sequential arguments inside `%{...}`.
-- If no index or `'s'` is specified, the argument will use the next sequential index.
-- `%{}`, `%{s}`, and `%{:}` are all functionally equivalent to `%s`.
-
-### 5. Inline Translation
-
-- **Syntax:** `%{t:key[:depth][:lang]}`
-- **Description:** Represents a translation entry with optional recursion depth and language override.
-
-> To perform inlining, TemplateFormatter gets text by specified key in  
-> specified language (or current one) and with same output type.<br>
-> It directly uses `parse(RenderType<T> ft, @Nullable Context ctx, String lang, String key, List<Object> args)` method  
-> to get object to insert.<br>Render type of inlined text will be same as originally requested.<br>
-
-When remaining depth is 0 or less, `<key>` is outputted, where `key` is key of translation which meant to be inlined.
-
-#### Components
-
-| Component | Description                                                                                      |
-|-----------|--------------------------------------------------------------------------------------------------|
-| `key`     | Translation key (required)                                                                       |
-| `depth`   | Optional, maximum depth of recursion (default = 1). Applied only if not inside recursion already |
-| `lang`    | Optional, language override                                                                      |
-
-#### Examples
-
-```text
-"%{t:greeting}"         → translate key "greeting"
-"%{t:greeting:2}"       → translate key "greeting" with depth = 2
-"%{t:greeting::fr}"     → translate key "greeting" in French
-"%{t:greeting:3:es}"    → translate key "greeting", depth 3, Spanish
-```
-
-### 6. Escaping Percent Sign
-
-- **Syntax:** `%%`
-- **Description:** Represents a literal percent sign.
-
-```text
-"Progress: 50%%" → "Progress: 50%"
-```
-
-### Argument format syntax
-
-Using advanced argument syntax, formatting rules can be changed for that argument.  
-Format syntax is almost same as  
-[Python 3.11 Format Specification Mini-Language](https://docs.python.org/3.11/library/string.html#formatspec)  
-so you can use it for syntax reference.
-
-Differences are:
-- `z` flag are not supported
-- each argument converter can handle this format with its own rules so illegal combinations isn't checked when parsing.
-
-### Conversion implementation
-
-By default, there are 3 conversion modes.
-
-#### `r` - raw
-- `Number`s are converted to string using basic `.toString()` method
-- Other objects are converted to `String` using basic `.toString()` method and then quoted.
-
-##### Quoting
-
-When used, string values are quoted using Python-like rules:
-
-- Single quotes (`'`) are preferred when possible
-- If the string already contains single quotes, double quotes (`"`) are used instead
-- If both quote types are present, the less frequent one is chosen
-- The chosen quote character and backslashes (`\`) are escaped
-
-This ensures the shortest and most readable quoted representation while remaining unambiguous.
-
-Example:
-```text
-hello        → 'hello'
-he'llo       → "he'llo"
-he"l'lo      → 'he"l\'lo'
-```
-
-#### `h`/`H` - hash
-Outputs hash code of argument in hexadecimal format.<br>
-If argument is null, `null` is outputted.  
-If conversion is `H`, resulting string is uppercased.
-
-This matches `%h`/`%H` behaviour from  
-[`String.format`](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html#format(java.lang.String,java.lang.Object...))
-
-Examples:
-```text
-!h with "zz"  -> "f40"
-!H with "zz"  -> "F40"
-!H with null  -> "null"
-!H with null  -> "NULL"
-```
-
-#### `s` - string
-If argument is not a string, it is converted using `String.valueOf` method. No quoting performed.
+For full syntax details and rules, see the [Template Syntax Wiki](https://github.com/BoBkiNN/IndigoI18n/wiki/Template-Syntax).
 
 ## 🧱 Extending
 
