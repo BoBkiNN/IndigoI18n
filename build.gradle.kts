@@ -95,22 +95,13 @@ subprojects {
         val signingPassword = findProperty("signingPassword") as String?
             ?: System.getenv("SIGNING_PASSWORD")
 
-        gradle.taskGraph.whenReady {
-            val hasPublishTask = allTasks.any { it.name.contains("publish", ignoreCase = true) }
+        val isPublishingToMavenLocal =
+            gradle.startParameter.taskNames.any { it.contains("publishToMavenLocal") }
 
-            if (isRelease && hasPublishTask) {
-                if (signingKey.isNullOrBlank() || signingPassword.isNullOrBlank()) {
-                    throw GradleException(
-                        "SIGNING_KEY or SIGNING_PASSWORD is not set, required for release publish"
-                    )
-                }
-            }
-        }
+        isRequired = isRelease && !isPublishingToMavenLocal
 
-        if (!signingKey.isNullOrBlank() && !signingPassword.isNullOrBlank()) {
-            useInMemoryPgpKeys(signingKey, signingPassword)
-            sign(publishing.publications["main"])
-        }
+        useInMemoryPgpKeys(signingKey, signingPassword)
+        sign(publishing.publications["main"])
     }
 
     sonatypePublish {
