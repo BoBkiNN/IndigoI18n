@@ -21,7 +21,7 @@ A powerful and extensible Java library for localization and internationalization
     - [Json](#json)
 - [Core of system](#-core-of-system)
 - [Template syntax](#-template-syntax)
-- [Extending](#-extending)
+- [Extending](#-extending-indigoi18n)
 - [Custom I18n](#-custom-i18n)
 
 ---
