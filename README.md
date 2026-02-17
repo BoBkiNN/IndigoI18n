@@ -21,8 +21,7 @@ A powerful and extensible Java library for localization and internationalization
     - [Json](#json)
 - [Core of system](#-core-of-system)
 - [Template syntax](#-template-syntax)
-- [Extending](#-extending-indigoi18n)
-- [Custom I18n](#-custom-i18n)
+- [Customization](#-customization)
 
 ---
 
@@ -245,8 +244,9 @@ Quick examples of template strings in translations:
 
 For full syntax details and rules, see the [wiki page](https://github.com/BoBkiNN/IndigoI18n/wiki/Template-Syntax).
 
-## 🧱 Extending IndigoI18n
+## 🎨 Customization
 
-Customize IndigoI18n by adding argument converters, renderers, and mixins, or by subclassing and overriding behavior for high-level APIs.
+Customize IndigoI18n by adding argument converters, renderers, and mixins, 
+or by subclassing and overriding behavior for high-level APIs.
 
-Full details and examples are on the [wiki page](https://github.com/BoBkiNN/IndigoI18n/wiki/Extending).
+Full details and examples are on the [wiki page](https://github.com/BoBkiNN/IndigoI18n/wiki/Customization).
