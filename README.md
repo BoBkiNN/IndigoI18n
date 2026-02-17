@@ -149,62 +149,26 @@ Test plugin showcasing AdventureI18n, AdventureTranslator and usage of GsonTrans
 
 ## 🌍 Translation files
 
-Default Gson (`.json`) and Properties (`.properties`) sources parses data differently,  
-but most of them are just key-value pairs.<br>
-Here is description of builtin formats:
+IndigoI18n supports **Properties** (via the core module) and **JSON** (via the `indigo-18n-gson` module) translation sources.
 
-### Properties
-Simplest translation source. Each key correspond to one basic translation, so no plurals allowed.<br>
-One file correspond to one language.  
-Builtin implementation is [PropertiesSource](core/src/main/java/xyz/bobkinn/indigoi18n/source/impl/PropertiesSource.java)
+* **Properties:** simple key-value pairs, one file per language.
+* **JSON:** allows plurals and context overrides per translation.
 
-Example file `en.properties`:
-```properties
-item.apple=Apple
-command.success=Success!
-```
+Minimal JSON example:
 
-### Json
-Json source can contain both simple string-string pair and more complex translation entries.<br>
-With this you can:
-- Specify plural translations
-- Attach context overrides
-
-One file correspond to one language.<br>
-
-Example file `en.json`:
-```json5
+```json
 {
-  // plain string-string pair
   "hello": "Hello",
-  "bye": "Goodbye",
-  // complex formats. type field is used to determine type of translation
-  "long": { // same as "long": "Long"
-    "type": "basic", // basic type
-    "text": "Long"
-  },
-  // plurality support
-  "pl": {
+  "apple_count": {
     "type": "plural",
-    "one": "1",
-    "other": "25",
-    "few": "3"
-  },
-  // translation which count context is always 1, so it always returns plural for one count
-  "always_1": {
-    "type": "plural",
-    "one": "1",
-    "other": "25",
-    "few": "3",
-    // we can specify context overrides using "ctx" object
-    "ctx": {
-      // currently you can override only count
-      // override count context. It is used for pluralization.
-      "count": 1
-    }
+    "one": "1 apple",
+    "other": "%d apples",
+    "ctx": { "count": 5 }
   }
 }
 ```
+
+For full details see [wiki page](https://github.com/BoBkiNN/IndigoI18n/wiki/Translation-Files).
 
 ## 🧠 Core of system
 The Core module defines system layers and abstract classes/interfaces with default implementations.  
