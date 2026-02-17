@@ -110,7 +110,7 @@ subprojects {
 
         password = providers.environmentVariable("MAVEN_CENTRAL_PASSWORD")
             .orElse(providers.gradleProperty("maven_central_password"))
-        publishingType = PublishingType.USER_MANAGED
+        publishingType = PublishingType.AUTOMATIC
 
         registerMaven(publishing.publications.named("main", MavenPublication::class))
     }
