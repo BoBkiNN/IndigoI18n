@@ -1,15 +1,6 @@
 pluginManagement {
     repositories {
-        maven("https://jitpack.io")
         gradlePluginPortal()
-    }
-
-    resolutionStrategy {
-        eachPlugin {
-            if (requested.id.id == "io.github.bobkinn.sonatype-publisher") {
-                useModule("com.github.BoBkiNN:sonatype-publisher:${requested.version}")
-            }
-        }
     }
 }
 
