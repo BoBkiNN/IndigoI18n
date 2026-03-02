@@ -97,7 +97,7 @@ implementation("io.github.bobkinn:indigo-i18n-<module>:version")
 
 > [!NOTE]
 > Modules using Paper API do not provide it via POM.
-> You need to manually add Paper API 1.20.4-R0.1-SNAPSHOT or later
+> You need to manually add Paper API 1.20.4-R0.1-SNAPSHOT or newer
 
 ## 🔰 Key Concepts
 **No branching in syntax**: To simplify syntax, no branching logic happens inside templates, their structure is flat.<br>
