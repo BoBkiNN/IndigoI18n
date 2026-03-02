@@ -7,7 +7,24 @@ import xyz.bobkinn.indigoi18n.template.format.FormatPattern;
 
 import java.util.function.Function;
 
+/**
+ * Interface that is used to create new argument converters by implementing it.
+ * <p>
+ * Argument converters are used to convert passed object (integer, date, custom one)
+ * into target type which is later used by various
+ * {@link xyz.bobkinn.indigoi18n.template.format.TemplateFormatter}s to build text.
+ * @param <T> argument type which will be converted from
+ * @param <O> output type which argument will be converted to
+ */
 public interface ArgumentConverter<T, O> {
+
+    /**
+     * Method which is called to convert argument into output type
+     * @param ctx context
+     * @param argument passed argument
+     * @param format formatting settings which can be used to change conversation behaviour
+     * @return conversion result
+     */
     O format(@NotNull Context ctx, T argument, FormatPattern format);
 
     default <NO> ArgumentConverter<T, NO> mapOut(Function<O, NO> mapper) {
