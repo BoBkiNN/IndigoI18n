@@ -17,8 +17,6 @@ A powerful and extensible Java library for localization and internationalization
 - [Key concepts](#-key-concepts)
 - [Examples](#-examples)
 - [Translation files](#-translation-files)
-    - [Properties](#properties)
-    - [Json](#json)
 - [Core of system](#-core-of-system)
 - [Template syntax](#-template-syntax)
 - [Customization](#-customization)
