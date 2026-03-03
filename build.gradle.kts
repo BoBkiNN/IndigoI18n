@@ -34,6 +34,10 @@ fun runCommand(cmd: String): String {
     return proc.inputStream.bufferedReader().readText().trim()
 }
 
+tasks.jar {
+    enabled = false
+}
+
 repositories {
     mavenCentral()
 }
