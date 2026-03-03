@@ -34,7 +34,13 @@ jobs:
       - name: Read version from gradle.properties
         id: version
         run: |
-          VERSION=$(grep "^version=" gradle.properties | cut -d'=' -f2 | tr -d '[:space:]')
+          VERSION=$(grep -E "^version[[:space:]]*=" gradle.properties | sed -E 's/version[[:space:]]*=[[:space:]]*//' | tr -d '\r')
+
+          if [ -z "$VERSION" ]; then
+            echo "Could not detect version from gradle.properties"
+            exit 1
+          fi
+
           echo "Detected version: $VERSION"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
