@@ -6,7 +6,6 @@
   Leaked style is spread unless new style is specified.<br>
   Not sure of correct rules yet
 - wiki:
-    - expand wiki with default overriding instructions
     - maybe faq
 - module with examples
 - better context injection methods in mixins
