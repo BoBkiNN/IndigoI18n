@@ -28,6 +28,9 @@ jobs:
           java-version: 17
           cache: gradle
 
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
       - name: Read version from gradle.properties
         id: version
         run: |
