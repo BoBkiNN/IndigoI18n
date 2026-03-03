@@ -5,6 +5,11 @@ on:
     tags:
       - "v*"
   workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Run build only (no publish, no GitHub release)"
+        required: false
+        default: "false"
 
 jobs:
   release:
@@ -15,6 +20,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
       - name: Set up Temurin 17
         uses: actions/setup-java@v4
         with:
@@ -41,7 +47,20 @@ jobs:
             exit 1
           fi
 
+      # -------------------------
+      # DRY RUN (manual only)
+      # -------------------------
+      - name: Build (dry run mode)
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.dry_run == 'true'
+        run: |
+          echo "Running dry run build"
+          ./gradlew build -PisRelease=true --stacktrace
+
+      # -------------------------
+      # REAL RELEASE
+      # -------------------------
       - name: Publish to Maven Central
+        if: github.event_name != 'workflow_dispatch' || github.event.inputs.dry_run != 'true'
         env:
           MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
           MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
@@ -65,6 +84,7 @@ jobs:
           path: release-artifacts/
 
       - name: Create GitHub Release
+        if: github.event_name != 'workflow_dispatch' || github.event.inputs.dry_run != 'true'
         uses: softprops/action-gh-release@v2
         with:
           name: Release ${{ steps.version.outputs.version }}
