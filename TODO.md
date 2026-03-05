@@ -7,7 +7,6 @@
   Not sure of correct rules yet
 - wiki:
     - maybe faq
-- module with examples
 - better context injection methods in mixins (unclear how)
 - warn about missing plural strings for plural translations
 - flat map translation source to avoid nested object (plurals like `key.one`, `key.many`)
