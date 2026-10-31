@@ -60,25 +60,22 @@ public abstract class FileSystemSource implements MultiLanguageSource {
 
     @Override
     public Set<String> listLanguages() {
-        var fileNames = new HashSet<String>();
+        var langNames = new HashSet<String>();
         try (var fs = getFileSystem()) {
             var langFiles = listLanguageFiles(fs);
             for (Path langFile : langFiles) {
-                fileNames.add(langFile.getFileName().toString());
+                var lang = provider.langFromPath(langFile);
+                langNames.add(lang);
             }
         } catch (IOException e) {
             throw new RuntimeException("Failed to list language files", e);
-        }
-        var langNames = new HashSet<String>(fileNames.size());
-        for (String fileName : fileNames) {
-            langNames.add(MultiLanguageSource.langFromFileName(fileName));
         }
         return langNames;
     }
 
 
     protected void loadLang(FileSystem fs, String language, ISourceTextAdder to) {
-        var fn = provider.fileNameFromLang(language);
+        var fn = provider.fileNameForLang(language);
         var path = getFsFolder(fs).resolve(fn);
         if (Files.isDirectory(path)) {
             throw new IllegalArgumentException("Path "+path+" is a folder");
@@ -109,8 +106,7 @@ public abstract class FileSystemSource implements MultiLanguageSource {
     }
 
     public void loadFile(@NotNull Path path, ISourceTextAdder to) {
-        var name = path.getFileName().toString();
-        var lang = MultiLanguageSource.langFromFileName(name);
+        var lang = provider.langFromPath(path);
         if (!shouldIncludeLanguage(lang)) return;
         var s = provider.create(lang, path);
         s.load(to);

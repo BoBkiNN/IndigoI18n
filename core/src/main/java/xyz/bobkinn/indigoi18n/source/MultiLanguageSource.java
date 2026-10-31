@@ -1,7 +1,5 @@
 package xyz.bobkinn.indigoi18n.source;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Set;
 
 /**
@@ -38,11 +36,4 @@ public interface MultiLanguageSource extends TranslationSource {
         }
     }
 
-    /**
-     * Returns file name without last extension
-     */
-    static @NotNull String langFromFileName(@NotNull String fileName) {
-        int dotIndex = fileName.lastIndexOf('.');
-        return (dotIndex == -1) ? fileName : fileName.substring(0, dotIndex);
-    }
 }
