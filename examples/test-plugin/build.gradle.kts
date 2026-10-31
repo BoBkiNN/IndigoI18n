@@ -1,7 +1,7 @@
 plugins {
     java
     id("com.github.johnrengelman.shadow") version "8.1.1"
-    id("xyz.jpenilla.run-paper") version "2.3.1"
+    id("xyz.jpenilla.run-paper") version "3.0.0"
     id("io.freefair.lombok")
     id("io.papermc.paperweight.userdev") version "2.0.0-beta.18"
 }
