@@ -9,15 +9,16 @@ import org.jetbrains.annotations.Nullable;
 import xyz.bobkinn.indigoi18n.data.BasicTranslation;
 import xyz.bobkinn.indigoi18n.data.PluralTranslation;
 import xyz.bobkinn.indigoi18n.data.Translation;
-import xyz.bobkinn.indigoi18n.source.ISourceTextAdder;
-import xyz.bobkinn.indigoi18n.source.SingleLangSource;
-import xyz.bobkinn.indigoi18n.source.TranslationLoadError;
-import xyz.bobkinn.indigoi18n.source.TranslationSource;
+import xyz.bobkinn.indigoi18n.source.*;
+import xyz.bobkinn.indigoi18n.source.impl.FsFolderSource;
+import xyz.bobkinn.indigoi18n.source.impl.JarFolderSource;
 
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
@@ -32,6 +33,30 @@ public class GsonTranslationSource implements TranslationSource, SingleLangSourc
     private final ContextParser contextParser;
 
     public static ContextParser DEFAULT_CONTEXT_PARSER = new ContextParser();
+
+    @SuppressWarnings("unused")
+    public static TranslationSourceProvider PROVIDER =
+            new TranslationSourceProvider.SuffixedFile(".json", GsonTranslationSource::fromPath);
+
+    /**
+     * Creates new {@link FsFolderSource} from `.json` files in folder
+     * @param folder folder with {@code <lang>.json} files
+     * @return new folder source
+     */
+    @Contract("_ -> new")
+    public static @NotNull FsFolderSource fromFiles(Path folder) {
+        return new FsFolderSource(folder, PROVIDER);
+    }
+
+    /**
+     * Creates new {@link JarFolderSource} from `.json` files in zip located in {@code folder} folder inside zip file
+     * @param zip zip with {@code <lang>.json} files'
+     * @param folder folder path inside zip where to list files.
+     * @return new zip source
+     */
+    public static @NotNull JarFolderSource fromZip(Path zip, @NotNull String folder) {
+        return new JarFolderSource(zip, folder, PROVIDER);
+    }
 
     public static final Map<String, Class<? extends Translation>> TRANSLATION_TYPES = Map.of(
             "basic", BasicTranslation.class,
@@ -53,6 +78,20 @@ public class GsonTranslationSource implements TranslationSource, SingleLangSourc
     public static @NotNull GsonTranslationSource fromFile(String language, File file) {
         return new GsonTranslationSource(file.toURI(), (g) -> {
             try (var fr = new BufferedReader(new FileReader(file, StandardCharsets.UTF_8))) {
+                return g.fromJson(fr, JsonObject.class);
+            } catch (IOException e) {
+                throw new TranslationLoadError("IO exception when reading json object", e);
+            }
+        }, DEFAULT_GSON_SUPPLIER, language, DEFAULT_CONTEXT_PARSER);
+    }
+
+    @Contract("_, _ -> new")
+    public static @NotNull GsonTranslationSource fromPath(String language, Path path) {
+        if (!Files.isRegularFile(path)) {
+            throw new TranslationLoadError("Path is not a regular file", null);
+        }
+        return new GsonTranslationSource(path.toUri(), (g) -> {
+            try (var fr = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
                 return g.fromJson(fr, JsonObject.class);
             } catch (IOException e) {
                 throw new TranslationLoadError("IO exception when reading json object", e);

@@ -27,8 +27,8 @@ public class TestGsonFolder {
     void test() throws URISyntaxException {
         var url = getClass().getClassLoader().getResource("test_json");
         if (url == null) throw new IllegalArgumentException("No folder found");
-        var folder = Paths.get(url.toURI()).toFile();
-        var source = new GsonFolderSource(folder);
+        var folder = Paths.get(url.toURI());
+        var source = GsonTranslationSource.fromFiles(folder);
         var adder = new TestAdder();
         source.load(adder);
         Assertions.assertEquals("Apple", adder.get("item.apple", "en_us"));
