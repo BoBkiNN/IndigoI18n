@@ -10,8 +10,8 @@ import xyz.bobkinn.indigoi18n.data.BasicTranslation;
 import xyz.bobkinn.indigoi18n.data.PluralTranslation;
 import xyz.bobkinn.indigoi18n.data.Translation;
 import xyz.bobkinn.indigoi18n.source.*;
-import xyz.bobkinn.indigoi18n.source.impl.FsFolderSource;
-import xyz.bobkinn.indigoi18n.source.impl.JarFolderSource;
+import xyz.bobkinn.indigoi18n.source.impl.FolderSource;
+import xyz.bobkinn.indigoi18n.source.impl.ZipSource;
 
 import java.io.*;
 import java.net.URI;
@@ -39,23 +39,23 @@ public class GsonTranslationSource implements TranslationSource, SingleLangSourc
             new TranslationSourceProvider.SuffixedFile(".json", GsonTranslationSource::fromPath);
 
     /**
-     * Creates new {@link FsFolderSource} from `.json` files in folder
+     * Creates new {@link FolderSource} from `.json` files in folder
      * @param folder folder with {@code <lang>.json} files
      * @return new folder source
      */
     @Contract("_ -> new")
-    public static @NotNull FsFolderSource fromFiles(Path folder) {
-        return new FsFolderSource(folder, PROVIDER);
+    public static @NotNull FolderSource fromFiles(Path folder) {
+        return new FolderSource(folder, PROVIDER);
     }
 
     /**
-     * Creates new {@link JarFolderSource} from `.json` files in zip located in {@code folder} folder inside zip file
+     * Creates new {@link ZipSource} from `.json` files in zip located in {@code folder} folder inside zip file
      * @param zip zip with {@code <lang>.json} files'
      * @param folder folder path inside zip where to list files.
      * @return new zip source
      */
-    public static @NotNull JarFolderSource fromZip(Path zip, @NotNull String folder) {
-        return new JarFolderSource(zip, folder, PROVIDER);
+    public static @NotNull ZipSource fromZip(Path zip, @NotNull String folder) {
+        return new ZipSource(zip, folder, PROVIDER);
     }
 
     public static final Map<String, Class<? extends Translation>> TRANSLATION_TYPES = Map.of(

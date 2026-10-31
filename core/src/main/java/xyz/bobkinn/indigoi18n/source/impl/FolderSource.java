@@ -9,10 +9,10 @@ import java.net.URI;
 import java.nio.file.FileSystem;
 import java.nio.file.Path;
 
-public class FsFolderSource extends FileSystemSource {
+public class FolderSource extends FileSystemSource {
     private final Path folder;
 
-    public FsFolderSource(Path folder, TranslationSourceProvider provider) {
+    public FolderSource(Path folder, TranslationSourceProvider provider) {
         super(provider);
         this.folder = folder;
     }

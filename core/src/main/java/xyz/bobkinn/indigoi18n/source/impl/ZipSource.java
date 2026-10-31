@@ -17,7 +17,7 @@ import java.util.Map;
 /**
  * Source that uses JAR or ZIP file to list translations
  */
-public class JarFolderSource extends FileSystemSource {
+public class ZipSource extends FileSystemSource {
     @Getter
     private final Path jar;
     private final Path folder;
@@ -29,7 +29,7 @@ public class JarFolderSource extends FileSystemSource {
      * @param jar path to jar file in current filesystem
      * @param folder folder inside of archive. If empty string, archive root is used
      */
-    public JarFolderSource(Path jar, @NotNull String folder, TranslationSourceProvider provider) {
+    public ZipSource(Path jar, @NotNull String folder, TranslationSourceProvider provider) {
         super(provider);
         this.jar = jar;
         this.folder = Path.of(folder);
@@ -39,6 +39,7 @@ public class JarFolderSource extends FileSystemSource {
     }
 
     private static URI getJarUri(URI jar, String entry) {
+        // jar: works with zip too
         var sb = new StringBuilder("jar:");
         sb.append(jar.toString());
         if (entry != null && !entry.isEmpty()) {

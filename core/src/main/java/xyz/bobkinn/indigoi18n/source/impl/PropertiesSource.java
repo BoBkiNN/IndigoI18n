@@ -32,23 +32,23 @@ public class PropertiesSource implements TranslationSource, SingleLangSource {
     private final Properties properties;
 
     /**
-     * Creates new {@link FsFolderSource} from `.properties` files in folder
+     * Creates new {@link FolderSource} from `.properties` files in folder
      * @param folder folder with {@code <lang>.properties} files
      * @return new folder source
      */
     @Contract("_ -> new")
-    public static @NotNull FsFolderSource fromFiles(Path folder) {
-        return new FsFolderSource(folder, PROVIDER);
+    public static @NotNull FolderSource fromFiles(Path folder) {
+        return new FolderSource(folder, PROVIDER);
     }
 
     /**
-     * Creates new {@link JarFolderSource} from `.properties` files in zip located in {@code folder} folder inside zip file
+     * Creates new {@link ZipSource} from `.properties` files in zip located in {@code folder} folder inside zip file
      * @param zip zip with {@code <lang>.properties} files'
      * @param folder folder path inside zip where to list files.
      * @return new zip source
      */
-    public static @NotNull JarFolderSource fromZip(Path zip, @NotNull String folder) {
-        return new JarFolderSource(zip, folder, PROVIDER);
+    public static @NotNull ZipSource fromZip(Path zip, @NotNull String folder) {
+        return new ZipSource(zip, folder, PROVIDER);
     }
 
     /**
