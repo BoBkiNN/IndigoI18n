@@ -6,14 +6,13 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.bobkinn.indigoi18n.data.Translation;
-import xyz.bobkinn.indigoi18n.source.ISourceTextAdder;
-import xyz.bobkinn.indigoi18n.source.SingleLangSource;
-import xyz.bobkinn.indigoi18n.source.TranslationLoadError;
-import xyz.bobkinn.indigoi18n.source.TranslationSource;
+import xyz.bobkinn.indigoi18n.source.*;
 
 import java.io.*;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Properties;
 
 /**
@@ -22,6 +21,11 @@ import java.util.Properties;
 @SuppressWarnings("unused")
 @RequiredArgsConstructor
 public class PropertiesSource implements TranslationSource, SingleLangSource {
+
+    public static final String FILE_SUFFIX = ".properties";
+    public static final TranslationSourceProvider.SuffixedFile PROVIDER =
+            new TranslationSourceProvider.SuffixedFile(FILE_SUFFIX, PropertiesSource::fromPath);
+
     private final URI location;
     @Getter
     private final String language;
@@ -35,6 +39,29 @@ public class PropertiesSource implements TranslationSource, SingleLangSource {
         var props = new Properties();
         props.load(stream);
         return new PropertiesSource(location, language, props);
+    }
+
+    /**
+     * Uses {@link StandardCharsets#UTF_8} encoding to read entire file and create {@link Properties} to use in new source.<br>
+     * File must be saved with UTF-8 encoding to allow any language to be written and read correctly without escaping.
+     * @param language language id
+     * @param path path to read
+     * @return new source
+     */
+    @Contract("_, _ -> new")
+    public static @NotNull PropertiesSource fromPath(String language, Path path) {
+        if (!Files.isRegularFile(path)) {
+            throw new TranslationLoadError("Path is not a regular file", null);
+        }
+        try (var reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
+            var props = new Properties();
+            props.load(reader);
+            return new PropertiesSource(path.toUri(), language, props);
+        } catch (FileNotFoundException e) {
+            throw new TranslationLoadError("No file found to load translations from", e);
+        } catch (IOException e) {
+            throw new TranslationLoadError("Failed to load properties file", e);
+        }
     }
 
     /**

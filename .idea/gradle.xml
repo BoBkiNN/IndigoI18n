@@ -19,6 +19,7 @@
             <option value="$PROJECT_DIR$/paper/paper-adventure" />
           </set>
         </option>
+        <option name="resolveExternalAnnotations" value="true" />
       </GradleProjectSettings>
     </option>
   </component>

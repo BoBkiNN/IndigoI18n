@@ -10,14 +10,13 @@ import java.io.File;
  * @see FolderSource
  */
 public class PropertiesFolderSource extends FolderSource {
-    public static final String PROPERTIES_SUFFIX = ".properties";
 
     public PropertiesFolderSource(String suffix, File folder) {
         super(suffix, folder);
     }
 
     public PropertiesFolderSource(File folder) {
-        this(PROPERTIES_SUFFIX, folder);
+        this(PropertiesSource.FILE_SUFFIX, folder);
     }
 
     @Override
