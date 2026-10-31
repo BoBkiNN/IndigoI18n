@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  * 4. Extract language id from file name<br>
  * 5. Create source from file and its language<br>
  * 6. Load created source
- * @see TranslationSourceFactory#create(String, Path)
+ * @see TranslationSourceFactory#createFromPath(String, Path)
  * @see TranslationSourceProvider.SuffixedFile
  */
 @RequiredArgsConstructor
@@ -83,7 +83,7 @@ public abstract class FileSystemSource implements MultiLanguageSource {
         if (!Files.exists(path)) {
             throw new IllegalArgumentException("Path "+path+" does not exists");
         }
-        var s = provider.create(language, path);
+        var s = provider.createFromPath(language, path);
         s.load(to);
     }
 
@@ -108,7 +108,7 @@ public abstract class FileSystemSource implements MultiLanguageSource {
     public void loadFile(@NotNull Path path, ISourceTextAdder to) {
         var lang = provider.langFromPath(path);
         if (!shouldIncludeLanguage(lang)) return;
-        var s = provider.create(lang, path);
+        var s = provider.createFromPath(lang, path);
         s.load(to);
     }
 

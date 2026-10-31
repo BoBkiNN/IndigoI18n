@@ -22,6 +22,7 @@ import java.nio.file.Path;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 @RequiredArgsConstructor
 public class GsonTranslationSource implements TranslationSource, SingleLangSource {
@@ -36,7 +37,17 @@ public class GsonTranslationSource implements TranslationSource, SingleLangSourc
 
     @SuppressWarnings("unused")
     public static TranslationSourceProvider PROVIDER =
-            new TranslationSourceProvider.SuffixedFile(".json", GsonTranslationSource::fromPath);
+            new TranslationSourceProvider.SuffixedFile(".json", new TranslationSourceFactory() {
+                @Override
+                public TranslationSource createFromPath(String language, Path path) {
+                    return GsonTranslationSource.fromPath(language, path);
+                }
+
+                @Override
+                public TranslationSource createFromStream(URI location, String language, Supplier<InputStream> stream) {
+                    return GsonTranslationSource.fromStream(location, language, stream);
+                }
+            });
 
     /**
      * Creates new {@link FolderSource} from `.json` files in folder
@@ -104,6 +115,25 @@ public class GsonTranslationSource implements TranslationSource, SingleLangSourc
      * Creates new source which will load json from resource input stream.
      * Resource must exist at call time to access its URL.
      * @param language id of language which this source is loading
+     * @param stream resource stream
+     */
+    @Contract("_, _, _ -> new")
+    public static @NotNull GsonTranslationSource fromStream(URI location, String language, Supplier<InputStream> stream) {
+        return new GsonTranslationSource(location, (g) -> {
+            var is = stream.get();
+            if (is == null) throw new IllegalArgumentException("Resource stream not found");
+            try (var fr = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
+                return g.fromJson(fr, JsonObject.class);
+            } catch (IOException e) {
+                throw new TranslationLoadError("IO exception when reading json object", e);
+            }
+        }, DEFAULT_GSON_SUPPLIER, language, DEFAULT_CONTEXT_PARSER);
+    }
+
+    /**
+     * Creates new source which will load json from resource input stream.
+     * Resource must exist at call time to access its URL.
+     * @param language id of language which this source is loading
      * @param classLoader class loader used to get resource
      * @param name resource name
      * @throws FileNotFoundException if
@@ -114,15 +144,11 @@ public class GsonTranslationSource implements TranslationSource, SingleLangSourc
             throws FileNotFoundException, URISyntaxException {
         var url = classLoader.getResource(name);
         if (url == null) throw new FileNotFoundException("Resource not found");
-        return new GsonTranslationSource(url.toURI(), (g) -> {
+        return fromStream(url.toURI(), language, () -> {
             var is = classLoader.getResourceAsStream(name);
             if (is == null) throw new IllegalArgumentException("Resource stream not found");
-            try (var fr = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
-                return g.fromJson(fr, JsonObject.class);
-            } catch (IOException e) {
-                throw new TranslationLoadError("IO exception when reading json object", e);
-            }
-        }, DEFAULT_GSON_SUPPLIER, language, DEFAULT_CONTEXT_PARSER);
+            return is;
+        });
     }
 
     public static @Nullable Translation parseTranslation(Gson gson, JsonElement value) {

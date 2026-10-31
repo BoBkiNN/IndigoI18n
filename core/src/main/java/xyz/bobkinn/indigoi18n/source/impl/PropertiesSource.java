@@ -14,6 +14,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Properties;
+import java.util.function.Supplier;
 
 /**
  * Uses {@link Properties} object to load translations.
@@ -24,7 +25,21 @@ public class PropertiesSource implements TranslationSource, SingleLangSource {
 
     public static final String FILE_SUFFIX = ".properties";
     public static final TranslationSourceProvider.SuffixedFile PROVIDER =
-            new TranslationSourceProvider.SuffixedFile(FILE_SUFFIX, PropertiesSource::fromPath);
+            new TranslationSourceProvider.SuffixedFile(FILE_SUFFIX, new TranslationSourceFactory() {
+                @Override
+                public TranslationSource createFromPath(String language, Path path) {
+                    return PropertiesSource.fromPath(language, path);
+                }
+
+                @Override
+                public TranslationSource createFromStream(URI location, String language, Supplier<InputStream> stream) {
+                    try (var is = stream.get()) {
+                        return PropertiesSource.fromStream(location, language, is);
+                    } catch (IOException e) {
+                        throw new RuntimeException("Failed to load from stream", e);
+                    }
+                }
+            });
 
     private final URI location;
     @Getter

@@ -4,8 +4,11 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.InputStream;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.function.Supplier;
 
 
 /**
@@ -56,8 +59,13 @@ public interface TranslationSourceProvider extends TranslationSourceFactory {
         }
 
         @Override
-        public TranslationSource create(String language, Path path) {
-            return factory.create(language, path);
+        public TranslationSource createFromPath(String language, Path path) {
+            return factory.createFromPath(language, path);
+        }
+
+        @Override
+        public TranslationSource createFromStream(URI location, String language, Supplier<InputStream> stream) {
+            return factory.createFromStream(location, language, stream);
         }
     }
 }

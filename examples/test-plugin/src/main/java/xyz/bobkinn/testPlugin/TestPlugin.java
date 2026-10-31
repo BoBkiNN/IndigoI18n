@@ -13,10 +13,9 @@ import xyz.bobkinn.indigoi18n.render.adventure.AdventureRenderers;
 import xyz.bobkinn.indigoi18n.render.adventure.AdventureTranslator;
 import xyz.bobkinn.indigoi18n.source.TranslationLoadError;
 import xyz.bobkinn.indigoi18n.source.TranslationSource;
+import xyz.bobkinn.indigoi18n.source.impl.ResourcesSource;
 import xyz.bobkinn.indigoi18n.source.impl.gson.GsonTranslationSource;
 
-import java.io.FileNotFoundException;
-import java.net.URISyntaxException;
 import java.util.Objects;
 
 public class TestPlugin extends JavaPlugin implements Listener {
@@ -29,12 +28,7 @@ public class TestPlugin extends JavaPlugin implements Listener {
 
     public TestPlugin() {
         // prepare source to load translations from. Here we will use en.json file from resources
-        TranslationSource source;
-        try {
-            source = GsonTranslationSource.fromResource("en", getClassLoader(), "en.json");
-        } catch (FileNotFoundException | URISyntaxException e) {
-            throw new RuntimeException("Failed to prepare translation source", e);
-        }
+        TranslationSource source = new ResourcesSource(getClassLoader(), "lang", GsonTranslationSource.PROVIDER);
         // assign new default i18n instance
         i18n = new PaperAdventureI18n();
         // do not forget to run setup()
@@ -93,6 +87,7 @@ public class TestPlugin extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(this, this);
         Objects.requireNonNull(getCommand("testparse"))
                 .setExecutor(new TestCommand(i18n));
+        getServer().getConsoleSender().sendMessage(i18n.parseA("en", "myplugin.test"));
     }
 
     @Override
