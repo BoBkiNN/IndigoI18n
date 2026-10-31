@@ -54,6 +54,7 @@ public class GsonTranslationSource implements TranslationSource, SingleLangSourc
      * @param folder folder path inside zip where to list files.
      * @return new zip source
      */
+    @SuppressWarnings("unused")
     public static @NotNull ZipSource fromZip(Path zip, @NotNull String folder) {
         return new ZipSource(zip, folder, PROVIDER);
     }
