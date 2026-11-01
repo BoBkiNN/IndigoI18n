@@ -25,6 +25,10 @@ class TestComponentRenderer {
     private final ComponentTemplateFormatter componentFormatter =
             ComponentTemplateFormatter.defaultString(Component::text);
 
+    {
+        cache.setTemplateErrorHandler(null);
+    }
+
     private final ComponentRenderer format = new ComponentRenderer(cache, componentFormatter) {
         @Override
         public Component deserializeInput(String text) {
@@ -234,7 +238,6 @@ class TestComponentRenderer {
         var f = new LegacyComponentRenderer(cache, ls);
         var ctx = ctxWithInfo("test3");
         var r = f.render(ctx, "&aThis is &etest &9message &f%{s:_.3f}", List.of(3.3));
-        // TODO add error tracking TemplateErrorHandler
         Assertions.assertNotNull(r);
     }
 
