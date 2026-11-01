@@ -2,7 +2,6 @@ package xyz.bobkinn.indigoi18n.source;
 
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.nio.file.FileSystem;
@@ -10,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -49,11 +49,18 @@ public abstract class FileSystemSource implements MultiLanguageSource {
      */
     protected abstract @NotNull FileSystem getFileSystem() throws IOException;
 
-    public Set<Path> listLanguageFiles(FileSystem fs) throws IOException {
+    /**
+     * @return true if filesystem should be closed after {@link #getFileSystem()} and usage.
+     */
+    protected abstract boolean shouldCloseFileSystem(FileSystem fs);
+
+    public Set<Path> listLanguageFiles(FileSystem fs) {
         var folder = getFsFolder(fs);
         Set<Path> ret;
         try (var files = Files.list(folder)) {
             ret = files.filter(provider::shouldLoad).collect(Collectors.toSet());
+        } catch (IOException e) {
+            throw new TranslationLoadError("Failed to list language files", e);
         }
         return ret;
     }
@@ -89,20 +96,13 @@ public abstract class FileSystemSource implements MultiLanguageSource {
 
     @Override
     public void loadLang(String language, ISourceTextAdder to) {
-        FileSystem fs;
-        try {
-            fs = getFileSystem();
-        } catch (IOException e) {
-            throw new TranslationLoadError("Failed to get file system", e);
-        }
-        try {
-            loadLang(fs, language, to);
-        } catch (Exception e) {
-            closeSafely(fs, e);
-            throw new TranslationLoadError("Failed to load language "+language, e);
-        } finally {
-            closeSafely(fs, null);
-        }
+        useFs(fs -> {
+            try {
+                loadLang(fs, language, to);
+            } catch (Exception e) {
+                throw new TranslationLoadError("Failed to load language "+language, e);
+            }
+        });
     }
 
     public void loadFile(@NotNull Path path, ISourceTextAdder to) {
@@ -112,7 +112,7 @@ public abstract class FileSystemSource implements MultiLanguageSource {
         s.load(to);
     }
 
-    protected void loadAll(FileSystem fs, ISourceTextAdder to) throws IOException {
+    protected void loadAll(FileSystem fs, ISourceTextAdder to) {
         for (var path : listLanguageFiles(fs)) {
             if (Files.isDirectory(path)) {
                 throw new IllegalArgumentException("Path "+path+" is a folder");
@@ -124,34 +124,35 @@ public abstract class FileSystemSource implements MultiLanguageSource {
         }
     }
 
-    static void closeSafely(@NotNull FileSystem fs, @Nullable Throwable t) {
-        try {
-            fs.close();
-        } catch (IOException e) {
-            if (t != null) t.addSuppressed(e);
-            else throw new RuntimeException("Failed to close filesystem", e);
-        } catch (UnsupportedOperationException ignored) {
-            // some file systems does not support closing, like current system filesystem
-        }
-    }
-
-
-    @Override
-    public void load(ISourceTextAdder to) {
+    private void useFs(Consumer<FileSystem> user) {
         FileSystem fs;
         try {
             fs = getFileSystem();
         } catch (IOException e) {
             throw new TranslationLoadError("Failed to get file system", e);
         }
-        try {
-            loadAll(fs, to);
-        } catch (Exception e) {
-            closeSafely(fs, e);
-            throw new TranslationLoadError("Failed to load all files", e);
-        } finally {
-            closeSafely(fs, null);
+        if (shouldCloseFileSystem(fs)) {
+            try (var fss = fs) {
+                user.accept(fss);
+            } catch (IOException e) {
+                // probably closing exception, inner IOException handled at consumer-side
+                throw new TranslationLoadError("Failed to close filesystem", e);
+            }
+        } else {
+            user.accept(fs);
         }
+    }
+
+
+    @Override
+    public void load(ISourceTextAdder to) {
+        useFs(fs -> {
+            try {
+                loadAll(fs, to);
+            } catch (Exception e) {
+                throw new TranslationLoadError("Failed to load all files", e);
+            }
+        });
     }
 
 }

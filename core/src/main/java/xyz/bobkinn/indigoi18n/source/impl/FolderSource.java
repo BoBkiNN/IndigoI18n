@@ -33,6 +33,11 @@ public class FolderSource extends FileSystemSource {
     }
 
     @Override
+    protected boolean shouldCloseFileSystem(FileSystem fs) {
+        return false;
+    }
+
+    @Override
     public @Nullable URI getLocation() {
         return folder.toUri();
     }

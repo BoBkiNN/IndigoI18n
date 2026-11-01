@@ -59,6 +59,11 @@ public class ZipSource extends FileSystemSource {
     }
 
     @Override
+    protected boolean shouldCloseFileSystem(FileSystem fs) {
+        return true;
+    }
+
+    @Override
     public @Nullable URI getLocation() {
         return withEntrypoint;
     }
