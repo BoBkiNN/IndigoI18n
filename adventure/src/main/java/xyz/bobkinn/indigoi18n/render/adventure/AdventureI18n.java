@@ -13,6 +13,7 @@ import xyz.bobkinn.indigoi18n.render.adventure.mixin.MiniMessageAdventureI18nMix
 import xyz.bobkinn.indigoi18n.template.arg.ArgumentConverter;
 
 import java.util.function.Consumer;
+import java.util.regex.Pattern;
 
 /**
  * Default adventure i18n instance that adds {@link LegacyAdventureI18nMixin}
@@ -29,8 +30,26 @@ public class AdventureI18n extends StringI18n implements LegacyAdventureI18nMixi
     private final LegacyComponentSerializer legacyComponentSerializer;
     private final MiniMessage miniMessage;
 
+    /**
+     * Fixed Adventure default {@link LegacyComponentSerializer.Builder#extractUrls()} match pattern that domains can start with _ or -. <br>
+     * This new one also uses new path matching from
+     * <a href="https://github.com/PaperMC/adventure/commit/be30b8cc5d0464fd96da7f62f38067c69f3c405a">newer Adventure version</a>.<br>
+     * This prevents URL matches to split our {@link xyz.bobkinn.indigoi18n.template.TemplateParser}
+     * advanced argument format and cause parsing error.
+     */
+    public static final Pattern FIXED_URL_PATTERN = Pattern.compile(
+            "(?:(https?)://)?(([A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?\\.)+[A-Za-z]{2,})(/([A-Za-z0-9\\-._~!$&'()*+,;=:@/]|%[0-9A-Fa-f]{2})*)?"
+    );
+
+    /**
+     * Same as {@link #FIXED_URL_PATTERN} but supports Unicode domain names.
+     */
+    public static final Pattern FIXED_UNICODE_URL_PATTERN = Pattern.compile(
+            "(?:(https?)://)?((?:[\\p{L}\\p{N}](?:[\\p{L}\\p{N}-]*[\\p{L}\\p{N}])?\\.)+\\p{L}{2,})(/([A-Za-z0-9\\-._~!$&'()*+,;=:@/]|%[0-9A-Fa-f]{2})*)?"
+    );
+
     public static final LegacyComponentSerializer DEFAULT_LEGACY_SERIALIZER = LegacyComponentSerializer.builder()
-            .extractUrls().hexColors().character('&').build();
+            .extractUrls(FIXED_UNICODE_URL_PATTERN).hexColors().character('&').build();
 
     public static final MiniMessage DEFAULT_MM_SERIALIZER = MiniMessage.miniMessage();
 

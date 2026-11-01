@@ -232,13 +232,31 @@ class TestComponentRenderer {
         Assertions.assertEquals(ex, r);
     }
 
+    /**
+     * test that _.aa is not parsed as domain name.
+     */
+    @Test
+    void testUrlExtractionCorrect() {
+        var ls = AdventureI18n.DEFAULT_LEGACY_SERIALIZER;
+        var f = new LegacyComponentRenderer(cache, ls);
+        var ctx = ctxWithInfo("test3");
+        var r = f.render(ctx, "s:_.aa", List.of());
+        Assertions.assertTrue(r.children().get(0).children().isEmpty());
+    }
+
+    /**
+     * Test <a href="https://github.com/BoBkiNN/IndigoI18n/issues/2">issue #2</a>
+     */
     @Test
     void testIssue2() {
         var ls = AdventureI18n.DEFAULT_LEGACY_SERIALIZER;
         var f = new LegacyComponentRenderer(cache, ls);
         var ctx = ctxWithInfo("test3");
-        var r = f.render(ctx, "&aThis is &etest &9message &f%{s:_.3f}", List.of(3.3));
-        Assertions.assertNotNull(r);
+        var r = f.render(ctx, "%{s:_.3f}", List.of(3.3));
+        var e = Component.empty().append(
+                Component.text("3.300")
+        );
+        Assertions.assertEquals(e, r);
     }
 
 }
