@@ -7,6 +7,7 @@ import java.util.function.Supplier;
 
 /**
  * @see #createFromPath(String, Path)
+ * TODO should we provide only {@link #createFromStream(URI, String, Supplier)}?
  */
 public interface TranslationSourceFactory {
     /**
