@@ -28,8 +28,13 @@ public class TemplateCache {
      */
     private final Map<String, ParsedEntry> templateCache = new ConcurrentHashMap<>(512);
 
+    /**
+     * Template error handler. Called when {@link TemplateParseException} caught.
+     * When null, exception is rethrown.
+     * Default is {@link TemplateErrorHandler.JULTemplateErrorHandler java.util.logging log implementation}
+     */
     @Setter
-    private TemplateErrorHandler templateErrorHandler = new TemplateErrorHandler.JULTemplateErrorHandler();
+    private @Nullable TemplateErrorHandler templateErrorHandler = new TemplateErrorHandler.JULTemplateErrorHandler();
 
     /**
      * When disabled, {@link #getOrCompute(Context, String, TemplateParseOptions)} 
